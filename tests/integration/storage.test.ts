@@ -7,13 +7,21 @@ import {
   INVALID_FORMAT_ERROR,
   INVALID_JSON_ERROR,
 } from '../../src/services/importExport'
-import { emptyData, loadData, saveData, STORAGE_KEY } from '../../src/services/storage'
+import {
+  emptyData,
+  loadData,
+  loadDataResult,
+  saveData,
+  STORAGE_FULL_ERROR,
+  STORAGE_KEY,
+} from '../../src/services/storage'
 
 const validInput = {
   name: 'Trazioni',
   description: 'Alla sbarra, presa prona',
   youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
   muscleGroup: 'Dorso',
+  faceBlurConfirmed: true,
 }
 
 beforeEach(() => {
@@ -28,12 +36,22 @@ describe('persistenza su localStorage', () => {
   })
 
   it("parte da uno stato vuoto se non c'è nulla di salvato", () => {
-    expect(loadData()).to.deep.equal(emptyData())
+    expect(loadDataResult()).to.deep.equal({ status: 'empty', data: emptyData() })
   })
 
-  it('non va in crash con dati corrotti: riparte da uno stato vuoto', () => {
+  it('segnala i dati corrotti e riparte da uno stato vuoto senza crash', () => {
     localStorage.setItem(STORAGE_KEY, '{corrotto!!!')
-    expect(loadData()).to.deep.equal(emptyData())
+    expect(loadDataResult()).to.deep.equal({ status: 'corrupted', data: emptyData() })
+  })
+
+  it('con la quota esaurita lancia un errore esplicito', () => {
+    const fullStorage = {
+      getItem: () => null,
+      setItem: () => {
+        throw new DOMException('quota', 'QuotaExceededError')
+      },
+    }
+    expect(() => saveData(emptyData(), fullStorage)).to.throw(STORAGE_FULL_ERROR)
   })
 })
 
@@ -51,7 +69,7 @@ describe('export/import JSON per il backup', () => {
     expect(() => importFromJson('{"qualcosa": 1}')).to.throw(INVALID_FORMAT_ERROR)
     expect(() =>
       importFromJson(
-        JSON.stringify({ schemaVersion: 1, exercises: [{}], plans: [], activity: [] }),
+        JSON.stringify({ schemaVersion: 2, exercises: [{}], plans: [], activity: [] }),
       ),
     ).to.throw(INVALID_FORMAT_ERROR)
   })

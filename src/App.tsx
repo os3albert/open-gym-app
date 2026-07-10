@@ -2,16 +2,39 @@ import { useState } from 'react'
 import { BackupPanel } from './components/BackupPanel'
 import { ExerciseForm } from './components/ExerciseForm'
 import { ExerciseList } from './components/ExerciseList'
+import { FilterBar } from './components/FilterBar'
 import type { NewExercise } from './domain/exercises'
+import { applyFilters, muscleGroups, suitabilityRequiresStature } from './domain/filters'
+import type { Exercise } from './domain/types'
 import { useAppData } from './hooks/useAppData'
+import { useFilters } from './hooks/useFilters'
 
 export default function App() {
-  const { data, addExercise, upvote, importJson, exportJson } = useAppData()
+  const {
+    data,
+    corruptedAtStartup,
+    saveError,
+    addExercise,
+    editExercise,
+    removeExercise,
+    vote,
+    saveStature,
+    importJson,
+    exportJson,
+  } = useAppData()
+  const [filters, setFilters] = useFilters()
+  const [editing, setEditing] = useState<Exercise | null>(null)
   const [formError, setFormError] = useState<string | null>(null)
+  const [statureError, setStatureError] = useState<string | null>(null)
 
-  function handleNewExercise(input: NewExercise): boolean {
+  function handleSubmitExercise(input: NewExercise): boolean {
     try {
-      addExercise(input)
+      if (editing) {
+        editExercise(editing.id, input)
+        setEditing(null)
+      } else {
+        addExercise(input)
+      }
       setFormError(null)
       return true
     } catch (error) {
@@ -19,6 +42,17 @@ export default function App() {
       return false
     }
   }
+
+  function handleSaveStature(statureCm: number) {
+    try {
+      saveStature(statureCm)
+      setStatureError(null)
+    } catch (error) {
+      setStatureError(error instanceof Error ? error.message : 'Statura non valida')
+    }
+  }
+
+  const visibleExercises = applyFilters(data, filters)
 
   return (
     <main className="container">
@@ -29,8 +63,50 @@ export default function App() {
           restano sul tuo dispositivo.
         </p>
       </header>
-      <ExerciseForm onSubmit={handleNewExercise} error={formError} />
-      <ExerciseList exercises={data.exercises} onUpvote={upvote} />
+      {corruptedAtStartup && (
+        <p className="banner-warning" role="alert" data-cy="corrupted-banner">
+          I dati salvati su questo dispositivo non erano leggibili: si riparte da zero. Se hai un
+          backup JSON puoi ripristinarlo dalla sezione «Backup dei dati».
+        </p>
+      )}
+      {saveError && (
+        <p className="banner-error" role="alert" data-cy="storage-error">
+          {saveError}
+        </p>
+      )}
+      <ExerciseForm
+        key={editing?.id ?? 'new'}
+        initial={editing}
+        onSubmit={handleSubmitExercise}
+        onCancel={() => {
+          setEditing(null)
+          setFormError(null)
+        }}
+        error={formError}
+      />
+      <section className="card">
+        <h2>Esercizi della community</h2>
+        <FilterBar
+          filters={filters}
+          onFiltersChange={setFilters}
+          muscleGroups={muscleGroups(data.exercises)}
+          statureCm={data.profile.statureCm}
+          onSaveStature={handleSaveStature}
+          statureError={statureError}
+          requiresStature={suitabilityRequiresStature(filters, data)}
+        />
+        <ExerciseList
+          exercises={visibleExercises}
+          totalCount={data.exercises.length}
+          votedIds={new Set(data.votedExerciseIds)}
+          onToggleVote={vote}
+          onEdit={(exercise) => {
+            setFormError(null)
+            setEditing(exercise)
+          }}
+          onDelete={removeExercise}
+        />
+      </section>
       <BackupPanel onExport={exportJson} onImport={importJson} />
     </main>
   )

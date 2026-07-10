@@ -1,4 +1,6 @@
-import type { ActivityRecord, AppData, Exercise, WorkoutPlan } from '../domain/types'
+import type { ActivityRecord, AppData, Exercise, UserProfile, WorkoutPlan } from '../domain/types'
+import { CURRENT_SCHEMA_VERSION } from '../domain/types'
+import { migrateToCurrentSchema } from './migrations'
 
 export const INVALID_JSON_ERROR = 'Il file non contiene JSON valido'
 export const INVALID_FORMAT_ERROR = 'Formato di backup non riconosciuto'
@@ -12,6 +14,10 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
+function isStatureRange(value: unknown): boolean {
+  return isRecord(value) && typeof value.minCm === 'number' && typeof value.maxCm === 'number'
+}
+
 function isExercise(value: unknown): value is Exercise {
   return (
     isRecord(value) &&
@@ -20,6 +26,8 @@ function isExercise(value: unknown): value is Exercise {
     typeof value.description === 'string' &&
     typeof value.youtubeUrl === 'string' &&
     typeof value.muscleGroup === 'string' &&
+    typeof value.faceBlurConfirmed === 'boolean' &&
+    (value.stature === undefined || isStatureRange(value.stature)) &&
     typeof value.votes === 'number' &&
     typeof value.createdAt === 'string'
   )
@@ -45,8 +53,12 @@ function isActivity(value: unknown): value is ActivityRecord {
   )
 }
 
+function isProfile(value: unknown): value is UserProfile {
+  return isRecord(value) && (value.statureCm === null || typeof value.statureCm === 'number')
+}
+
 /**
- * Ricostruisce i dati dell'app da un backup JSON.
+ * Ricostruisce i dati dell'app da un backup JSON, migrando gli schemi precedenti.
  * Lancia un errore se il JSON non è valido o la struttura non è quella attesa.
  */
 export function importFromJson(json: string): AppData {
@@ -56,24 +68,31 @@ export function importFromJson(json: string): AppData {
   } catch {
     throw new Error(INVALID_JSON_ERROR)
   }
+  if (!isRecord(parsed)) throw new Error(INVALID_FORMAT_ERROR)
+
+  const migrated = migrateToCurrentSchema(parsed)
 
   if (
-    !isRecord(parsed) ||
-    parsed.schemaVersion !== 1 ||
-    !Array.isArray(parsed.exercises) ||
-    !Array.isArray(parsed.plans) ||
-    !Array.isArray(parsed.activity) ||
-    !parsed.exercises.every(isExercise) ||
-    !parsed.plans.every(isPlan) ||
-    !parsed.activity.every(isActivity)
+    migrated.schemaVersion !== CURRENT_SCHEMA_VERSION ||
+    !Array.isArray(migrated.exercises) ||
+    !Array.isArray(migrated.plans) ||
+    !Array.isArray(migrated.activity) ||
+    !Array.isArray(migrated.votedExerciseIds) ||
+    !migrated.exercises.every(isExercise) ||
+    !migrated.plans.every(isPlan) ||
+    !migrated.activity.every(isActivity) ||
+    !migrated.votedExerciseIds.every((id) => typeof id === 'string') ||
+    !isProfile(migrated.profile)
   ) {
     throw new Error(INVALID_FORMAT_ERROR)
   }
 
   return {
-    schemaVersion: 1,
-    exercises: parsed.exercises,
-    plans: parsed.plans,
-    activity: parsed.activity,
+    schemaVersion: CURRENT_SCHEMA_VERSION,
+    exercises: migrated.exercises,
+    plans: migrated.plans,
+    activity: migrated.activity,
+    profile: { statureCm: (migrated.profile as UserProfile).statureCm },
+    votedExerciseIds: migrated.votedExerciseIds,
   }
 }

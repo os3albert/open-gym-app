@@ -1,10 +1,12 @@
 import { setWorldConstructor, World, type IWorldOptions } from '@cucumber/cucumber'
+import { defaultFilters, type ExerciseFilters } from '../../src/domain/filters'
 import type { AppData } from '../../src/domain/types'
 import { emptyData } from '../../src/services/storage'
 
 /** Stato condiviso tra gli step di uno scenario: i dati dell'app e l'esito dell'ultima azione. */
 export class GymWorld extends World {
   data: AppData = emptyData()
+  filters: ExerciseFilters = { ...defaultFilters }
   error: string | null = null
   suggestion: number | null = null
 

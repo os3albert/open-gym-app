@@ -12,6 +12,8 @@ export interface Exercise {
   youtubeUrl: string
   muscleGroup: string
   stature?: StatureRange
+  /** L'utente dichiara che il volto nel video è offuscato con l'AI. */
+  faceBlurConfirmed: boolean
   votes: number
   createdAt: string
 }
@@ -45,10 +47,20 @@ export interface WorkoutPlan {
   votes: number
 }
 
+/** Profilo locale del dispositivo (nessuna registrazione): serve per il filtro per statura. */
+export interface UserProfile {
+  statureCm: number | null
+}
+
+export const CURRENT_SCHEMA_VERSION = 2
+
 /** Tutti i dati dell'app: è l'unità di persistenza (localStorage) e di export/import JSON. */
 export interface AppData {
-  schemaVersion: 1
+  schemaVersion: typeof CURRENT_SCHEMA_VERSION
   exercises: Exercise[]
   plans: WorkoutPlan[]
   activity: ActivityRecord[]
+  profile: UserProfile
+  /** Voti espressi da questo dispositivo (un voto per esercizio, rimovibile). */
+  votedExerciseIds: string[]
 }

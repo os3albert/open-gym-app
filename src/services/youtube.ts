@@ -37,3 +37,12 @@ export function isValidYouTubeUrl(url: string): boolean {
 export function youtubeWatchUrl(videoId: string): string {
   return `https://www.youtube.com/watch?v=${videoId}`
 }
+
+/** Player incorporato rispettoso della privacy (nessun cookie finché non si avvia il video). */
+export function youtubeEmbedUrl(videoId: string): string {
+  return `https://www.youtube-nocookie.com/embed/${videoId}`
+}
+
+export function youtubeThumbnailUrl(videoId: string): string {
+  return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
+}

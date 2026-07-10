@@ -33,10 +33,11 @@ React 19 + TypeScript + Vite, PWA via `vite-plugin-pwa` (scelto rispetto a Vue p
 
 Dipendenze a senso unico: `components/` → `hooks/` → `domain/` + `services/`. Dominio e servizi sono **funzioni pure senza React né browser API** (eccetto `storage.ts` che accetta uno `Storage` iniettabile): è ciò che permette agli step Cucumber di esercitarli direttamente in Node, senza browser.
 
-- `src/domain/types.ts` — `AppData` è l'unità di persistenza E il formato di backup JSON: ogni campo nuovo va gestito anche nel validatore di `importExport.ts` e nel round-trip test.
+- `src/domain/types.ts` — `AppData` (schema v2: esercizi, schede, attività, `profile.statureCm`, `votedExerciseIds`) è l'unità di persistenza E il formato di backup JSON: ogni campo nuovo va gestito anche nel validatore di `importExport.ts` e nel round-trip test. Se cambi lo schema, incrementa `CURRENT_SCHEMA_VERSION` e aggiungi la migrazione in `services/migrations.ts` (l'import migra sempre i backup vecchi: mai romperli).
 - `src/domain/exercises.ts` — reducer puri (add/upvote/rank); la validazione lancia errori con messaggi in italiano che sono **contratto**: UI, test Jest, step BDD e spec Cypress asseriscono su quelle stringhe esatte (esportate come costanti, es. `INVALID_YOUTUBE_LINK_ERROR`).
 - `src/services/importExport.ts` — export/import JSON con validazione strutturale; `storage.ts` vi delega (dati corrotti → stato vuoto, mai crash).
-- `src/hooks/useAppData.ts` — unico punto di contatto stato↔localStorage. La validazione che può lanciare avviene PRIMA di `setData`, mai dentro l'updater (React crasherebbe).
+- `src/hooks/useAppData.ts` — unico punto di contatto stato↔localStorage: ogni modifica passa da `commit()` che salva subito e intercetta la quota piena. Niente salvataggio al mount: se i dati erano corrotti restano su disco finché l'utente non agisce. La validazione che può lanciare avviene PRIMA del commit, mai dentro un updater React.
+- Il voto è un toggle per dispositivo (`toggleVote` + `votedExerciseIds`): mai incrementare i voti direttamente. I filtri (`domain/filters.ts`) vivono nella query string via `hooks/useFilters.ts`.
 - I componenti espongono attributi `data-cy` usati dalle spec Cypress: non rimuoverli.
 
 ## Piramide di test (mappa)

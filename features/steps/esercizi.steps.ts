@@ -1,11 +1,33 @@
 import { Given, Then, When } from '@cucumber/cucumber'
 import { expect } from 'chai'
-import { addExercise, rankExercises, upvoteExercise } from '../../src/domain/exercises'
+import {
+  addExercise,
+  hasVoted,
+  rankExercises,
+  toggleVote,
+  type NewExercise,
+} from '../../src/domain/exercises'
+import type { StatureRange } from '../../src/domain/types'
 import { emptyData } from '../../src/services/storage'
 import type { GymWorld } from '../support/world'
 
-function newExercise(name: string, youtubeUrl: string) {
-  return { name, youtubeUrl, description: '', muscleGroup: '' }
+const VALID_LINK = 'https://youtu.be/AAAAAAAAAAA'
+
+function newExercise(name: string, youtubeUrl: string, stature?: StatureRange): NewExercise {
+  return {
+    name,
+    youtubeUrl,
+    description: '',
+    muscleGroup: '',
+    faceBlurConfirmed: true,
+    ...(stature ? { stature } : {}),
+  }
+}
+
+function findExercise(world: GymWorld, name: string) {
+  const exercise = world.data.exercises.find((e) => e.name === name)
+  expect(exercise, `esercizio "${name}" non trovato`).to.not.equal(undefined)
+  return exercise!
 }
 
 Given('che non ci sono esercizi salvati', function (this: GymWorld) {
@@ -19,10 +41,46 @@ Given(
   },
 )
 
+Given(
+  "che è stato proposto l'esercizio {string} con fascia di statura da {int} a {int} cm",
+  function (this: GymWorld, name: string, minCm: number, maxCm: number) {
+    this.data = addExercise(this.data, newExercise(name, VALID_LINK, { minCm, maxCm }))
+  },
+)
+
+Given(
+  "che è stato proposto l'esercizio {string} senza fascia di statura",
+  function (this: GymWorld, name: string) {
+    this.data = addExercise(this.data, newExercise(name, VALID_LINK))
+  },
+)
+
+Given(
+  "che l'esercizio {string} ha già {int} voti",
+  function (this: GymWorld, name: string, votes: number) {
+    const exercise = findExercise(this, name)
+    this.data = {
+      ...this.data,
+      exercises: this.data.exercises.map((e) => (e.id === exercise.id ? { ...e, votes } : e)),
+    }
+  },
+)
+
+Given("che ho già votato l'esercizio {string}", function (this: GymWorld, name: string) {
+  this.data = toggleVote(this.data, findExercise(this, name).id)
+})
+
 When(
   "propongo l'esercizio {string} con link {string}",
   function (this: GymWorld, name: string, youtubeUrl: string) {
     this.data = addExercise(this.data, newExercise(name, youtubeUrl))
+  },
+)
+
+When(
+  "propongo l'esercizio {string} con fascia di statura da {int} a {int} cm",
+  function (this: GymWorld, name: string, minCm: number, maxCm: number) {
+    this.data = addExercise(this.data, newExercise(name, VALID_LINK, { minCm, maxCm }))
   },
 )
 
@@ -38,10 +96,23 @@ When(
   },
 )
 
+When(
+  "provo a proporre l'esercizio {string} senza confermare il volto offuscato",
+  function (this: GymWorld, name: string) {
+    try {
+      this.data = addExercise(this.data, {
+        ...newExercise(name, VALID_LINK),
+        faceBlurConfirmed: false,
+      })
+      this.error = null
+    } catch (error) {
+      this.error = error instanceof Error ? error.message : String(error)
+    }
+  },
+)
+
 When("faccio upvote all'esercizio {string}", function (this: GymWorld, name: string) {
-  const exercise = this.data.exercises.find((e) => e.name === name)
-  expect(exercise, `esercizio "${name}" non trovato`).to.not.equal(undefined)
-  this.data = upvoteExercise(this.data, exercise!.id)
+  this.data = toggleVote(this.data, findExercise(this, name).id)
 })
 
 Then(
@@ -54,11 +125,24 @@ Then(
 Then(
   /^l'esercizio "([^"]*)" ha (\d+) vot[oi]$/,
   function (this: GymWorld, name: string, votes: string) {
-    const exercise = this.data.exercises.find((e) => e.name === name)
-    expect(exercise, `esercizio "${name}" non trovato`).to.not.equal(undefined)
-    expect(exercise!.votes).to.equal(Number(votes))
+    expect(findExercise(this, name).votes).to.equal(Number(votes))
   },
 )
+
+Then(
+  "l'esercizio {string} ha la fascia di statura da {int} a {int} cm",
+  function (this: GymWorld, name: string, minCm: number, maxCm: number) {
+    expect(findExercise(this, name).stature).to.deep.equal({ minCm, maxCm })
+  },
+)
+
+Then('il mio voto per {string} risulta attivo', function (this: GymWorld, name: string) {
+  expect(hasVoted(this.data, findExercise(this, name).id)).to.equal(true)
+})
+
+Then('il mio voto per {string} non risulta attivo', function (this: GymWorld, name: string) {
+  expect(hasVoted(this.data, findExercise(this, name).id)).to.equal(false)
+})
 
 Then(
   "la proposta viene rifiutata con l'errore {string}",
