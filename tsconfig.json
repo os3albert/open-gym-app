@@ -15,7 +15,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "types": ["vite/client", "jest", "node"]
+    "types": ["vite/client", "vitest/globals", "node"]
   },
   "include": ["src", "tests", "features", "vite.config.ts"],
   "exclude": ["node_modules", "dist", "cypress"]

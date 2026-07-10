@@ -27,7 +27,20 @@ export default tseslint.config(
   },
   {
     files: ['tests/**/*.{ts,tsx}'],
-    languageOptions: { globals: { ...globals.jest } },
+    languageOptions: {
+      // Globals di Vitest (config test.globals: true in vite.config.ts)
+      globals: {
+        describe: 'readonly',
+        it: 'readonly',
+        test: 'readonly',
+        expect: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+        vi: 'readonly',
+      },
+    },
   },
   {
     files: ['cypress/**/*.ts', 'cypress.config.ts'],

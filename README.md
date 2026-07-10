@@ -28,7 +28,7 @@ l'utente che carica il video, deve caricare il link youtube del video - cosi da 
 
 ## Sviluppo
 
-Stack: **React 19 + TypeScript + Vite** (PWA via vite-plugin-pwa) · test **Jest + Chai**, **Cucumber** (BDD, Gherkin in italiano), **Cypress** (E2E) · CI con **GitHub Actions** · **Docker** per l'hosting.
+Stack: **React 19 + TypeScript + Vite** (PWA via vite-plugin-pwa) · test **Vitest + Chai**, **Cucumber** (BDD, Gherkin in italiano), **Cypress** (E2E) · CI con **GitHub Actions** · **Docker** per l'hosting.
 
 ```bash
 npm install

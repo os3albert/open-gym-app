@@ -11,11 +11,11 @@ npm run lint               # ESLint (flat config)
 npm run format:check       # Prettier check (format per scrivere)
 npm run typecheck          # tsc su tsconfig.json + cypress/tsconfig.json
 
-npm test                   # Jest: unit + integration (jsdom)
+npm test                   # Vitest: unit + integration (jsdom)
 npm run test:unit          # solo tests/unit
 npm run test:integration   # solo tests/integration
-npx jest tests/unit/youtube.test.ts            # un singolo file
-npx jest -t "propone un esercizio"             # un singolo test per nome
+npm test -- tests/unit/youtube.test.ts         # un singolo file
+npm test -- -t "propone un esercizio"          # un singolo test per nome
 
 npm run test:bdd           # Cucumber (features/*.feature, Gherkin in italiano)
 npm run test:e2e           # builda, avvia vite preview :4173, esegue Cypress headless
@@ -27,7 +27,7 @@ docker compose up --build  # immagine di produzione su http://localhost:8080
 
 ## Stack (decisione registrata)
 
-React 19 + TypeScript + Vite, PWA via `vite-plugin-pwa` (scelto rispetto a Vue per l'ecosistema di testing richiesto: Jest/Testing Library/Cypress/Cucumber di prima classe). Test: Jest + ts-jest con asserzioni sia Jest sia **Chai**; BDD con `@cucumber/cucumber`; E2E con Cypress. Nessun backend: tutto lo stato vive in localStorage.
+React 19 + TypeScript + Vite, PWA via `vite-plugin-pwa` (scelto rispetto a Vue per l'ecosistema di testing richiesto: Testing Library/Cypress/Cucumber di prima classe). Test: **Vitest** (runner Vite-nativo, config nel blocco `test` di `vite.config.ts`) con asserzioni sia stile Jest sia **Chai**; BDD con `@cucumber/cucumber`; E2E con Cypress. Nessun backend: tutto lo stato vive in localStorage.
 
 ## Architettura
 
@@ -41,15 +41,15 @@ Dipendenze a senso unico: `components/` → `hooks/` → `domain/` + `services/`
 
 ## Piramide di test (mappa)
 
-- `tests/unit/` — Jest, logica pura (Chai e asserzioni Jest convivono; Chai è pinned alla v4, CJS: la v5 è ESM-only e romperebbe Jest).
-- `tests/integration/` — Jest + jsdom: App reale + dominio + localStorage senza mock; storage round-trip.
+- `tests/unit/` — Vitest, logica pura (asserzioni Chai importate esplicitamente e stile Jest convivono).
+- `tests/integration/` — Vitest + jsdom: App reale + dominio + localStorage senza mock; storage round-trip.
 - `features/` — Gherkin **in italiano** (`# language: it`) + step in TS caricati via tsx (`NODE_OPTIONS="--import tsx"`); lo stato scenario vive in `features/support/world.ts`.
 - `cypress/e2e/` — flussi utente completi contro la build di preview.
 
 ## Vincoli non ovvi
 
 - ESLint vieta le asserzioni "a proprietà" di Chai (`.to.exist`, `.to.be.empty`): usare forme a chiamata (`.to.have.lengthOf(0)`, `.to.not.equal(undefined)`).
-- ts-jest usa una tsconfig inline in `jest.config.cjs` (CommonJS + `ignoreDeprecations: '6.0'`), separata dalla tsconfig dell'app (ESM/bundler). Cypress ha la sua tsconfig per evitare conflitti di globals con Jest.
+- Gli script `test*` impostano `NODE_OPTIONS="--no-experimental-webstorage"`: il global `localStorage` sperimentale di Node ≥22 maschera quello di jsdom (resta `undefined`) e senza flag i test di integrazione falliscono. Non toglierlo. Cypress ha la sua tsconfig per evitare conflitti di globals con Vitest.
 - `createExercise` omette le chiavi `undefined` (niente `stature: undefined`): il round-trip JSON le perderebbe e i deep-equal fallirebbero.
 - CI (`.github/workflows/ci.yml`): la build parte SOLO se analisi statica e tutti i test (unit/integration, BDD, E2E) sono verdi — requisito del README; l'immagine Docker è pubblicata su GHCR solo da main.
 - I video sono SOLO link YouTube (validati in `services/youtube.ts`): mai aggiungere upload/hosting di file video.
