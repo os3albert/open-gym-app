@@ -1,0 +1,169 @@
+// Test di integrazione della M3: registrazione sessione, suggerimento del carico, storico.
+import '@testing-library/jest-dom/vitest'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import App from '../../src/App'
+import { INVALID_SET_ERROR, recordSet } from '../../src/domain/activity'
+import { addExercise } from '../../src/domain/exercises'
+import type { AppData } from '../../src/domain/types'
+import { emptyData, saveData } from '../../src/services/storage'
+import { addDaysIso, formatDateIt, todayIso } from '../../src/utils/date'
+
+beforeEach(() => {
+  localStorage.clear()
+  window.history.replaceState(null, '', '/')
+})
+
+/** Prepara un esercizio (con eventuale storico di ieri) direttamente in localStorage. */
+function seed(options: { history?: { weightKg: number; reps: number } } = {}): AppData {
+  let data = addExercise(emptyData(), {
+    name: 'Squat',
+    description: '',
+    youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
+    muscleGroup: 'Gambe',
+    faceBlurConfirmed: true,
+  })
+  if (options.history) {
+    data = recordSet(data, data.exercises[0].id, addDaysIso(todayIso(), -1), options.history)
+  }
+  saveData(data)
+  return data
+}
+
+async function openTraining(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(screen.getByRole('button', { name: 'Allenamento' }))
+}
+
+describe('suggerimento del carico (issue #16)', () => {
+  it("precompila peso e ripetizioni dall'ultima sessione", async () => {
+    const user = userEvent.setup()
+    seed({ history: { weightKg: 80, reps: 5 } }) // reps < 8: si consolida lo stesso peso
+    render(<App />)
+    await openTraining(user)
+
+    await user.selectOptions(screen.getByLabelText('Esercizio'), 'Squat')
+
+    expect(screen.getByLabelText('Peso (kg)')).toHaveValue(80)
+    expect(screen.getByLabelText('Ripetizioni')).toHaveValue(5)
+  })
+
+  it("propone la progressione se l'ultima sessione ha raggiunto le ripetizioni obiettivo", async () => {
+    const user = userEvent.setup()
+    seed({ history: { weightKg: 80, reps: 8 } })
+    render(<App />)
+    await openTraining(user)
+
+    await user.selectOptions(screen.getByLabelText('Esercizio'), 'Squat')
+
+    expect(screen.getByLabelText('Peso (kg)')).toHaveValue(82.5)
+  })
+
+  it('senza storico i campi restano vuoti', async () => {
+    const user = userEvent.setup()
+    seed()
+    render(<App />)
+    await openTraining(user)
+
+    await user.selectOptions(screen.getByLabelText('Esercizio'), 'Squat')
+
+    expect(screen.getByLabelText('Peso (kg)')).toHaveValue(null)
+    expect(screen.getByLabelText('Ripetizioni')).toHaveValue(null)
+  })
+})
+
+describe('registrazione della sessione (issue #14)', () => {
+  it('registra serie con pesi diversi e le mostra; sopravvivono al remount', async () => {
+    const user = userEvent.setup()
+    seed()
+    const first = render(<App />)
+    await openTraining(user)
+
+    await user.selectOptions(screen.getByLabelText('Esercizio'), 'Squat')
+    await user.type(screen.getByLabelText('Peso (kg)'), '60')
+    await user.type(screen.getByLabelText('Ripetizioni'), '8')
+    await user.click(screen.getByRole('button', { name: 'Aggiungi serie' }))
+
+    await user.clear(screen.getByLabelText('Peso (kg)'))
+    await user.type(screen.getByLabelText('Peso (kg)'), '65')
+    await user.click(screen.getByRole('button', { name: 'Aggiungi serie' }))
+
+    expect(screen.getByText('60 kg × 8')).toBeInTheDocument()
+    expect(screen.getByText('65 kg × 8')).toBeInTheDocument()
+
+    first.unmount()
+    render(<App />)
+    await openTraining(user)
+    expect(screen.getByText('60 kg × 8')).toBeInTheDocument()
+  })
+
+  it('i pulsanti rapidi incrementano peso e ripetizioni', async () => {
+    const user = userEvent.setup()
+    seed()
+    render(<App />)
+    await openTraining(user)
+    await user.selectOptions(screen.getByLabelText('Esercizio'), 'Squat')
+
+    await user.click(screen.getByRole('button', { name: 'Aumenta il peso di 2,5 kg' }))
+    await user.click(screen.getByRole('button', { name: 'Aumenta il peso di 2,5 kg' }))
+    await user.click(screen.getByRole('button', { name: 'Aumenta le ripetizioni' }))
+
+    expect(screen.getByLabelText('Peso (kg)')).toHaveValue(5)
+    expect(screen.getByLabelText('Ripetizioni')).toHaveValue(1)
+  })
+
+  it("rifiuta una serie non valida mostrando l'errore", async () => {
+    const user = userEvent.setup()
+    seed()
+    render(<App />)
+    await openTraining(user)
+    await user.selectOptions(screen.getByLabelText('Esercizio'), 'Squat')
+
+    await user.type(screen.getByLabelText('Peso (kg)'), '60')
+    await user.click(screen.getByRole('button', { name: 'Aggiungi serie' }))
+
+    expect(screen.getByRole('alert')).toHaveTextContent(INVALID_SET_ERROR)
+  })
+
+  it('una serie si può rimuovere', async () => {
+    const user = userEvent.setup()
+    seed()
+    render(<App />)
+    await openTraining(user)
+    await user.selectOptions(screen.getByLabelText('Esercizio'), 'Squat')
+    await user.type(screen.getByLabelText('Peso (kg)'), '60')
+    await user.type(screen.getByLabelText('Ripetizioni'), '8')
+    await user.click(screen.getByRole('button', { name: 'Aggiungi serie' }))
+
+    await user.click(screen.getByRole('button', { name: /Rimuovi la serie 60 kg × 8/ }))
+    expect(screen.queryByText('60 kg × 8')).not.toBeInTheDocument()
+  })
+})
+
+describe('storico allenamenti (issue #15)', () => {
+  it("elenca le sessioni dalla più recente e mostra il grafico dell'andamento", async () => {
+    const user = userEvent.setup()
+    let data = seed({ history: { weightKg: 80, reps: 5 } })
+    data = recordSet(data, data.exercises[0].id, todayIso(), { weightKg: 85, reps: 5 })
+    saveData(data)
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Storico' }))
+
+    const dates = screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)
+    expect(dates[0]).toBe(formatDateIt(todayIso()))
+    expect(dates[1]).toBe(formatDateIt(addDaysIso(todayIso(), -1)))
+
+    await user.selectOptions(screen.getByLabelText('Esercizio'), 'Squat')
+    expect(
+      screen.getByRole('img', { name: /Andamento del carico: da 80 kg .* a 85 kg/ }),
+    ).toBeInTheDocument()
+  })
+
+  it('senza sessioni mostra lo stato vuoto', async () => {
+    const user = userEvent.setup()
+    seed()
+    render(<App />)
+    await user.click(screen.getByRole('button', { name: 'Storico' }))
+    expect(screen.getByText(/Nessuna sessione registrata/)).toBeInTheDocument()
+  })
+})

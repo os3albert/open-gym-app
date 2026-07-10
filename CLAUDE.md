@@ -37,7 +37,8 @@ Dipendenze a senso unico: `components/` → `hooks/` → `domain/` + `services/`
 - `src/domain/exercises.ts` — reducer puri (add/upvote/rank); la validazione lancia errori con messaggi in italiano che sono **contratto**: UI, test Jest, step BDD e spec Cypress asseriscono su quelle stringhe esatte (esportate come costanti, es. `INVALID_YOUTUBE_LINK_ERROR`).
 - `src/services/importExport.ts` — export/import JSON con validazione strutturale; `storage.ts` vi delega (dati corrotti → stato vuoto, mai crash).
 - `src/hooks/useAppData.ts` — unico punto di contatto stato↔localStorage: ogni modifica passa da `commit()` che salva subito e intercetta la quota piena. Niente salvataggio al mount: se i dati erano corrotti restano su disco finché l'utente non agisce. La validazione che può lanciare avviene PRIMA del commit, mai dentro un updater React.
-- Il voto è un toggle per dispositivo (`toggleVote` + `votedExerciseIds`): mai incrementare i voti direttamente. I filtri (`domain/filters.ts`) vivono nella query string via `hooks/useFilters.ts`.
+- Il voto è un toggle per dispositivo (`toggleVote` + `votedExerciseIds`): mai incrementare i voti direttamente. I filtri (`domain/filters.ts`) e la vista corrente vivono nella query string (`hooks/useFilters.ts`, `hooks/useView.ts`): chi scrive parametri parte SEMPRE dai parametri correnti, mai da `new URLSearchParams()` vuoto, o cancella quelli altrui.
+- Tracking pesi: `domain/activity.ts` (una sessione = record per esercizio+giorno, date locali `YYYY-MM-DD` da `utils/date.ts`); il suggerimento del carico precompila i campi in `WorkoutSession` via `services/weightSuggestion.ts`. Il grafico dello storico è SVG custom (`TrendChart`) senza librerie.
 - I componenti espongono attributi `data-cy` usati dalle spec Cypress: non rimuoverli.
 
 ## Piramide di test (mappa)
@@ -50,6 +51,7 @@ Dipendenze a senso unico: `components/` → `hooks/` → `domain/` + `services/`
 ## Vincoli non ovvi
 
 - ESLint vieta le asserzioni "a proprietà" di Chai (`.to.exist`, `.to.be.empty`): usare forme a chiamata (`.to.have.lengthOf(0)`, `.to.not.equal(undefined)`).
+- Nelle spec Cypress il seed dei dati si fa SOLO con `cy.visitWithData(...)` (visita → semina → reload): un `setItem` in `onBeforeLoad` viene cancellato dalla test isolation nei test successivi al primo della spec.
 - Gli script `test*` impostano `NODE_OPTIONS="--no-experimental-webstorage"`: il global `localStorage` sperimentale di Node ≥22 maschera quello di jsdom (resta `undefined`) e senza flag i test di integrazione falliscono. Non toglierlo. Cypress ha la sua tsconfig per evitare conflitti di globals con Vitest.
 - `createExercise` omette le chiavi `undefined` (niente `stature: undefined`): il round-trip JSON le perderebbe e i deep-equal fallirebbero.
 - CI (`.github/workflows/ci.yml`): la build parte SOLO se analisi statica e tutti i test (unit/integration, BDD, E2E) sono verdi — requisito del README; l'immagine Docker è pubblicata su GHCR solo da main.

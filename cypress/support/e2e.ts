@@ -13,12 +13,14 @@ declare global {
 }
 
 Cypress.Commands.add('visitWithData', (data: unknown) => {
-  return cy.visit('/', {
-    onBeforeLoad: (win) => {
-      win.localStorage.clear()
-      win.localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
-    },
+  // Niente onBeforeLoad: la test isolation di Cypress ripulisce localStorage a cavallo
+  // della prima visita e cancellerebbe il seed. Si semina a pagina carica e si ricarica.
+  cy.visit('/')
+  cy.window().then((win) => {
+    win.localStorage.clear()
+    win.localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
   })
+  return cy.reload()
 })
 
 export {}

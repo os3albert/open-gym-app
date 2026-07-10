@@ -14,7 +14,11 @@ function readFiltersFromUrl(): ExerciseFilters {
 }
 
 function writeFiltersToUrl(filters: ExerciseFilters): void {
-  const params = new URLSearchParams()
+  // Si toccano solo i parametri dei filtri: gli altri (es. ?vista=) restano intatti
+  const params = new URLSearchParams(window.location.search)
+  params.delete('adatti')
+  params.delete('gruppo')
+  params.delete('ordina')
   if (filters.suitableOnly) params.set('adatti', '1')
   if (filters.muscleGroup) params.set('gruppo', filters.muscleGroup)
   if (filters.sort === 'recent') params.set('ordina', 'recenti')

@@ -3,11 +3,16 @@ import { BackupPanel } from './components/BackupPanel'
 import { ExerciseForm } from './components/ExerciseForm'
 import { ExerciseList } from './components/ExerciseList'
 import { FilterBar } from './components/FilterBar'
+import { HistoryView } from './components/HistoryView'
+import { TabNav } from './components/TabNav'
+import { WorkoutSession } from './components/WorkoutSession'
 import type { NewExercise } from './domain/exercises'
 import { applyFilters, muscleGroups, suitabilityRequiresStature } from './domain/filters'
 import type { Exercise } from './domain/types'
 import { useAppData } from './hooks/useAppData'
 import { useFilters } from './hooks/useFilters'
+import { useView } from './hooks/useView'
+import { todayIso } from './utils/date'
 
 export default function App() {
   const {
@@ -19,9 +24,12 @@ export default function App() {
     removeExercise,
     vote,
     saveStature,
+    addSet,
+    deleteSet,
     importJson,
     exportJson,
   } = useAppData()
+  const [view, setView] = useView()
   const [filters, setFilters] = useFilters()
   const [editing, setEditing] = useState<Exercise | null>(null)
   const [formError, setFormError] = useState<string | null>(null)
@@ -74,39 +82,53 @@ export default function App() {
           {saveError}
         </p>
       )}
-      <ExerciseForm
-        key={editing?.id ?? 'new'}
-        initial={editing}
-        onSubmit={handleSubmitExercise}
-        onCancel={() => {
-          setEditing(null)
-          setFormError(null)
-        }}
-        error={formError}
-      />
-      <section className="card">
-        <h2>Esercizi della community</h2>
-        <FilterBar
-          filters={filters}
-          onFiltersChange={setFilters}
-          muscleGroups={muscleGroups(data.exercises)}
-          statureCm={data.profile.statureCm}
-          onSaveStature={handleSaveStature}
-          statureError={statureError}
-          requiresStature={suitabilityRequiresStature(filters, data)}
+      <TabNav view={view} onChange={setView} />
+      {view === 'esercizi' && (
+        <>
+          <ExerciseForm
+            key={editing?.id ?? 'new'}
+            initial={editing}
+            onSubmit={handleSubmitExercise}
+            onCancel={() => {
+              setEditing(null)
+              setFormError(null)
+            }}
+            error={formError}
+          />
+          <section className="card">
+            <h2>Esercizi della community</h2>
+            <FilterBar
+              filters={filters}
+              onFiltersChange={setFilters}
+              muscleGroups={muscleGroups(data.exercises)}
+              statureCm={data.profile.statureCm}
+              onSaveStature={handleSaveStature}
+              statureError={statureError}
+              requiresStature={suitabilityRequiresStature(filters, data)}
+            />
+            <ExerciseList
+              exercises={visibleExercises}
+              totalCount={data.exercises.length}
+              votedIds={new Set(data.votedExerciseIds)}
+              onToggleVote={vote}
+              onEdit={(exercise) => {
+                setFormError(null)
+                setEditing(exercise)
+              }}
+              onDelete={removeExercise}
+            />
+          </section>
+        </>
+      )}
+      {view === 'allenamento' && (
+        <WorkoutSession
+          data={data}
+          today={todayIso()}
+          onAddSet={(exerciseId, set) => addSet(exerciseId, todayIso(), set)}
+          onRemoveSet={deleteSet}
         />
-        <ExerciseList
-          exercises={visibleExercises}
-          totalCount={data.exercises.length}
-          votedIds={new Set(data.votedExerciseIds)}
-          onToggleVote={vote}
-          onEdit={(exercise) => {
-            setFormError(null)
-            setEditing(exercise)
-          }}
-          onDelete={removeExercise}
-        />
-      </section>
+      )}
+      {view === 'storico' && <HistoryView data={data} />}
       <BackupPanel onExport={exportJson} onImport={importJson} />
     </main>
   )

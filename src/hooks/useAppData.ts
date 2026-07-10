@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import { recordSet, removeSet } from '../domain/activity'
 import {
   createExercise,
   deleteExercise,
@@ -6,6 +7,7 @@ import {
   updateExercise,
   type NewExercise,
 } from '../domain/exercises'
+import type { WorkoutSet } from '../domain/types'
 import { setStature } from '../domain/profile'
 import type { AppData } from '../domain/types'
 import { exportToJson, importFromJson } from '../services/importExport'
@@ -46,6 +48,9 @@ export function useAppData() {
     removeExercise: (exerciseId: string) => commit(deleteExercise(data, exerciseId)),
     vote: (exerciseId: string) => commit(toggleVote(data, exerciseId)),
     saveStature: (statureCm: number) => commit(setStature(data, statureCm)),
+    addSet: (exerciseId: string, date: string, set: WorkoutSet) =>
+      commit(recordSet(data, exerciseId, date, set)),
+    deleteSet: (recordId: string, setIndex: number) => commit(removeSet(data, recordId, setIndex)),
     importJson: (json: string) => commit(importFromJson(json)),
     exportJson: () => exportToJson(data),
   }
