@@ -1,0 +1,12 @@
+node_modules
+dist
+dev-dist
+coverage
+cypress/videos
+cypress/screenshots
+cypress/downloads
+.git
+.github
+docs
+*.log
+.DS_Store

@@ -1,0 +1,10 @@
+dist/
+dev-dist/
+coverage/
+node_modules/
+package-lock.json
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+docs/
+scripts/

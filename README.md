@@ -23,3 +23,21 @@ l'app non ha uno stack architetturale scegli tu se usare solo vue.js o react dat
 l'app deve permettere l'esportazione dei dati salvati lato json e l'importazione dei dati lato json cosi da fare copie di backup dei dati sul proprio dispositivo
 
 l'utente che carica il video, deve caricare il link youtube del video - cosi da alleggerire l'app dal utilizzo di un hosting per salvare i video
+
+---
+
+## Sviluppo
+
+Stack: **React 19 + TypeScript + Vite** (PWA via vite-plugin-pwa) · test **Jest + Chai**, **Cucumber** (BDD, Gherkin in italiano), **Cypress** (E2E) · CI con **GitHub Actions** · **Docker** per l'hosting.
+
+```bash
+npm install
+npm run dev          # sviluppo su http://localhost:5173
+npm test             # test unitari e di integrazione
+npm run test:bdd     # scenari BDD (features/*.feature)
+npm run test:e2e     # test end-to-end con Cypress
+npm run test:all     # tutto, come in CI
+docker compose up --build   # app di produzione su http://localhost:8080
+```
+
+La pipeline CI esegue analisi statica e tutti i test prima della build; da `main` l'immagine Docker viene pubblicata su GHCR. Il piano di lavoro (milestone, issue, stime) è in `docs/PROJECT_PLAN.md` e nelle issue GitHub.

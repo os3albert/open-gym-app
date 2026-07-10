@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "exercises": [
+    {
+      "id": "esempio-1",
+      "name": "Military press",
+      "description": "Spinta verticale con bilanciere, in piedi",
+      "youtubeUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "muscleGroup": "Spalle",
+      "votes": 3,
+      "createdAt": "2026-07-01T10:00:00.000Z"
+    }
+  ],
+  "plans": [],
+  "activity": []
+}

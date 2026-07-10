@@ -2,31 +2,58 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Current State
+## Commands
 
-**Greenfield project — no code exists yet.** The repository contains only `README.md` (written in Italian), which describes the product vision and constraints. There is no package.json, no framework, no tests, and no git repository. Once the project is scaffolded, replace this section with the actual build/test/lint commands and the chosen architecture.
+```bash
+npm run dev                # dev server Vite (http://localhost:5173)
+npm run build              # typecheck (tsc, incl. cypress/tsconfig.json) + vite build
+npm run lint               # ESLint (flat config)
+npm run format:check       # Prettier check (format per scrivere)
+npm run typecheck          # tsc su tsconfig.json + cypress/tsconfig.json
 
-## Product Vision (from README.md)
+npm test                   # Jest: unit + integration (jsdom)
+npm run test:unit          # solo tests/unit
+npm run test:integration   # solo tests/integration
+npx jest tests/unit/youtube.test.ts            # un singolo file
+npx jest -t "propone un esercizio"             # un singolo test per nome
 
-An open-source, Reddit-style platform for gym exercises:
+npm run test:bdd           # Cucumber (features/*.feature, Gherkin in italiano)
+npm run test:e2e           # builda, avvia vite preview :4173, esegue Cypress headless
+npm run test:e2e:open      # Cypress interattivo contro il dev server :5173
+npm run test:all           # lint + format + jest + bdd + e2e (stessi gate della CI)
 
-- Users publish exercises tailored to body stature; others replicate them and upvote them.
-- Users track their past weight-lifting activity so the app can suggest the weight the next time they perform an exercise.
-- Each user has a workout plan ("scheda di allenamento"): they pick from the exercises proposed for their day instead of searching.
-- Users can propose exercises and workout plans to other users, who can add them to their own plan or try that user's plan.
-- Exercise videos are shared as **YouTube links only** — no video hosting/storage in the app. Uploaders are expected to use AI face-blurring so exercises are judged on usefulness, not on the person.
+docker compose up --build  # immagine di produzione su http://localhost:8080
+```
 
-## Hard Constraints
+## Stack (decisione registrata)
 
-- **Frontend-only web app — no backend server.** All data is persisted in cache/localStorage.
-- **No user registration or authentication.**
-- **JSON export and import** of all saved data must be supported, so users can back up to their own device.
-- Framework: **Vue.js or React** — the README explicitly leaves the choice open. Pick one, then record the decision and rationale here.
+React 19 + TypeScript + Vite, PWA via `vite-plugin-pwa` (scelto rispetto a Vue per l'ecosistema di testing richiesto: Jest/Testing Library/Cypress/Cucumber di prima classe). Test: Jest + ts-jest con asserzioni sia Jest sia **Chai**; BDD con `@cucumber/cucumber`; E2E con Cypress. Nessun backend: tutto lo stato vive in localStorage.
 
-## Required Development Methodology
+## Architettura
 
-The README mandates all of the following, so build them in from the start rather than retrofitting:
+Dipendenze a senso unico: `components/` → `hooks/` → `domain/` + `services/`. Dominio e servizi sono **funzioni pure senza React né browser API** (eccetto `storage.ts` che accetta uno `Storage` iniettabile): è ciò che permette agli step Cucumber di esercitarli direttamente in Node, senza browser.
 
-- **BDD** (behavior-driven scenarios for the use cases), **TDD** (unit tests for each unit), **integration tests**, and **E2E tests** for the most important user flows.
-- **CI pipeline with GitHub Actions**: run static code analysis and require all tests to pass before the build step.
-- **Containerization** (e.g. Docker) so anyone can host the project on a cloud.
+- `src/domain/types.ts` — `AppData` è l'unità di persistenza E il formato di backup JSON: ogni campo nuovo va gestito anche nel validatore di `importExport.ts` e nel round-trip test.
+- `src/domain/exercises.ts` — reducer puri (add/upvote/rank); la validazione lancia errori con messaggi in italiano che sono **contratto**: UI, test Jest, step BDD e spec Cypress asseriscono su quelle stringhe esatte (esportate come costanti, es. `INVALID_YOUTUBE_LINK_ERROR`).
+- `src/services/importExport.ts` — export/import JSON con validazione strutturale; `storage.ts` vi delega (dati corrotti → stato vuoto, mai crash).
+- `src/hooks/useAppData.ts` — unico punto di contatto stato↔localStorage. La validazione che può lanciare avviene PRIMA di `setData`, mai dentro l'updater (React crasherebbe).
+- I componenti espongono attributi `data-cy` usati dalle spec Cypress: non rimuoverli.
+
+## Piramide di test (mappa)
+
+- `tests/unit/` — Jest, logica pura (Chai e asserzioni Jest convivono; Chai è pinned alla v4, CJS: la v5 è ESM-only e romperebbe Jest).
+- `tests/integration/` — Jest + jsdom: App reale + dominio + localStorage senza mock; storage round-trip.
+- `features/` — Gherkin **in italiano** (`# language: it`) + step in TS caricati via tsx (`NODE_OPTIONS="--import tsx"`); lo stato scenario vive in `features/support/world.ts`.
+- `cypress/e2e/` — flussi utente completi contro la build di preview.
+
+## Vincoli non ovvi
+
+- ESLint vieta le asserzioni "a proprietà" di Chai (`.to.exist`, `.to.be.empty`): usare forme a chiamata (`.to.have.lengthOf(0)`, `.to.not.equal(undefined)`).
+- ts-jest usa una tsconfig inline in `jest.config.cjs` (CommonJS + `ignoreDeprecations: '6.0'`), separata dalla tsconfig dell'app (ESM/bundler). Cypress ha la sua tsconfig per evitare conflitti di globals con Jest.
+- `createExercise` omette le chiavi `undefined` (niente `stature: undefined`): il round-trip JSON le perderebbe e i deep-equal fallirebbero.
+- CI (`.github/workflows/ci.yml`): la build parte SOLO se analisi statica e tutti i test (unit/integration, BDD, E2E) sono verdi — requisito del README; l'immagine Docker è pubblicata su GHCR solo da main.
+- I video sono SOLO link YouTube (validati in `services/youtube.ts`): mai aggiungere upload/hosting di file video.
+
+## Visione prodotto (da README.md, in italiano)
+
+Piattaforma open source stile Reddit per esercizi da palestra: esercizi tarati sulla statura con video YouTube (volto offuscato via AI), upvote della community, tracking dei pesi con suggerimento del carico (`services/weightSuggestion.ts`: tutte le serie ≥ 8 reps → +2,5 kg, altrimenti consolidamento), schede di allenamento condivisibili. Nessuna registrazione; export/import JSON per i backup. Il piano di lavoro con milestone e stime è su GitHub (issues + `docs/PROJECT_PLAN.md`).
