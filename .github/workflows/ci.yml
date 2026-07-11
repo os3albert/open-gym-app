@@ -82,6 +82,37 @@ jobs:
           path: dist/
           retention-days: 7
 
+  # Deploy su GitHub Pages: solo da main, quando build (e quindi tutti i test) è verde
+  deploy-pages:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: npm
+      - run: npm ci
+      - name: Build per il sottopercorso di Pages
+        run: npm run build
+        env:
+          VITE_BASE: /open-gym-app/
+      - name: Fallback SPA (404 → index)
+        run: cp dist/index.html dist/404.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
   # Immagine Docker: verificata su ogni push/PR, pubblicata su GHCR solo da main
   docker:
     needs: build

@@ -664,7 +664,8 @@ button:disabled {
   --bg: #f1f5f9;
   --card: #ffffff;
   --text: #0f172a;
-  --muted: #64748b;
+  /* Almeno 4.5:1 su --bg e --card (audit Lighthouse) */
+  --muted: #475569;
   --accent: #0369a1;
   --accent-contrast: #f0f9ff;
   --border: #cbd5e1;

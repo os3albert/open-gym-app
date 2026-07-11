@@ -4,6 +4,8 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  // Su GitHub Pages l'app vive in un sottopercorso: il workflow passa VITE_BASE=/open-gym-app/
+  base: process.env.VITE_BASE || '/',
   plugins: [
     react(),
     VitePWA({
@@ -17,13 +19,14 @@ export default defineConfig({
           'Piattaforma open source di esercizi da palestra: schede di allenamento, tracking dei pesi e voti della community.',
         lang: 'it',
         display: 'standalone',
-        start_url: '/',
+        // Niente start_url/scope espliciti né percorsi assoluti: li deriva il plugin
+        // dalla base di Vite, così manifest e icone funzionano anche nel sottopercorso Pages
         theme_color: '#0f172a',
         background_color: '#0f172a',
         icons: [
-          { src: '/pwa-192x192.png', sizes: '192x192', type: 'image/png' },
-          { src: '/pwa-512x512.png', sizes: '512x512', type: 'image/png' },
-          { src: '/pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+          { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
       workbox: {
