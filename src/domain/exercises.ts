@@ -75,12 +75,19 @@ export function updateExercise(data: AppData, exerciseId: string, input: NewExer
   }
 }
 
-/** Elimina l'esercizio e il relativo voto del dispositivo. */
+/** Elimina l'esercizio, il relativo voto del dispositivo e le occorrenze nelle schede. */
 export function deleteExercise(data: AppData, exerciseId: string): AppData {
   return {
     ...data,
     exercises: data.exercises.filter((e) => e.id !== exerciseId),
     votedExerciseIds: data.votedExerciseIds.filter((id) => id !== exerciseId),
+    plans: data.plans.map((plan) => ({
+      ...plan,
+      days: plan.days.map((day) => ({
+        ...day,
+        entries: day.entries.filter((entry) => entry.exerciseId !== exerciseId),
+      })),
+    })),
   }
 }
 

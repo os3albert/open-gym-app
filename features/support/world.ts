@@ -9,6 +9,12 @@ export class GymWorld extends World {
   filters: ExerciseFilters = { ...defaultFilters }
   error: string | null = null
   suggestion: number | null = null
+  /** Codice di condivisione generato nello scenario (M4). */
+  shareCode: string | null = null
+  /** Data «guardata» dall'utente negli scenari sull'allenamento del giorno (M4). */
+  viewedDate: string | null = null
+  /** Dati del «secondo dispositivo» negli scenari di importazione (M4). */
+  otherData: AppData = emptyData()
 
   constructor(options: IWorldOptions) {
     super(options)

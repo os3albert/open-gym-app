@@ -81,3 +81,5 @@ describe('Tracking pesi (M3)', () => {
     cy.get('[data-cy=session-error]').should('be.visible')
   })
 })
+
+export {}

@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react'
 
-export type AppView = 'esercizi' | 'allenamento' | 'storico'
+export type AppView = 'esercizi' | 'schede' | 'allenamento' | 'storico'
 
-const VIEWS: AppView[] = ['esercizi', 'allenamento', 'storico']
+const VIEWS: AppView[] = ['esercizi', 'schede', 'allenamento', 'storico']
 
-function readViewFromUrl(): AppView {
+function readViewFromUrl(): AppView | null {
   const value = new URLSearchParams(window.location.search).get('vista')
-  return VIEWS.includes(value as AppView) ? (value as AppView) : 'esercizi'
+  return VIEWS.includes(value as AppView) ? (value as AppView) : null
 }
 
 /** La vista corrente vive nella query string (?vista=…), senza toccare gli altri parametri. */
-export function useView(): [AppView, (view: AppView) => void] {
-  const [view, setView] = useState<AppView>(readViewFromUrl)
+export function useView(fallback: AppView = 'esercizi'): [AppView, (view: AppView) => void] {
+  const [view, setView] = useState<AppView>(() => readViewFromUrl() ?? fallback)
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)

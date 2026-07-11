@@ -12,6 +12,23 @@ export function addDaysIso(isoDate: string, days: number): string {
   return todayIso(date)
 }
 
+/** Giorni della settimana in italiano, da lunedì: sono i nomi «magici» dei giorni di scheda. */
+export const WEEKDAYS_IT = [
+  'Lunedì',
+  'Martedì',
+  'Mercoledì',
+  'Giovedì',
+  'Venerdì',
+  'Sabato',
+  'Domenica',
+] as const
+
+/** Nome italiano del giorno della settimana di una data ISO locale (es. 2026-07-11 → Sabato). */
+export function weekdayNameIt(isoDate: string): string {
+  const jsDay = new Date(`${isoDate}T00:00:00`).getDay() // 0 = domenica
+  return WEEKDAYS_IT[(jsDay + 6) % 7]
+}
+
 export function formatDateIt(isoDate: string): string {
   return new Date(`${isoDate}T00:00:00`).toLocaleDateString('it-IT', {
     weekday: 'short',

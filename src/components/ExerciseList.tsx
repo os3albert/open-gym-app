@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import type { Exercise } from '../domain/types'
+import { encodeExerciseShare } from '../services/share'
 import { parseYouTubeVideoId } from '../services/youtube'
+import { ShareCodeBox } from './ShareCodeBox'
 import { YouTubePlayer } from './YouTubePlayer'
 
 interface Props {
@@ -22,6 +24,7 @@ export function ExerciseList({
   onDelete,
 }: Props) {
   const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null)
+  const [sharingId, setSharingId] = useState<string | null>(null)
 
   if (totalCount === 0) {
     return <p data-cy="empty-state">Nessun esercizio proposto finora. Proponi tu il primo!</p>
@@ -80,6 +83,14 @@ export function ExerciseList({
                 >
                   Modifica
                 </button>
+                <button
+                  type="button"
+                  className="btn-ghost"
+                  data-cy="exercise-share"
+                  onClick={() => setSharingId(sharingId === exercise.id ? null : exercise.id)}
+                >
+                  Condividi
+                </button>
                 {confirming ? (
                   <>
                     <button
@@ -113,6 +124,7 @@ export function ExerciseList({
                   </button>
                 )}
               </div>
+              {sharingId === exercise.id && <ShareCodeBox code={encodeExerciseShare(exercise)} />}
             </div>
           </li>
         )

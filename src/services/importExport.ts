@@ -33,12 +33,31 @@ function isExercise(value: unknown): value is Exercise {
   )
 }
 
+function isPlanEntry(value: unknown): boolean {
+  return (
+    isRecord(value) &&
+    typeof value.exerciseId === 'string' &&
+    typeof value.sets === 'number' &&
+    typeof value.reps === 'number'
+  )
+}
+
+function isWorkoutDay(value: unknown): boolean {
+  return (
+    isRecord(value) &&
+    typeof value.name === 'string' &&
+    Array.isArray(value.entries) &&
+    value.entries.every(isPlanEntry)
+  )
+}
+
 function isPlan(value: unknown): value is WorkoutPlan {
   return (
     isRecord(value) &&
     typeof value.id === 'string' &&
     typeof value.name === 'string' &&
     Array.isArray(value.days) &&
+    value.days.every(isWorkoutDay) &&
     typeof value.votes === 'number'
   )
 }
@@ -82,6 +101,7 @@ export function importFromJson(json: string): AppData {
     !migrated.plans.every(isPlan) ||
     !migrated.activity.every(isActivity) ||
     !migrated.votedExerciseIds.every((id) => typeof id === 'string') ||
+    !(migrated.activePlanId === null || typeof migrated.activePlanId === 'string') ||
     !isProfile(migrated.profile)
   ) {
     throw new Error(INVALID_FORMAT_ERROR)
@@ -91,6 +111,7 @@ export function importFromJson(json: string): AppData {
     schemaVersion: CURRENT_SCHEMA_VERSION,
     exercises: migrated.exercises,
     plans: migrated.plans,
+    activePlanId: migrated.activePlanId as string | null,
     activity: migrated.activity,
     profile: { statureCm: (migrated.profile as UserProfile).statureCm },
     votedExerciseIds: migrated.votedExerciseIds,

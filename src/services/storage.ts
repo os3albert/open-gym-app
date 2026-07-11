@@ -13,6 +13,7 @@ export function emptyData(): AppData {
     schemaVersion: CURRENT_SCHEMA_VERSION,
     exercises: [],
     plans: [],
+    activePlanId: null,
     activity: [],
     profile: { statureCm: null },
     votedExerciseIds: [],

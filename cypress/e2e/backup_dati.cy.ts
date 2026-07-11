@@ -29,7 +29,7 @@ describe('Backup dei dati', () => {
     cy.get('[data-cy=export-button]').click()
 
     cy.readFile('cypress/downloads/open-gym-backup.json').then((backup) => {
-      expect(backup.schemaVersion).to.equal(2)
+      expect(backup.schemaVersion).to.equal(3)
       expect(backup.exercises).to.have.length(1)
       expect(backup.exercises[0].name).to.equal('Panca piana')
       expect(backup.exercises[0].faceBlurConfirmed).to.equal(true)

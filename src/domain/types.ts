@@ -32,10 +32,17 @@ export interface ActivityRecord {
   sets: WorkoutSet[]
 }
 
-/** Giornata di una scheda: quali esercizi fare. */
+/** Esercizio previsto in una giornata della scheda, con il target di serie e ripetizioni. */
+export interface PlanEntry {
+  exerciseId: string
+  sets: number
+  reps: number
+}
+
+/** Giornata di una scheda: quali esercizi fare e con quale target (es. 3×8). */
 export interface WorkoutDay {
   name: string
-  exerciseIds: string[]
+  entries: PlanEntry[]
 }
 
 /** Scheda di allenamento, personale o proposta da altri utenti. */
@@ -52,13 +59,15 @@ export interface UserProfile {
   statureCm: number | null
 }
 
-export const CURRENT_SCHEMA_VERSION = 2
+export const CURRENT_SCHEMA_VERSION = 3
 
 /** Tutti i dati dell'app: è l'unità di persistenza (localStorage) e di export/import JSON. */
 export interface AppData {
   schemaVersion: typeof CURRENT_SCHEMA_VERSION
   exercises: Exercise[]
   plans: WorkoutPlan[]
+  /** Scheda attiva su questo dispositivo: guida l'allenamento del giorno. */
+  activePlanId: string | null
   activity: ActivityRecord[]
   profile: UserProfile
   /** Voti espressi da questo dispositivo (un voto per esercizio, rimovibile). */

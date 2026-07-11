@@ -2,6 +2,7 @@ import type { AppView } from '../hooks/useView'
 
 const TABS: Array<{ view: AppView; label: string }> = [
   { view: 'esercizi', label: 'Esercizi' },
+  { view: 'schede', label: 'Schede' },
   { view: 'allenamento', label: 'Allenamento' },
   { view: 'storico', label: 'Storico' },
 ]
