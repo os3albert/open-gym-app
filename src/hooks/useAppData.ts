@@ -21,7 +21,7 @@ import {
 import type { PlanEntry, WorkoutSet } from '../domain/types'
 import { setStature } from '../domain/profile'
 import type { AppData } from '../domain/types'
-import { exportToJson, importFromJson } from '../services/importExport'
+import { exportBackupJson, importFromJson, mergeData } from '../services/importExport'
 import { applySharedPayload, type SharePayload } from '../services/share'
 import { loadDataResult, saveData } from '../services/storage'
 
@@ -87,7 +87,10 @@ export function useAppData() {
       commit(result.data)
       return result.planId
     },
+    /** Ripristino completo: i dati dell'app diventano quelli del backup. */
     importJson: (json: string) => commit(importFromJson(json)),
-    exportJson: () => exportToJson(data),
+    /** Unione: il backup si aggiunge ai dati presenti senza duplicati. */
+    mergeJson: (json: string) => commit(mergeData(data, importFromJson(json))),
+    exportJson: () => exportBackupJson(data),
   }
 }

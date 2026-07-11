@@ -1,13 +1,25 @@
 import type { ActivityRecord, AppData, Exercise, UserProfile, WorkoutPlan } from '../domain/types'
 import { CURRENT_SCHEMA_VERSION } from '../domain/types'
+import { generateId } from '../utils/id'
 import { migrateToCurrentSchema } from './migrations'
+import { parseYouTubeVideoId } from './youtube'
 
 export const INVALID_JSON_ERROR = 'Il file non contiene JSON valido'
 export const INVALID_FORMAT_ERROR = 'Formato di backup non riconosciuto'
 
-/** Serializza tutti i dati dell'app per il backup su dispositivo. */
+/** Serializza tutti i dati dell'app (usato anche da storage.ts per localStorage). */
 export function exportToJson(data: AppData): string {
   return JSON.stringify(data, null, 2)
+}
+
+/** Il file di backup scaricato: i dati più la data di export (ignorata al reimport). */
+export function exportBackupJson(data: AppData, now: Date = new Date()): string {
+  return JSON.stringify({ ...data, exportedAt: now.toISOString() }, null, 2)
+}
+
+/** Nome del file di backup con la data locale del giorno (issue #23). */
+export function backupFileName(dateIso: string): string {
+  return `open-gym-backup-${dateIso}.json`
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -115,5 +127,101 @@ export function importFromJson(json: string): AppData {
     activity: migrated.activity,
     profile: { statureCm: (migrated.profile as UserProfile).statureCm },
     votedExerciseIds: migrated.votedExerciseIds,
+  }
+}
+
+/**
+ * Unisce un backup ai dati presenti senza creare duplicati (issue #24), con le stesse
+ * regole dell'import delle schede condivise: esercizi deduplicati sul video YouTube,
+ * schede sul nome, sessioni su esercizio+giorno. In caso di conflitto vincono i dati locali.
+ */
+export function mergeData(local: AppData, backup: AppData): AppData {
+  const usedIds = new Set([
+    ...local.exercises.map((e) => e.id),
+    ...local.plans.map((p) => p.id),
+    ...local.activity.map((a) => a.id),
+  ])
+  const freshId = (candidate: string): string => {
+    const id = usedIds.has(candidate) ? generateId() : candidate
+    usedIds.add(id)
+    return id
+  }
+
+  // Esercizi: stesso video YouTube = stesso esercizio, si riusa quello locale
+  const byVideoId = new Map(
+    local.exercises.flatMap((e) => {
+      const videoId = parseYouTubeVideoId(e.youtubeUrl)
+      return videoId ? [[videoId, e.id] as const] : []
+    }),
+  )
+  const exerciseIdMap = new Map<string, string>()
+  const addedExerciseIds = new Set<string>()
+  const exercises = [...local.exercises]
+  for (const incoming of backup.exercises) {
+    const videoId = parseYouTubeVideoId(incoming.youtubeUrl)
+    const existingId = videoId ? byVideoId.get(videoId) : undefined
+    if (existingId) {
+      exerciseIdMap.set(incoming.id, existingId)
+      continue
+    }
+    const id = freshId(incoming.id)
+    exerciseIdMap.set(incoming.id, id)
+    addedExerciseIds.add(id)
+    exercises.push({ ...incoming, id })
+    if (videoId) byVideoId.set(videoId, id)
+  }
+
+  // Schede: una scheda con lo stesso nome esiste già → si tiene quella locale
+  const localPlanNames = new Set(local.plans.map((p) => p.name.trim().toLowerCase()))
+  const plans = [...local.plans]
+  for (const incoming of backup.plans) {
+    if (localPlanNames.has(incoming.name.trim().toLowerCase())) continue
+    plans.push({
+      ...incoming,
+      id: freshId(incoming.id),
+      days: incoming.days.map((day) => ({
+        ...day,
+        // Un esercizio del backup può essere «collassato» su uno locale: mai entry doppie
+        entries: day.entries.flatMap((entry, index, all) => {
+          const exerciseId = exerciseIdMap.get(entry.exerciseId)
+          if (!exerciseId) return []
+          const firstIndex = all.findIndex((e) => exerciseIdMap.get(e.exerciseId) === exerciseId)
+          return firstIndex === index ? [{ ...entry, exerciseId }] : []
+        }),
+      })),
+    })
+  }
+
+  // Sessioni: per (esercizio, giorno) già registrati localmente vince il dato locale
+  const localSessions = new Set(local.activity.map((a) => `${a.exerciseId}|${a.date}`))
+  const activity = [...local.activity]
+  for (const incoming of backup.activity) {
+    const exerciseId = exerciseIdMap.get(incoming.exerciseId)
+    if (!exerciseId || localSessions.has(`${exerciseId}|${incoming.date}`)) continue
+    localSessions.add(`${exerciseId}|${incoming.date}`)
+    activity.push({ ...incoming, id: freshId(incoming.id), exerciseId })
+  }
+
+  // Il voto del backup si conserva solo per gli esercizi davvero aggiunti: per quelli
+  // collassati su un esercizio locale il contatore voti del backup non è stato sommato,
+  // e importarne il flag renderebbe incoerente il toggle (rimuoverebbe un voto mai contato).
+  const mergedExerciseIds = new Set(exercises.map((e) => e.id))
+  const votedExerciseIds = [
+    ...new Set([
+      ...local.votedExerciseIds,
+      ...backup.votedExerciseIds
+        .map((id) => exerciseIdMap.get(id))
+        .filter((id): id is string => id !== undefined && addedExerciseIds.has(id)),
+    ]),
+  ].filter((id) => mergedExerciseIds.has(id))
+
+  return {
+    schemaVersion: CURRENT_SCHEMA_VERSION,
+    exercises,
+    plans,
+    activePlanId: local.activePlanId,
+    activity,
+    profile: { statureCm: local.profile.statureCm ?? backup.profile.statureCm },
+    votedExerciseIds,
   }
 }

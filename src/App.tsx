@@ -7,12 +7,14 @@ import { HistoryView } from './components/HistoryView'
 import { PlansView } from './components/PlansView'
 import { TabNav } from './components/TabNav'
 import { TodayWorkout } from './components/TodayWorkout'
+import { UpdateBanner } from './components/UpdateBanner'
 import { WorkoutSession } from './components/WorkoutSession'
 import type { NewExercise } from './domain/exercises'
 import { applyFilters, muscleGroups, suitabilityRequiresStature } from './domain/filters'
 import type { Exercise } from './domain/types'
 import { useAppData } from './hooks/useAppData'
 import { useFilters } from './hooks/useFilters'
+import { useTheme, type ThemePreference } from './hooks/useTheme'
 import { useView } from './hooks/useView'
 import { shareCodeFromHash } from './services/share'
 import { todayIso } from './utils/date'
@@ -50,12 +52,14 @@ export default function App() {
     movePlanEntry,
     importShared,
     importJson,
+    mergeJson,
     exportJson,
   } = useAppData()
   const [initialShareCode] = useState(consumeShareCodeFromUrl)
   // Chi apre un link di condivisione atterra direttamente sulla vista Schede
   const [view, setView] = useView(initialShareCode ? 'schede' : 'esercizi')
   const [filters, setFilters] = useFilters()
+  const [theme, setTheme] = useTheme()
   const [editing, setEditing] = useState<Exercise | null>(null)
   const [formError, setFormError] = useState<string | null>(null)
   const [statureError, setStatureError] = useState<string | null>(null)
@@ -89,8 +93,23 @@ export default function App() {
 
   return (
     <main className="container">
+      <UpdateBanner />
       <header>
-        <h1>🏋️ Open Gym</h1>
+        <div className="header-top">
+          <h1>🏋️ Open Gym</h1>
+          <label className="theme-picker">
+            Tema
+            <select
+              data-cy="theme-select"
+              value={theme}
+              onChange={(e) => setTheme(e.target.value as ThemePreference)}
+            >
+              <option value="auto">Auto</option>
+              <option value="chiaro">Chiaro</option>
+              <option value="scuro">Scuro</option>
+            </select>
+          </label>
+        </div>
         <p className="tagline">
           Esercizi proposti dalla community, votati come su Reddit. Nessuna registrazione: i dati
           restano sul tuo dispositivo.
@@ -179,7 +198,7 @@ export default function App() {
         </>
       )}
       {view === 'storico' && <HistoryView data={data} />}
-      <BackupPanel onExport={exportJson} onImport={importJson} />
+      <BackupPanel onExport={exportJson} onReplace={importJson} onMerge={mergeJson} />
     </main>
   )
 }

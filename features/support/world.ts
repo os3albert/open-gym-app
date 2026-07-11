@@ -13,6 +13,10 @@ export class GymWorld extends World {
   shareCode: string | null = null
   /** Data «guardata» dall'utente negli scenari sull'allenamento del giorno (M4). */
   viewedDate: string | null = null
+  /** Contenuto del file di backup negli scenari di export/import (M5). */
+  backupJson: string | null = null
+  /** Copia dei dati prima di un'azione, per verificare che restino intatti (M5). */
+  snapshot: AppData | null = null
   /** Dati del «secondo dispositivo» negli scenari di importazione (M4). */
   otherData: AppData = emptyData()
 

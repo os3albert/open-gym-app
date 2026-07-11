@@ -12,6 +12,7 @@ interface Props {
  */
 export function YouTubePlayer({ videoId, title }: Props) {
   const [playing, setPlaying] = useState(false)
+  const [thumbnailFailed, setThumbnailFailed] = useState(false)
 
   if (playing) {
     return (
@@ -35,7 +36,19 @@ export function YouTubePlayer({ videoId, title }: Props) {
       aria-label={`Riproduci il video di ${title}`}
       onClick={() => setPlaying(true)}
     >
-      <img src={youtubeThumbnailUrl(videoId)} alt={`Anteprima video di ${title}`} loading="lazy" />
+      {thumbnailFailed ? (
+        // L'app funziona offline, ma i video YouTube richiedono la rete (issue #25)
+        <span className="video-offline" data-cy="video-offline">
+          Video non disponibile senza connessione
+        </span>
+      ) : (
+        <img
+          src={youtubeThumbnailUrl(videoId)}
+          alt={`Anteprima video di ${title}`}
+          loading="lazy"
+          onError={() => setThumbnailFailed(true)}
+        />
+      )}
       <span className="play-icon" aria-hidden="true">
         ▶
       </span>

@@ -7,7 +7,8 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // 'prompt': la nuova versione non si attiva da sola, l'utente la applica dal banner
+      registerType: 'prompt',
       includeAssets: ['favicon.svg'],
       manifest: {
         name: 'Open Gym',
@@ -32,6 +33,11 @@ export default defineConfig({
   ],
   test: {
     environment: 'jsdom',
+    // Il modulo virtuale del service worker non esiste sotto Vitest: stub esplicito
+    alias: {
+      'virtual:pwa-register/react': new URL('./tests/stubs/pwa-register.ts', import.meta.url)
+        .pathname,
+    },
     environmentOptions: {
       jsdom: { url: 'http://localhost/' },
     },
