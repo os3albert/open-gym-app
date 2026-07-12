@@ -18,7 +18,7 @@ npm test -- tests/unit/youtube.test.ts         # un singolo file
 npm test -- -t "propone un esercizio"          # un singolo test per nome
 
 npm run test:bdd           # Cucumber (features/*.feature, Gherkin in italiano)
-npm run test:e2e           # builda, avvia vite preview :4173, esegue Cypress headless
+npm run test:e2e           # builda, avvia wrangler dev :8787, esegue Cypress headless
 npm run test:e2e:open      # Cypress interattivo contro il dev server :5173
 npm run test:all           # lint + format + jest + bdd + e2e (stessi gate della CI)
 
@@ -51,7 +51,7 @@ Dipendenze a senso unico: `components/` → `hooks/` → `domain/` + `services/`
 
 ### Regole MUI (contratto dei test, imparate in M7)
 
-- Select: SEMPRE `TextField select` con `slotProps: { select: { native: true }, inputLabel: { shrink: true }, htmlInput: { 'data-cy': '…' } }` → resta un `<select>` nativo con `<option>` (`userEvent.selectOptions` e `cy.select()` funzionano) e la label non si sovrappone al testo. MAI il Select non-nativo.
+- Select: SEMPRE il componente `components/SelectField.tsx` (unico select dell'app, M11), mai `TextField select` a mano. È un Select MUI **non nativo**: il menu lo disegna l'app, non il sistema operativo. Conseguenze da rispettare: `userEvent.selectOptions` e `cy.select()` NON funzionano più — si usano gli helper `scegliOpzione(user, label, opzione)` (`tests/integration/helpers.ts`) e `cy.scegliOpzione(dataCy, opzione)` (`cypress/support/e2e.ts`), che aprono il menu e cliccano la voce per etichetta. Il `data-cy` sta sul div che mostra il valore (via `SelectDisplayProps`), NON sul root del Select: il root ingloba la legenda della label e il suo testo sarebbe «AutoTema» invece di «Auto». La scelta corrente si asserisce sul **testo** mostrato (`toHaveTextContent` / `have.text`), mai su un `value`.
 - Il `data-cy` degli input va sull'elemento vero via `slotProps.htmlInput` (input, textarea multiline, select nativi); sui Button va sul root. Lo slot `input` di Checkbox non tipizza i `data-*`: cast `as React.InputHTMLAttributes<HTMLInputElement>`.
 - MAI `required` su TextField: l'asterisco entra nel nome accessibile e rompe `getByLabelText`.
 - In MUI v9 `flexWrap`/`alignItems`/`justifyContent` NON sono prop dirette di Stack: vanno in `sx` (con `useFlexGap` quando serve il wrap).

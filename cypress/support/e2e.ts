@@ -10,9 +10,22 @@ declare global {
       visitWithData(data: unknown): Chainable<Cypress.AUTWindow>
       /** Apre il form di proposta (collassato all'atterraggio); no-op se è già aperto. */
       apriFormProposta(): Chainable<void>
+      /**
+       * Sceglie una voce da un SelectField (menu MUI, non più un <select> nativo:
+       * cy.select() qui non funziona). Apre il menu e clicca l'opzione per etichetta.
+       */
+      scegliOpzione(dataCy: string, etichetta: string): Chainable<void>
     }
   }
 }
+
+Cypress.Commands.add('scegliOpzione', (dataCy: string, etichetta: string) => {
+  cy.get(`[data-cy=${dataCy}]`).click()
+  // Il menu è in un portale fuori dal campo: si cerca nel listbox, non nel DOM del select
+  cy.get('[role=listbox]').contains('[role=option]', etichetta).click()
+  // Il menu si chiude in dissolvenza: senza attendere, il click successivo può finire sul backdrop
+  cy.get('[role=listbox]').should('not.exist')
+})
 
 Cypress.Commands.add('apriFormProposta', () => {
   cy.get('body').then(($body) => {

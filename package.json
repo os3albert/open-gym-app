@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "npm run typecheck && vite build",
-    "preview": "npm run build && wrangler dev",
+    "preview": "npm run build && wrangler dev --port 8787",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p cypress/tsconfig.json && tsc --noEmit -p worker/tsconfig.json",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -18,9 +18,8 @@
     "test:watch": "NODE_OPTIONS=\"--no-experimental-webstorage\" vitest",
     "test:coverage": "NODE_OPTIONS=\"--no-experimental-webstorage\" vitest run --coverage",
     "test:bdd": "NODE_OPTIONS=\"--import tsx\" cucumber-js",
-    "pretest:e2e": "npm run build",
-    "test:e2e": "start-server-and-test 'npm run preview' http://localhost:4173 'cypress run'",
-    "test:e2e:open": "start-server-and-test 'npm run dev' http://localhost:5173 'cypress open'",
+    "test:e2e": "start-server-and-test 'npm run preview' http://localhost:8787 'cypress run'",
+    "test:e2e:open": "start-server-and-test 'npm run dev' http://localhost:5173 'cypress open --config baseUrl=http://localhost:5173'",
     "test:all": "npm run lint && npm run format:check && npm run test && npm run test:bdd && npm run test:e2e",
     "deploy": "npm run build && wrangler deploy"
   },

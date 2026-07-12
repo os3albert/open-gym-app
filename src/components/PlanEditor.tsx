@@ -13,6 +13,7 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import type { Exercise, PlanEntry, WorkoutDay, WorkoutPlan } from '../domain/types'
 import { WEEKDAYS_IT } from '../utils/date'
+import { SelectField } from './SelectField'
 
 export interface PlanEditorActions {
   renamePlan: (planId: string, name: string) => void
@@ -255,25 +256,17 @@ function DayEditor({
         useFlexGap
         sx={{ flexWrap: 'wrap', alignItems: 'center', mt: 1.5 }}
       >
-        <TextField
-          select
+        <SelectField
           label="Esercizio"
           value={exerciseId}
-          onChange={(e) => setExerciseId(e.target.value)}
+          onChange={setExerciseId}
+          dataCy="entry-exercise-select"
           sx={{ minWidth: 210 }}
-          slotProps={{
-            select: { native: true },
-            inputLabel: { shrink: true },
-            htmlInput: { 'data-cy': 'entry-exercise-select' },
-          }}
-        >
-          <option value="">Scegli un esercizio…</option>
-          {exercisesByName.map((e) => (
-            <option key={e.id} value={e.id}>
-              {e.name}
-            </option>
-          ))}
-        </TextField>
+          options={[
+            { value: '', label: 'Scegli un esercizio…' },
+            ...exercisesByName.map((e) => ({ value: e.id, label: e.name })),
+          ]}
+        />
         <TextField
           label="Serie"
           type="number"

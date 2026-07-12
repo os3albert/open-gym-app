@@ -10,6 +10,7 @@ import type { AppData } from '../../src/domain/types'
 import { INVALID_SHARE_CODE_ERROR } from '../../src/services/share'
 import { emptyData, saveData } from '../../src/services/storage'
 import { addDaysIso, todayIso, weekdayNameIt } from '../../src/utils/date'
+import { scegliOpzione } from './helpers'
 
 beforeEach(() => {
   localStorage.clear()
@@ -48,7 +49,7 @@ describe('creazione e gestione delle schede (issue #18)', () => {
     await user.type(screen.getByLabelText('Nuovo giorno'), 'Lunedì')
     await user.click(screen.getByRole('button', { name: 'Aggiungi giorno' }))
 
-    await user.selectOptions(screen.getByLabelText('Esercizio'), 'Panca piana')
+    await scegliOpzione(user, 'Esercizio', 'Panca piana')
     await user.click(screen.getByRole('button', { name: 'Aggiungi' }))
 
     const day = screen.getByRole('heading', { name: 'Lunedì' }).closest('[data-cy=plan-day]')!

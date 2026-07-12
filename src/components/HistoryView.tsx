@@ -3,7 +3,6 @@ import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import {
   exerciseHistory,
@@ -13,6 +12,7 @@ import {
 } from '../domain/activity'
 import type { AppData } from '../domain/types'
 import { formatDateIt, todayIso } from '../utils/date'
+import { SelectField } from './SelectField'
 import { TrendChart } from './TrendChart'
 
 interface Props {
@@ -76,61 +76,33 @@ export function HistoryView({ data }: Props) {
             useFlexGap
             sx={{ flexWrap: 'wrap', alignItems: 'center' }}
           >
-            <TextField
-              select
+            <SelectField
               label="Esercizio"
               value={selectedExerciseId}
-              onChange={(e) => setSelectedExerciseId(e.target.value)}
+              onChange={setSelectedExerciseId}
+              dataCy="history-exercise-select"
               sx={{ minWidth: 210 }}
-              slotProps={{
-                select: { native: true },
-                inputLabel: { shrink: true },
-                htmlInput: { 'data-cy': 'history-exercise-select' },
-              }}
-            >
-              <option value="">Scegli un esercizio…</option>
-              {trackedExercises.map((e) => (
-                <option key={e.id} value={e.id}>
-                  {e.name}
-                </option>
-              ))}
-            </TextField>
-            <TextField
-              select
+              options={[
+                { value: '', label: 'Scegli un esercizio…' },
+                ...trackedExercises.map((e) => ({ value: e.id, label: e.name })),
+              ]}
+            />
+            <SelectField
               label="Metrica"
               value={metric}
-              onChange={(e) => setMetric(e.target.value as TrendMetric)}
-              sx={{ minWidth: 190 }}
-              slotProps={{
-                select: { native: true },
-                inputLabel: { shrink: true },
-                htmlInput: { 'data-cy': 'metric-select' },
-              }}
-            >
-              {METRICS.map((m) => (
-                <option key={m.value} value={m.value}>
-                  {m.label}
-                </option>
-              ))}
-            </TextField>
-            <TextField
-              select
+              onChange={(value) => setMetric(value as TrendMetric)}
+              dataCy="metric-select"
+              sx={{ minWidth: 200 }}
+              options={METRICS.map((m) => ({ value: m.value, label: m.label }))}
+            />
+            <SelectField
               label="Periodo"
               value={period}
-              onChange={(e) => setPeriod(e.target.value)}
-              sx={{ minWidth: 170 }}
-              slotProps={{
-                select: { native: true },
-                inputLabel: { shrink: true },
-                htmlInput: { 'data-cy': 'period-select' },
-              }}
-            >
-              {PERIODS.map((p) => (
-                <option key={p.value} value={p.value}>
-                  {p.label}
-                </option>
-              ))}
-            </TextField>
+              onChange={setPeriod}
+              dataCy="period-select"
+              sx={{ minWidth: 175 }}
+              options={PERIODS.map((p) => ({ value: p.value, label: p.label }))}
+            />
           </Stack>
           {selectedExerciseId ? (
             <TrendChart points={trend} metric={metric} />

@@ -2,7 +2,8 @@ import { defineConfig } from 'cypress'
 
 export default defineConfig({
   e2e: {
-    baseUrl: 'http://localhost:4173',
+    // Il preview è `wrangler dev` (stesso runtime della produzione), non `vite preview`
+    baseUrl: 'http://localhost:8787',
     supportFile: 'cypress/support/e2e.ts',
     video: false,
   },

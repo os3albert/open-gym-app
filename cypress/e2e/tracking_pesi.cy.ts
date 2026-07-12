@@ -36,7 +36,7 @@ describe('Tracking pesi (M3)', () => {
     cy.visitWithData(seed)
 
     cy.get('[data-cy=tab-allenamento]').click()
-    cy.get('[data-cy=session-exercise-select]').select('Stacco da terra')
+    cy.scegliOpzione('session-exercise-select', 'Stacco da terra')
 
     // Il peso proposto è quello dell'ultima sessione
     cy.get('[data-cy=set-weight]').should('have.value', '100')
@@ -48,7 +48,7 @@ describe('Tracking pesi (M3)', () => {
     // Lo storico mostra entrambe le sessioni e l'andamento
     cy.get('[data-cy=tab-storico]').click()
     cy.get('[data-cy=session-item]').should('have.length', 2)
-    cy.get('[data-cy=history-exercise-select]').select('Stacco da terra')
+    cy.scegliOpzione('history-exercise-select', 'Stacco da terra')
     cy.get('[data-cy=trend-chart]').should('be.visible')
 
     // Persistenza fra ricarichi
@@ -61,16 +61,16 @@ describe('Tracking pesi (M3)', () => {
     cy.visitWithData(seed)
 
     cy.get('[data-cy=tab-storico]').click()
-    cy.get('[data-cy=history-exercise-select]').select('Stacco da terra')
+    cy.scegliOpzione('history-exercise-select', 'Stacco da terra')
     cy.get('[data-cy=trend-chart]').should('have.attr', 'aria-label').and('include', 'del carico')
 
-    cy.get('[data-cy=metric-select]').select('Ripetizioni totali')
+    cy.scegliOpzione('metric-select', 'Ripetizioni totali')
     cy.get('[data-cy=trend-chart]')
       .should('have.attr', 'aria-label')
       .and('include', 'ripetizioni totali')
       .and('include', '5 reps')
 
-    cy.get('[data-cy=metric-select]').select('Volume (kg × reps)')
+    cy.scegliOpzione('metric-select', 'Volume (kg × reps)')
     cy.get('[data-cy=trend-chart]')
       .should('have.attr', 'aria-label')
       .and('include', 'volume')
@@ -81,7 +81,7 @@ describe('Tracking pesi (M3)', () => {
     cy.visitWithData({ ...seed, activity: [] })
 
     cy.get('[data-cy=tab-allenamento]').click()
-    cy.get('[data-cy=session-exercise-select]').select('Stacco da terra')
+    cy.scegliOpzione('session-exercise-select', 'Stacco da terra')
 
     cy.get('[data-cy=set-weight]').should('have.value', '')
     cy.get('[data-cy=weight-plus]').click().click()
@@ -94,7 +94,7 @@ describe('Tracking pesi (M3)', () => {
     cy.visitWithData({ ...seed, activity: [] })
 
     cy.get('[data-cy=tab-allenamento]').click()
-    cy.get('[data-cy=session-exercise-select]').select('Stacco da terra')
+    cy.scegliOpzione('session-exercise-select', 'Stacco da terra')
     cy.get('[data-cy=set-weight]').type('60')
     cy.get('[data-cy=add-set]').click()
 

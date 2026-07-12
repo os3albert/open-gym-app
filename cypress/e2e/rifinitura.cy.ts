@@ -61,18 +61,19 @@ describe('Rifinitura UX (M5)', () => {
     // della visit verrebbero riapplicate anche da cy.reload() cancellando la preferenza.
     cy.visit('/')
     // In «auto» il tema segue il sistema (che in headless può essere chiaro o scuro)
-    cy.get('[data-cy=theme-select]').should('have.value', 'auto')
+    // Il select è un menu MUI: la scelta corrente si legge dal testo, non da un value
+    cy.get('[data-cy=theme-select]').should('have.text', 'Auto')
     cy.get('html').should('have.attr', 'data-theme')
 
-    cy.get('[data-cy=theme-select]').select('Scuro')
+    cy.scegliOpzione('theme-select', 'Scuro')
     cy.get('html').should('have.attr', 'data-theme', 'dark')
 
-    cy.get('[data-cy=theme-select]').select('Chiaro')
+    cy.scegliOpzione('theme-select', 'Chiaro')
     cy.get('html').should('have.attr', 'data-theme', 'light')
 
     cy.reload()
     cy.get('html').should('have.attr', 'data-theme', 'light')
-    cy.get('[data-cy=theme-select]').should('have.value', 'chiaro')
+    cy.get('[data-cy=theme-select]').should('have.text', 'Chiaro')
   })
 })
 
