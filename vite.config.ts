@@ -46,6 +46,9 @@ export default defineConfig({
     },
     globals: true,
     include: ['tests/**/*.test.{ts,tsx}'],
+    // I test di integrazione digitano davvero nei campi (userEvent, un evento per tasto):
+    // sui runner della CI i 5s di default non bastano e i test scadono a tradimento.
+    testTimeout: 20000,
     coverage: {
       provider: 'v8',
       include: ['src/**/*.{ts,tsx}'],
