@@ -1,0 +1,10 @@
+name = "open-gym-community"
+main = "src/index.ts"
+compatibility_date = "2026-01-01"
+
+# Il token GitHub NON sta qui: è un secret (wrangler secret put GITHUB_TOKEN)
+[vars]
+REPO_OWNER = "os3albert"
+REPO_NAME = "open-gym-app"
+REPO_BRANCH = "main"
+ALLOWED_ORIGINS = "https://os3albert.github.io,http://localhost:5173,http://localhost:4173"

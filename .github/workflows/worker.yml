@@ -1,0 +1,31 @@
+name: Deploy worker community
+
+# Il worker è l'unico backend del progetto: riceve proposte e voti e li committa nel repo.
+# Si deploya solo quando cambia il suo codice (o la logica condivisa che usa).
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'worker/**'
+      - 'src/services/communityData.ts'
+      - 'src/services/youtube.ts'
+      - '.github/workflows/worker.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - name: Deploy su Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: worker

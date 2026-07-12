@@ -104,6 +104,8 @@ jobs:
         run: npm run build
         env:
           VITE_BASE: /open-gym-app/
+          # Assente finché la variabile non è configurata: la community resta disattivata (docs/COMMUNITY.md)
+          VITE_COMMUNITY_API_URL: ${{ vars.COMMUNITY_API_URL }}
       - name: Fallback SPA (404 → index)
         run: cp dist/index.html dist/404.html
       - uses: actions/configure-pages@v5
