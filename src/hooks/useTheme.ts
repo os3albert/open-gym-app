@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 
 /** Preferenza dell'utente; «auto» segue il tema di sistema (prefers-color-scheme). */
 export type ThemePreference = 'auto' | 'chiaro' | 'scuro'
@@ -30,22 +30,30 @@ function resolve(preference: ThemePreference): 'light' | 'dark' {
   return systemPrefersLight() ? 'light' : 'dark'
 }
 
-/** Applica il tema al documento (data-theme su <html>) e persiste la preferenza. */
-export function useTheme(): [ThemePreference, (preference: ThemePreference) => void] {
+/**
+ * Applica il tema al documento (data-theme su <html>) e persiste la preferenza.
+ * Espone anche il tema risolto (light/dark): serve a tenere il ThemeProvider MUI
+ * allineato allo STESSO valore, così i due scrittori dell'attributo non litigano mai.
+ */
+export function useTheme(): [
+  ThemePreference,
+  (preference: ThemePreference) => void,
+  'light' | 'dark',
+] {
   const [preference, setPreference] = useState<ThemePreference>(readPreference)
+  // In «auto» un cambio di tema di sistema deve solo far ricalcolare resolve()
+  const [, onSystemChange] = useReducer((tick: number) => tick + 1, 0)
+  const resolved = resolve(preference)
 
   useEffect(() => {
-    document.documentElement.dataset.theme = resolve(preference)
+    document.documentElement.dataset.theme = resolved
     localStorage.setItem(THEME_STORAGE_KEY, preference)
     if (preference !== 'auto' || typeof window.matchMedia !== 'function') return
     // In «auto» il tema segue i cambi di sistema in tempo reale
     const media = window.matchMedia('(prefers-color-scheme: light)')
-    const onChange = () => {
-      document.documentElement.dataset.theme = resolve('auto')
-    }
-    media.addEventListener('change', onChange)
-    return () => media.removeEventListener('change', onChange)
-  }, [preference])
+    media.addEventListener('change', onSystemChange)
+    return () => media.removeEventListener('change', onSystemChange)
+  }, [preference, resolved])
 
-  return [preference, setPreference]
+  return [preference, setPreference, resolved]
 }

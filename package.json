@@ -24,6 +24,11 @@
     "test:all": "npm run lint && npm run format:check && npm run test && npm run test:bdd && npm run test:e2e"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@fontsource-variable/inter": "^5.2.8",
+    "@mui/icons-material": "^9.2.0",
+    "@mui/material": "^9.2.0",
     "lz-string": "^1.5.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"

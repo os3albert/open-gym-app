@@ -1,3 +1,5 @@
+import Alert from '@mui/material/Alert'
+import Button from '@mui/material/Button'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 
 /**
@@ -13,21 +15,32 @@ export function UpdateBanner() {
   if (!needRefresh) return null
 
   return (
-    <div className="banner-update" role="status" data-cy="update-banner">
+    <Alert
+      severity="info"
+      role="status"
+      data-cy="update-banner"
+      action={
+        <>
+          <Button
+            color="inherit"
+            size="small"
+            data-cy="update-reload"
+            onClick={() => updateServiceWorker(true)}
+          >
+            Aggiorna ora
+          </Button>
+          <Button
+            color="inherit"
+            size="small"
+            data-cy="update-dismiss"
+            onClick={() => setNeedRefresh(false)}
+          >
+            Più tardi
+          </Button>
+        </>
+      }
+    >
       È disponibile una nuova versione dell'app.
-      <span className="banner-update-actions">
-        <button type="button" data-cy="update-reload" onClick={() => updateServiceWorker(true)}>
-          Aggiorna ora
-        </button>
-        <button
-          type="button"
-          className="btn-ghost btn-small"
-          data-cy="update-dismiss"
-          onClick={() => setNeedRefresh(false)}
-        >
-          Più tardi
-        </button>
-      </span>
-    </div>
+    </Alert>
   )
 }

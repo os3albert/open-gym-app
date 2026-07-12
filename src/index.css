@@ -1,14 +1,15 @@
 :root {
   color-scheme: dark;
-  --bg: #0f172a;
-  --card: #1e293b;
-  --text: #e2e8f0;
-  --muted: #94a3b8;
-  --accent: #38bdf8;
-  --accent-contrast: #082f49;
-  --border: #334155;
-  --error: #f87171;
-  --success: #4ade80;
+  /* Ponte legacy → MUI: gli stili non ancora migrati seguono la palette del tema */
+  --bg: var(--mui-palette-background-default, #111414);
+  --card: var(--mui-palette-background-paper, #1a1c1c);
+  --text: var(--mui-palette-text-primary, #e2e2e2);
+  --muted: var(--mui-palette-text-secondary, #c4c7c7);
+  --accent: var(--mui-palette-primary-main, #e2e2e2);
+  --accent-contrast: var(--mui-palette-primary-contrastText, #1a1c1c);
+  --border: var(--mui-palette-divider, #444748);
+  --error: var(--mui-palette-error-main, #ffb4ab);
+  --success: var(--mui-palette-success-main, #86d993);
   font-family:
     system-ui,
     -apple-system,
@@ -62,7 +63,7 @@ form {
   gap: 0.75rem;
 }
 
-label {
+label:not([class*='Mui'], :has(> [class*='Mui'])) {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -70,8 +71,8 @@ label {
   color: var(--muted);
 }
 
-input,
-textarea {
+input:not([class*='Mui'] *, [class*='Mui']),
+textarea:not([class*='Mui'] *, [class*='Mui']) {
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -80,13 +81,13 @@ textarea {
   font: inherit;
 }
 
-input:focus,
-textarea:focus {
+input:not([class*='Mui'] *):focus,
+textarea:not([class*='Mui'] *):focus {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
 }
 
-button {
+button:not([class*='Mui'], [class*='Mui'] *) {
   background: var(--accent);
   color: var(--accent-contrast);
   border: none;
@@ -97,7 +98,7 @@ button {
   align-self: flex-start;
 }
 
-button:hover {
+button:not([class*='Mui'], [class*='Mui'] *):hover {
   filter: brightness(1.1);
 }
 
@@ -196,7 +197,7 @@ button:hover {
   align-items: flex-end;
 }
 
-select {
+select:not([class*='Mui'] *, [class*='Mui']) {
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -661,16 +662,6 @@ button:disabled {
 
 :root[data-theme='light'] {
   color-scheme: light;
-  --bg: #f1f5f9;
-  --card: #ffffff;
-  --text: #0f172a;
-  /* Almeno 4.5:1 su --bg e --card (audit Lighthouse) */
-  --muted: #475569;
-  --accent: #0369a1;
-  --accent-contrast: #f0f9ff;
-  --border: #cbd5e1;
-  --error: #b91c1c;
-  --success: #15803d;
 }
 
 /* --- Accessibilità di base (issue #26) --- */
@@ -681,9 +672,9 @@ button:disabled {
 }
 
 /* Target touch principali ≥ 44 px, si usa in palestra col telefono */
-button,
-select,
-input:not([type='checkbox']),
+button:not([class*='Mui'], [class*='Mui'] *),
+select:not([class*='Mui'] *),
+input:not([type='checkbox'], [class*='Mui'] *),
 .import-label input[type='file'] {
   min-height: 2.75rem;
 }
