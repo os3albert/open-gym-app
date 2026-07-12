@@ -135,7 +135,7 @@ export default function App() {
     }
   }
 
-  const allExercises = mergeForDisplay(data.exercises, community.exercises, community.votes)
+  const allExercises = mergeForDisplay(data.exercises, community.exercises, community.counts)
   const visibleExercises = applyFiltersTo(allExercises, filters, data.profile.statureCm)
   const votedIds = new Set([...data.votedExerciseIds, ...community.votedIds])
   const communityIds = new Set(community.exercises.map((e) => e.id))

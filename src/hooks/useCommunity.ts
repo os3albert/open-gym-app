@@ -3,19 +3,17 @@ import {
   COMMUNITY_UNREACHABLE_ERROR,
   communityApiUrl,
   fetchCommunity,
-  hashDeviceId,
   proposeToCommunity,
   sendCommunityVote,
   type CommunitySnapshot,
 } from '../services/community'
-import { toggleCommunityVote, type ProposalInput } from '../services/communityData'
+import type { ProposalInput } from '../services/communityData'
 
 /** Chiavi separate da AppData: la community non entra nel backup né nello schema dati. */
 const CACHE_KEY = 'open-gym-app/community'
-const DEVICE_KEY = 'open-gym-app/dispositivo'
 const VOTED_KEY = 'open-gym-app/voti-community'
 
-const EMPTY: CommunitySnapshot = { exercises: [], votes: {} }
+const EMPTY: CommunitySnapshot = { exercises: [], counts: {} }
 
 function readCache(): CommunitySnapshot {
   try {
@@ -26,6 +24,7 @@ function readCache(): CommunitySnapshot {
   }
 }
 
+/** Quali esercizi ho votato: serve solo alla UI (il conteggio è autorevole solo lato worker). */
 function readVoted(): Set<string> {
   try {
     const raw = localStorage.getItem(VOTED_KEY)
@@ -35,20 +34,10 @@ function readVoted(): Set<string> {
   }
 }
 
-/** Id casuale per dispositivo: nel repo ne finisce solo l'hash (mai l'id stesso). */
-function deviceId(): string {
-  let id = localStorage.getItem(DEVICE_KEY)
-  if (!id) {
-    id = crypto.randomUUID()
-    localStorage.setItem(DEVICE_KEY, id)
-  }
-  return id
-}
-
 /**
  * Catalogo condiviso su GitHub: si legge dai file grezzi del repo (con cache locale per
  * l'uso offline) e si scrive tramite il worker. Senza VITE_COMMUNITY_API_URL la scrittura
- * è disattivata, ma la lettura del catalogo funziona comunque.
+ * è disattivata e non parte alcuna richiesta di rete.
  */
 export function useCommunity() {
   const [snapshot, setSnapshot] = useState<CommunitySnapshot>(readCache)
@@ -87,28 +76,39 @@ export function useCommunity() {
     }
   }, [])
 
-  /** Voto ottimista: la lista si aggiorna subito, e in caso di errore si torna indietro. */
+  /**
+   * Voto ottimista: il conteggio si muove subito e viene poi rimpiazzato da quello
+   * autorevole del worker (l'app non decide quanti voti ha un esercizio: lo dice il repo).
+   * Se la richiesta fallisce, si torna esattamente allo stato di prima.
+   */
   const toggleVote = useCallback(
     async (exerciseId: string) => {
       const action = votedIds.has(exerciseId) ? 'remove' : 'add'
       const before = snapshot
-      const hash = await hashDeviceId(deviceId())
+      const beforeVoted = votedIds
       const nextVoted = new Set(votedIds)
       if (action === 'add') nextVoted.add(exerciseId)
       else nextVoted.delete(exerciseId)
 
+      const current = snapshot.counts[exerciseId] ?? 0
       setSnapshot({
         ...snapshot,
-        votes: toggleCommunityVote(snapshot.votes, exerciseId, hash, action, snapshot.exercises),
+        counts: {
+          ...snapshot.counts,
+          [exerciseId]: Math.max(0, current + (action === 'add' ? 1 : -1)),
+        },
       })
       persistVoted(nextVoted)
 
       try {
-        await sendCommunityVote(exerciseId, hash, action)
+        const votes = await sendCommunityVote(exerciseId, action)
+        if (votes !== null) {
+          setSnapshot((s) => ({ ...s, counts: { ...s.counts, [exerciseId]: votes } }))
+        }
         setMessage(null)
       } catch (error) {
         setSnapshot(before)
-        persistVoted(votedIds)
+        persistVoted(beforeVoted)
         setMessage(error instanceof Error ? error.message : COMMUNITY_UNREACHABLE_ERROR)
       }
     },
@@ -132,7 +132,7 @@ export function useCommunity() {
   return {
     enabled,
     exercises: snapshot.exercises,
-    votes: snapshot.votes,
+    counts: snapshot.counts,
     votedIds,
     message,
     dismissMessage: useCallback(() => setMessage(null), []),

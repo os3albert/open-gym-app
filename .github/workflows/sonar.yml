@@ -1,0 +1,29 @@
+name: SonarCloud
+
+# Analisi statica di qualità e sicurezza. Gira su push e PR; sulle PR da fork il token
+# non è disponibile e il job viene saltato invece di fallire.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  analisi:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Sonar usa la storia per attribuire le issue ai commit: niente clone superficiale
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: npm
+      - run: npm ci
+      # La copertura arriva dai test unit/integrazione: senza, Sonar riporterebbe 0%
+      - run: npm run test:coverage
+      - uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

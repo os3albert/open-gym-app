@@ -2,9 +2,18 @@ name = "open-gym-community"
 main = "src/index.ts"
 compatibility_date = "2026-01-01"
 
-# Il token GitHub NON sta qui: è un secret (wrangler secret put GITHUB_TOKEN)
+# I segreti NON stanno qui (finirebbero nel repo): si impostano con
+#   wrangler secret put GITHUB_TOKEN
+#   wrangler secret put VOTE_SALT
 [vars]
 REPO_OWNER = "os3albert"
 REPO_NAME = "open-gym-app"
 REPO_BRANCH = "main"
 ALLOWED_ORIGINS = "https://os3albert.github.io,http://localhost:5173,http://localhost:4173"
+
+# Rate limiting per IP: facoltativo. Crea il namespace con
+#   wrangler kv namespace create RATE_LIMIT
+# e incolla qui l'id, togliendo il commento. Senza, il worker funziona ma non limita.
+# [[kv_namespaces]]
+# binding = "RATE_LIMIT"
+# id = "<id-del-namespace>"

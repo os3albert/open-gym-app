@@ -20,7 +20,14 @@ const catalog: CommunityExercise[] = [
 ]
 
 /** Risposte del repo (catalogo e voti) e del worker; le chiamate al worker si registrano. */
-function stubNetwork(options: { votes?: Record<string, string[]>; workerFails?: boolean } = {}) {
+function stubNetwork(
+  options: {
+    votes?: Record<string, string[]>
+    workerFails?: boolean
+    /** Conteggio autorevole restituito dal worker su /votes. */
+    voteResponse?: number
+  } = {},
+) {
   const calls: Array<{ url: string; body: unknown }> = []
   const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = String(input)
@@ -29,6 +36,7 @@ function stubNetwork(options: { votes?: Record<string, string[]>; workerFails?: 
     if (url.startsWith(WORKER)) {
       calls.push({ url, body: JSON.parse(String(init?.body)) })
       if (options.workerFails) return Response.json({ error: 'Community offline' }, { status: 503 })
+      if (url.endsWith('/votes')) return Response.json({ votes: options.voteResponse ?? 1 })
       return Response.json({ ok: true }, { status: 201 })
     }
     throw new Error(`URL non previsto nel test: ${url}`)
@@ -62,19 +70,20 @@ describe('catalogo della community', () => {
     expect(within(item).queryByRole('button', { name: 'Elimina' })).not.toBeInTheDocument()
   })
 
-  it('votare un esercizio condiviso aggiorna il conteggio e invia il voto al worker', async () => {
-    const calls = stubNetwork()
+  it('votare un esercizio condiviso invia il voto e adotta il conteggio del worker', async () => {
+    const calls = stubNetwork({ voteResponse: 7 })
     const user = userEvent.setup()
     render(<App />)
     const item = (await screen.findByRole('heading', { name: 'Military press' })).closest('li')!
 
     await user.click(within(item).getByRole('button', { name: 'Vota Military press' }))
 
-    await waitFor(() => expect(within(item).getByText('1')).toBeInTheDocument())
+    // Il conteggio autorevole è quello del worker, non quello indovinato dall'app
+    await waitFor(() => expect(within(item).getByText('7')).toBeInTheDocument())
     const vote = calls.find((c) => c.url.endsWith('/votes'))!
-    expect(vote.body).toMatchObject({ exerciseId: 'ex-community', action: 'add' })
-    // Nel repo finisce solo l'hash del dispositivo, mai l'id in chiaro
-    expect((vote.body as { deviceHash: string }).deviceHash).toMatch(/^[a-f0-9]{64}$/)
+    expect(vote.body).toEqual({ exerciseId: 'ex-community', action: 'add' })
+    // Il client NON manda identificatori: chi vota lo stabilisce il worker (voti non falsificabili)
+    expect(JSON.stringify(vote.body)).not.toMatch(/hash|device|id"\s*:\s*"[a-f0-9]{64}/i)
   })
 
   it('se il worker rifiuta il voto, il conteggio torna indietro con un messaggio', async () => {

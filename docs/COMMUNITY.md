@@ -41,12 +41,26 @@ Dalla cartella del progetto:
 
 ```bash
 cd worker
-npx wrangler login                 # apre il browser: autorizza Cloudflare
+npx wrangler login                     # apre il browser: autorizza Cloudflare
 npx wrangler secret put GITHUB_TOKEN   # incolla il token del punto 1
-npx wrangler deploy                # primo deploy: stampa l'URL del worker
+npx wrangler secret put VOTE_SALT      # una stringa casuale lunga, es. da `openssl rand -hex 32`
+npx wrangler deploy                    # primo deploy: stampa l'URL del worker
 ```
 
+`VOTE_SALT` serve a derivare l'identità del votante (hash di salt + IP): senza salt, l'hash
+sarebbe ricostruibile a partire da un IP noto. **Non cambiarlo dopo il primo voto**, o i voti
+già espressi non verranno più riconosciuti come dello stesso votante.
+
 L'URL stampato (es. `https://open-gym-community.<tuo-account>.workers.dev`) serve al punto 4.
+
+**Rate limiting (consigliato).** Per limitare le scritture a 20/ora per IP:
+
+```bash
+npx wrangler kv namespace create RATE_LIMIT
+```
+
+Copia l'id stampato in `worker/wrangler.toml`, togliendo il commento al blocco `kv_namespaces`,
+e rifai il deploy. Senza questo passo il worker funziona ugualmente, ma non limita nulla.
 
 ### 3. Secret del repository (per il deploy automatico)
 

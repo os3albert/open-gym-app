@@ -8,10 +8,13 @@ import {
 } from '../../src/domain/exercises'
 import {
   DUPLICATE_EXERCISE_ERROR,
+  FIELD_LIMITS,
+  TOO_LONG_ERROR,
   UNKNOWN_EXERCISE_ERROR,
   toggleCommunityVote,
   validateProposal,
   voteCount,
+  voteCounts,
   type CommunityExercise,
 } from '../../src/services/communityData'
 
@@ -79,6 +82,28 @@ describe('validateProposal', () => {
     ).to.throw(INVALID_STATURE_RANGE_ERROR)
   })
 
+  it('rifiuta i campi oltre i limiti: il catalogo è un file del repo, non un secchio senza fondo', () => {
+    expect(() =>
+      validateProposal(proposal({ name: 'x'.repeat(FIELD_LIMITS.name + 1) }), catalog, now, newId),
+    ).to.throw(TOO_LONG_ERROR)
+    expect(() =>
+      validateProposal(
+        proposal({ description: 'x'.repeat(FIELD_LIMITS.description + 1) }),
+        catalog,
+        now,
+        newId,
+      ),
+    ).to.throw(TOO_LONG_ERROR)
+    expect(() =>
+      validateProposal(
+        proposal({ muscleGroup: 'x'.repeat(FIELD_LIMITS.muscleGroup + 1) }),
+        catalog,
+        now,
+        newId,
+      ),
+    ).to.throw(TOO_LONG_ERROR)
+  })
+
   it('rifiuta un video già nel catalogo, anche con un formato di link diverso', () => {
     // Stesso video id dell'esercizio in catalogo, ma link in forma watch?v=
     expect(() =>
@@ -117,5 +142,11 @@ describe('toggleCommunityVote', () => {
 
   it('non conta voti per un esercizio mai votato', () => {
     expect(voteCount({}, 'ex-1')).to.equal(0)
+  })
+
+  it('espone solo i conteggi: gli hash dei votanti non escono dal repo', () => {
+    const votes = { 'ex-1': ['hash-a', 'hash-b'], 'ex-2': [] }
+
+    expect(voteCounts(votes)).to.deep.equal({ 'ex-1': 2, 'ex-2': 0 })
   })
 })

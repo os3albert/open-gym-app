@@ -1,6 +1,6 @@
 import type { Exercise } from '../domain/types'
 import type { CommunityExercise, CommunityVotes, ProposalInput } from './communityData'
-import { voteCount } from './communityData'
+import { voteCounts } from './communityData'
 import { parseYouTubeVideoId } from './youtube'
 
 export const COMMUNITY_UNREACHABLE_ERROR = 'Community non raggiungibile: riprova più tardi'
@@ -17,7 +17,8 @@ export function communityApiUrl(): string | null {
 
 export interface CommunitySnapshot {
   exercises: CommunityExercise[]
-  votes: CommunityVotes
+  /** Solo i conteggi: gli hash dei votanti restano nel repo, l'app non li usa. */
+  counts: Record<string, number>
 }
 
 /**
@@ -32,7 +33,7 @@ export async function fetchCommunity(fetcher: typeof fetch = fetch): Promise<Com
   if (!exercisesRes.ok || !votesRes.ok) throw new Error(COMMUNITY_UNREACHABLE_ERROR)
   return {
     exercises: (await exercisesRes.json()) as CommunityExercise[],
-    votes: (await votesRes.json()) as CommunityVotes,
+    counts: voteCounts((await votesRes.json()) as CommunityVotes),
   }
 }
 
@@ -64,20 +65,20 @@ export function proposeToCommunity(
   return post('/exercises', input, fetcher)
 }
 
-export function sendCommunityVote(
+/**
+ * Il votante NON si identifica da sé: l'identità la deriva il worker (hash di IP + salt).
+ * Un identificatore scelto dal client sarebbe falsificabile e i voti gonfiabili con curl.
+ * Qui si dice solo COSA si vota; il conteggio autorevole torna nella risposta.
+ */
+export async function sendCommunityVote(
   exerciseId: string,
-  deviceHash: string,
   action: 'add' | 'remove',
   fetcher: typeof fetch = fetch,
-): Promise<unknown> {
-  return post('/votes', { exerciseId, deviceHash, action }, fetcher)
-}
-
-/** Hash SHA-256 dell'id dispositivo: nel repo finisce l'hash, mai l'id in chiaro. */
-export async function hashDeviceId(deviceId: string): Promise<string> {
-  const bytes = new TextEncoder().encode(deviceId)
-  const digest = await crypto.subtle.digest('SHA-256', bytes)
-  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('')
+): Promise<number | null> {
+  const payload = (await post('/votes', { exerciseId, action }, fetcher)) as {
+    votes?: number
+  } | null
+  return typeof payload?.votes === 'number' ? payload.votes : null
 }
 
 /** Un esercizio mostrato in lista: quelli della community non si modificano né si eliminano. */
@@ -91,7 +92,7 @@ export type DisplayExercise = Exercise & { fromCommunity?: boolean }
 export function mergeForDisplay(
   local: Exercise[],
   community: CommunityExercise[],
-  votes: CommunityVotes,
+  counts: Record<string, number>,
 ): DisplayExercise[] {
   const localVideoIds = new Set(
     local.map((e) => parseYouTubeVideoId(e.youtubeUrl)).filter((id): id is string => id !== null),
@@ -101,7 +102,7 @@ export function mergeForDisplay(
       const videoId = parseYouTubeVideoId(e.youtubeUrl)
       return videoId === null || !localVideoIds.has(videoId)
     })
-    .map((e) => ({ ...e, votes: voteCount(votes, e.id), fromCommunity: true }))
+    .map((e) => ({ ...e, votes: counts[e.id] ?? 0, fromCommunity: true }))
 
   return [...local, ...fromCommunity]
 }

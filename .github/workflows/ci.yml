@@ -20,6 +20,8 @@ jobs:
       - run: npm run lint
       - run: npm run format:check
       - run: npm run typecheck
+      # Vulnerabilità note nelle dipendenze: la CI si ferma da high in su
+      - run: npm audit --audit-level=high
 
   test-unit-integrazione:
     runs-on: ubuntu-latest

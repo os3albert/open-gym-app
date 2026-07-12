@@ -9,6 +9,18 @@ import { parseYouTubeVideoId } from './youtube'
 
 export const DUPLICATE_EXERCISE_ERROR = 'Questo video è già nel catalogo della community'
 export const UNKNOWN_EXERCISE_ERROR = 'Esercizio non presente nel catalogo della community'
+export const TOO_LONG_ERROR = 'Il testo inserito è troppo lungo'
+
+/**
+ * Limiti di lunghezza: il catalogo è un file pubblico del repo, e senza un tetto una
+ * sola proposta potrebbe committarci megabyte di testo (abuso, non errore dell'utente).
+ */
+export const FIELD_LIMITS = {
+  name: 80,
+  muscleGroup: 40,
+  description: 500,
+  youtubeUrl: 200,
+} as const
 
 /**
  * Un esercizio del catalogo condiviso su GitHub (community/exercises.json).
@@ -59,10 +71,22 @@ export function validateProposal(
   newId: () => string = () => crypto.randomUUID(),
 ): CommunityExercise {
   const name = input.name?.trim() ?? ''
+  const description = input.description?.trim() ?? ''
+  const muscleGroup = input.muscleGroup?.trim() ?? ''
+  const youtubeUrl = input.youtubeUrl?.trim() ?? ''
   if (name === '') throw new Error(EMPTY_NAME_ERROR)
   if (!input.faceBlurConfirmed) throw new Error(FACE_BLUR_REQUIRED_ERROR)
 
-  const videoId = parseYouTubeVideoId(input.youtubeUrl ?? '')
+  if (
+    name.length > FIELD_LIMITS.name ||
+    description.length > FIELD_LIMITS.description ||
+    muscleGroup.length > FIELD_LIMITS.muscleGroup ||
+    youtubeUrl.length > FIELD_LIMITS.youtubeUrl
+  ) {
+    throw new Error(TOO_LONG_ERROR)
+  }
+
+  const videoId = parseYouTubeVideoId(youtubeUrl)
   if (videoId === null) throw new Error(INVALID_YOUTUBE_LINK_ERROR)
   if (input.stature && !isValidStature(input.stature)) throw new Error(INVALID_STATURE_RANGE_ERROR)
 
@@ -74,20 +98,24 @@ export function validateProposal(
   return {
     id: newId(),
     name,
-    description: input.description?.trim() ?? '',
-    youtubeUrl: input.youtubeUrl.trim(),
-    muscleGroup: input.muscleGroup?.trim() ?? '',
+    description,
+    youtubeUrl,
+    muscleGroup,
     faceBlurConfirmed: true,
     ...(input.stature ? { stature: input.stature } : {}),
     createdAt: now(),
   }
 }
 
-/** Applica un voto (o lo ritira): idempotente, un voto per dispositivo. */
+/**
+ * Applica un voto (o lo ritira): idempotente, un voto per votante.
+ * `voterHash` NON arriva dal client: lo deriva il worker (vedi worker/src/index.ts),
+ * altrimenti chiunque potrebbe gonfiare i voti inviando hash casuali.
+ */
 export function toggleCommunityVote(
   votes: CommunityVotes,
   exerciseId: string,
-  deviceHash: string,
+  voterHash: string,
   action: 'add' | 'remove',
   catalog: CommunityExercise[],
 ): CommunityVotes {
@@ -96,10 +124,10 @@ export function toggleCommunityVote(
   const current = votes[exerciseId] ?? []
   const next =
     action === 'add'
-      ? current.includes(deviceHash)
+      ? current.includes(voterHash)
         ? current
-        : [...current, deviceHash]
-      : current.filter((hash) => hash !== deviceHash)
+        : [...current, voterHash]
+      : current.filter((hash) => hash !== voterHash)
 
   return { ...votes, [exerciseId]: next }
 }
@@ -107,4 +135,9 @@ export function toggleCommunityVote(
 /** Conteggio dei voti per esercizio, dalla lista di hash. */
 export function voteCount(votes: CommunityVotes, exerciseId: string): number {
   return votes[exerciseId]?.length ?? 0
+}
+
+/** Solo i conteggi: è quanto serve all'app, che gli hash dei votanti non li conosce. */
+export function voteCounts(votes: CommunityVotes): Record<string, number> {
+  return Object.fromEntries(Object.entries(votes).map(([id, hashes]) => [id, hashes.length]))
 }
