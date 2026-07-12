@@ -2,6 +2,26 @@
 
 Tutte le modifiche rilevanti del progetto, per release.
 
+## 1.3.0 — 2026-07-12
+
+Identità visiva e statistiche d'uso rispettose della privacy (milestone M9, issue #43–#44).
+
+### Logo (M9)
+
+- Marchio vettoriale (manubrio inclinato nell'accento lime): barra dell'app, favicon,
+  icone PWA 192/512 e **maskable** rigenerate dal vettoriale, `theme_color` allineato
+
+### Statistiche d'uso conformi al GDPR (M9)
+
+- Monitoraggio anonimo con **Umami**: nessun cookie, nessun dato personale, nessun
+  identificatore persistente, nessun indirizzo IP conservato → **nessun banner di consenso**
+- Lo script si carica **solo** se l'istanza è configurata (`VITE_UMAMI_SRC`,
+  `VITE_UMAMI_WEBSITE_ID`): senza, l'app non contatta nessuno
+- Il **Do Not Track** del browser è rispettato e l'utente può disattivare le statistiche
+  dall'app in qualsiasi momento (lo script viene rimosso dalla pagina, la scelta resta salvata)
+- L'unico evento inviato è il nome della sezione aperta: mai i contenuti dell'utente
+- Nuova documentazione **[docs/PRIVACY.md](docs/PRIVACY.md)**
+
 ## 1.2.0 — 2026-07-12
 
 Interfaccia più personale, statistiche sul lavoro svolto e community vera su GitHub

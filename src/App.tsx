@@ -18,7 +18,9 @@ import { ExerciseForm } from './components/ExerciseForm'
 import { ExerciseList } from './components/ExerciseList'
 import { FilterBar } from './components/FilterBar'
 import { HistoryView } from './components/HistoryView'
+import { Logo } from './components/Logo'
 import { PlansView } from './components/PlansView'
+import { PrivacyPanel } from './components/PrivacyPanel'
 import { TabNav } from './components/TabNav'
 import { TodayWorkout } from './components/TodayWorkout'
 import { UpdateBanner } from './components/UpdateBanner'
@@ -26,6 +28,7 @@ import { WorkoutSession } from './components/WorkoutSession'
 import type { NewExercise } from './domain/exercises'
 import { applyFiltersTo, muscleGroups, suitabilityRequiresStature } from './domain/filters'
 import type { Exercise } from './domain/types'
+import { useAnalytics } from './hooks/useAnalytics'
 import { useAppData } from './hooks/useAppData'
 import { useCommunity } from './hooks/useCommunity'
 import { useFilters } from './hooks/useFilters'
@@ -90,6 +93,7 @@ export default function App() {
   const [filters, setFilters] = useFilters()
   const [theme, setTheme, resolvedTheme] = useTheme()
   const community = useCommunity()
+  const analytics = useAnalytics(view)
   const [editing, setEditing] = useState<Exercise | null>(null)
   const [formError, setFormError] = useState<string | null>(null)
   const [statureError, setStatureError] = useState<string | null>(null)
@@ -147,7 +151,10 @@ export default function App() {
         sx={{ bgcolor: 'background.paper', borderBottom: 1, borderColor: 'divider' }}
       >
         <Toolbar sx={{ justifyContent: 'space-between', gap: 2 }}>
-          <Typography variant="h1">🏋️ Open Gym</Typography>
+          <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center' }}>
+            <Logo size={36} />
+            <Typography variant="h1">Open Gym</Typography>
+          </Stack>
           <TextField
             select
             label="Tema"
@@ -295,6 +302,13 @@ export default function App() {
         )}
         {view === 'storico' && <HistoryView data={data} />}
         <BackupPanel onExport={exportJson} onReplace={importJson} onMerge={mergeJson} />
+        {analytics.available && (
+          <PrivacyPanel
+            enabled={analytics.enabled}
+            doNotTrack={analytics.doNotTrack}
+            onChange={analytics.setAnalyticsEnabled}
+          />
+        )}
       </Container>
       <TabNav view={view} onChange={setView} />
     </ThemeProvider>

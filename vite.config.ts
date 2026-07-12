@@ -21,12 +21,18 @@ export default defineConfig({
         display: 'standalone',
         // Niente start_url/scope espliciti né percorsi assoluti: li deriva il plugin
         // dalla base di Vite, così manifest e icone funzionano anche nel sottopercorso Pages
-        theme_color: '#0f172a',
-        background_color: '#0f172a',
+        theme_color: '#4d7c0f',
+        background_color: '#fafaf9',
         icons: [
           { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
           { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },
-          { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+          // Maskable a parte: contiene solo il glifo nella safe zone, senza il riquadro
+          {
+            src: 'pwa-512x512-maskable.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
+          },
         ],
       },
       workbox: {

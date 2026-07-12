@@ -30,12 +30,18 @@ sul tuo dispositivo.
   «Sostituisci tutto» o «Unisci», con migrazione automatica degli schemi vecchi.
 - **PWA** — installabile, funziona offline (i video richiedono rete), aggiornamenti
   su richiesta, tema chiaro/scuro.
+- **Privacy** — nessun account e nessun tracciamento: i dati restano sul dispositivo. Le
+  statistiche d'uso (Umami, cookieless e senza dati personali) si caricano solo se l'istanza
+  le configura, rispettano il Do Not Track e sono disattivabili: vedi
+  **[docs/PRIVACY.md](docs/PRIVACY.md)**.
 
 ## Documentazione
 
 - **[Guida utente](docs/GUIDA_UTENTE.md)** — come usare l'app, backup compreso.
 - **[Community su GitHub](docs/COMMUNITY.md)** — come funziona il catalogo condiviso e come
   configurare il worker.
+- **[Privacy](docs/PRIVACY.md)** — cosa resta sul dispositivo, cosa no, e come funzionano le
+  statistiche anonime.
 - **[Guida per contributori](CONTRIBUTING.md)** — setup, piramide di test, convenzioni.
 - **[Piano di progetto](docs/PROJECT_PLAN.md)** — milestone, issue e stime.
 

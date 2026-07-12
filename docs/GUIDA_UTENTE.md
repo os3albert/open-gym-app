@@ -16,6 +16,7 @@ App: **https://os3albert.github.io/open-gym-app/**
 - [Condividere esercizi e schede](#condividere-esercizi-e-schede)
 - [Backup dei dati](#backup-dei-dati)
 - [Tema e installazione come app](#tema-e-installazione-come-app)
+- [Privacy e statistiche d'uso](#privacy-e-statistiche-duso)
 
 ## Proporre un esercizio
 
@@ -108,3 +109,18 @@ I dati esistono **solo sul tuo dispositivo**: fai backup regolari.
   solo i video YouTube richiedono la connessione.
 - **Aggiornamenti**: quando esce una nuova versione compare un avviso; premi
   **Aggiorna ora** quando ti fa comodo.
+
+## Privacy e statistiche d'uso
+
+I tuoi dati (esercizi, schede, allenamenti, storico) restano **sul tuo dispositivo**: nessun
+account, nessun server. Escono solo se sei tu a chiederlo: proponendo un esercizio alla
+community, votandone uno (nel repository finisce solo un codice anonimo del dispositivo) o
+aprendo un video YouTube.
+
+Se l'istanza che stai usando le ha configurate, l'app misura in forma **anonima** quali sezioni
+apri, per capire cosa migliorare: **niente cookie, niente profilo, niente indirizzo IP
+conservato**. Le trovi in fondo alla pagina, sotto «Statistiche d'uso», e puoi **spegnerle
+quando vuoi**: la scelta resta salvata sul dispositivo. Se il tuo browser invia «Do Not Track»,
+restano spente da sole.
+
+Dettagli completi: [docs/PRIVACY.md](PRIVACY.md).
