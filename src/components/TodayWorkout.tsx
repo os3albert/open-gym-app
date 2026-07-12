@@ -1,4 +1,13 @@
 import { useState } from 'react'
+import Alert from '@mui/material/Alert'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Chip from '@mui/material/Chip'
+import Stack from '@mui/material/Stack'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 import { activePlan, dayForDate, nextScheduledDay, planUsesWeekdays } from '../domain/plans'
 import type { AppData, Exercise, PlanEntry, WorkoutSet } from '../domain/types'
 import { suggestNextWeight } from '../services/weightSuggestion'
@@ -26,27 +35,38 @@ export function TodayWorkout({ data, today, onComplete }: Props) {
   const next = restDay ? nextScheduledDay(plan, today) : null
 
   return (
-    <section className="card" data-cy="today-workout">
-      <h2>La tua scheda: {plan.name}</h2>
+    <Card component="section" data-cy="today-workout">
+      <CardContent>
+        <Typography variant="h2" gutterBottom>
+          La tua scheda: {plan.name}
+        </Typography>
 
-      {restDay && !day && (
-        <p data-cy="rest-day">
-          Oggi riposo 💤{' '}
-          {next && (
-            <span data-cy="next-workout">
-              Prossimo allenamento: <strong>{next.day.name}</strong> ({formatDateIt(next.date)})
-            </span>
-          )}
-        </p>
-      )}
+        {restDay && !day && (
+          <Typography data-cy="rest-day" sx={{ mb: 2 }}>
+            Oggi riposo 💤{' '}
+            {next && (
+              <span data-cy="next-workout">
+                Prossimo allenamento: <strong>{next.day.name}</strong> ({formatDateIt(next.date)})
+              </span>
+            )}
+          </Typography>
+        )}
 
-      {!autoDay && (
-        <label>
-          {restDay ? 'Ti alleni lo stesso? Scegli il giorno' : 'Che giorno della scheda fai oggi?'}
-          <select
-            data-cy="today-day-select"
+        {!autoDay && (
+          <TextField
+            select
+            label={
+              restDay
+                ? 'Ti alleni lo stesso? Scegli il giorno'
+                : 'Che giorno della scheda fai oggi?'
+            }
             value={manualDayName}
             onChange={(e) => setManualDayName(e.target.value)}
+            sx={{ minWidth: 260 }}
+            slotProps={{
+              select: { native: true },
+              htmlInput: { 'data-cy': 'today-day-select' },
+            }}
           >
             <option value="">Scegli…</option>
             {plan.days.map((d) => (
@@ -54,41 +74,48 @@ export function TodayWorkout({ data, today, onComplete }: Props) {
                 {d.name}
               </option>
             ))}
-          </select>
-        </label>
-      )}
+          </TextField>
+        )}
 
-      {day && (
-        <>
-          <p className="hint" data-cy="today-day-name">
-            {day.name} — spunta gli esercizi man mano che li completi.
-          </p>
-          {day.entries.length === 0 ? (
-            <p className="hint">Questo giorno non ha esercizi: aggiungili dalla scheda.</p>
-          ) : (
-            <ul className="today-entries">
-              {day.entries.map((entry) => {
-                const exercise = data.exercises.find((e) => e.id === entry.exerciseId)
-                if (!exercise) return null
-                const done = data.activity.some(
-                  (a) => a.exerciseId === entry.exerciseId && a.date === today,
-                )
-                return (
-                  <TodayEntry
-                    key={entry.exerciseId}
-                    exercise={exercise}
-                    entry={entry}
-                    done={done}
-                    suggestedWeight={suggestNextWeight(data.activity, entry.exerciseId)}
-                    onComplete={onComplete}
-                  />
-                )
-              })}
-            </ul>
-          )}
-        </>
-      )}
-    </section>
+        {day && (
+          <>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              data-cy="today-day-name"
+              sx={{ my: 1.5 }}
+            >
+              {day.name} — spunta gli esercizi man mano che li completi.
+            </Typography>
+            {day.entries.length === 0 ? (
+              <Typography variant="body2" color="text.secondary">
+                Questo giorno non ha esercizi: aggiungili dalla scheda.
+              </Typography>
+            ) : (
+              <Box component="ul" sx={{ listStyle: 'none', m: 0, p: 0, display: 'grid', gap: 2 }}>
+                {day.entries.map((entry) => {
+                  const exercise = data.exercises.find((e) => e.id === entry.exerciseId)
+                  if (!exercise) return null
+                  const done = data.activity.some(
+                    (a) => a.exerciseId === entry.exerciseId && a.date === today,
+                  )
+                  return (
+                    <TodayEntry
+                      key={entry.exerciseId}
+                      exercise={exercise}
+                      entry={entry}
+                      done={done}
+                      suggestedWeight={suggestNextWeight(data.activity, entry.exerciseId)}
+                      onComplete={onComplete}
+                    />
+                  )
+                })}
+              </Box>
+            )}
+          </>
+        )}
+      </CardContent>
+    </Card>
   )
 }
 
@@ -116,68 +143,92 @@ function TodayEntry({ exercise, entry, done, suggestedWeight, onComplete }: Entr
   }
 
   return (
-    <li className="today-entry" data-cy="today-entry">
-      <div className="today-entry-info">
-        <strong>{exercise.name}</strong>{' '}
-        <span className="hint" data-cy="today-entry-target">
+    <Box
+      component="li"
+      data-cy="today-entry"
+      sx={{ border: 1, borderColor: 'divider', borderRadius: 3, p: 2 }}
+    >
+      <Stack
+        direction="row"
+        spacing={1}
+        useFlexGap
+        sx={{ flexWrap: 'wrap', alignItems: 'baseline', mb: done || skipped ? 1 : 1.5 }}
+      >
+        <Typography component="strong" sx={{ fontWeight: 600 }}>
+          {exercise.name}
+        </Typography>
+        <Typography
+          component="span"
+          variant="body2"
+          color="text.secondary"
+          data-cy="today-entry-target"
+        >
           {entry.sets}×{entry.reps}
-        </span>
-      </div>
+        </Typography>
+      </Stack>
       {done ? (
-        <span className="badge badge-ok" data-cy="today-entry-done">
-          ✓ Registrato oggi
-        </span>
+        <Chip
+          size="small"
+          color="success"
+          variant="outlined"
+          data-cy="today-entry-done"
+          label="✓ Registrato oggi"
+        />
       ) : skipped ? (
-        <span data-cy="today-entry-skipped">
+        <Typography component="span" variant="body2" data-cy="today-entry-skipped">
           Saltato per oggi{' '}
-          <button
-            type="button"
-            className="btn-ghost btn-small"
+          <Button
+            size="small"
+            color="inherit"
             data-cy="today-entry-unskip"
             onClick={() => setSkipped(false)}
           >
             Annulla
-          </button>
-        </span>
+          </Button>
+        </Typography>
       ) : (
-        <div className="today-entry-controls">
-          <label>
-            Peso (kg)
-            <input
+        <Stack spacing={1.5}>
+          <Stack
+            direction="row"
+            spacing={1.5}
+            useFlexGap
+            sx={{ flexWrap: 'wrap', alignItems: 'center' }}
+          >
+            <TextField
+              label="Peso (kg)"
               type="number"
-              step="0.5"
-              data-cy="today-weight"
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
+              sx={{ width: 110 }}
+              slotProps={{ htmlInput: { 'data-cy': 'today-weight', step: '0.5' } }}
             />
-          </label>
-          <label>
-            Ripetizioni
-            <input
+            <TextField
+              label="Ripetizioni"
               type="number"
-              data-cy="today-reps"
               value={reps}
               onChange={(e) => setReps(e.target.value)}
+              sx={{ width: 110 }}
+              slotProps={{ htmlInput: { 'data-cy': 'today-reps' } }}
             />
-          </label>
-          <button type="button" data-cy="today-entry-complete" onClick={handleComplete}>
-            Fatto ✓
-          </button>
-          <button
-            type="button"
-            className="btn-ghost btn-small"
-            data-cy="today-entry-skip"
-            onClick={() => setSkipped(true)}
-          >
-            Salta
-          </button>
+            <Button variant="contained" data-cy="today-entry-complete" onClick={handleComplete}>
+              Fatto ✓
+            </Button>
+            <Button
+              size="small"
+              color="inherit"
+              data-cy="today-entry-skip"
+              onClick={() => setSkipped(true)}
+            >
+              Salta
+            </Button>
+          </Stack>
           {error && (
-            <p role="alert" className="error" data-cy="today-entry-error">
+            <Alert severity="error" role="alert" data-cy="today-entry-error">
               {error}
-            </p>
+            </Alert>
           )}
-        </div>
+        </Stack>
       )}
-    </li>
+    </Box>
   )
 }

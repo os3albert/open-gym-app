@@ -1,4 +1,10 @@
 import { useState } from 'react'
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Stack from '@mui/material/Stack'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 import { exerciseHistory, filterByPeriod, sessionsByDate } from '../domain/activity'
 import type { AppData } from '../domain/types'
 import { formatDateIt, todayIso } from '../utils/date'
@@ -26,12 +32,16 @@ export function HistoryView({ data }: Props) {
 
   if (sessions.length === 0) {
     return (
-      <section className="card">
-        <h2>Storico allenamenti</h2>
-        <p data-cy="history-empty">
-          Nessuna sessione registrata: inizia dalla scheda «Allenamento».
-        </p>
-      </section>
+      <Card component="section">
+        <CardContent>
+          <Typography variant="h2" gutterBottom>
+            Storico allenamenti
+          </Typography>
+          <Typography data-cy="history-empty">
+            Nessuna sessione registrata: inizia dalla scheda «Allenamento».
+          </Typography>
+        </CardContent>
+      </Card>
     )
   }
 
@@ -42,15 +52,27 @@ export function HistoryView({ data }: Props) {
 
   return (
     <>
-      <section className="card">
-        <h2>Andamento del carico</h2>
-        <div className="filters-row">
-          <label>
-            Esercizio
-            <select
-              data-cy="history-exercise-select"
+      <Card component="section">
+        <CardContent>
+          <Typography variant="h2" gutterBottom>
+            Andamento del carico
+          </Typography>
+          <Stack
+            direction="row"
+            spacing={1.5}
+            useFlexGap
+            sx={{ flexWrap: 'wrap', alignItems: 'center' }}
+          >
+            <TextField
+              select
+              label="Esercizio"
               value={selectedExerciseId}
               onChange={(e) => setSelectedExerciseId(e.target.value)}
+              sx={{ minWidth: 210 }}
+              slotProps={{
+                select: { native: true },
+                htmlInput: { 'data-cy': 'history-exercise-select' },
+              }}
             >
               <option value="">Scegli un esercizio…</option>
               {trackedExercises.map((e) => (
@@ -58,47 +80,67 @@ export function HistoryView({ data }: Props) {
                   {e.name}
                 </option>
               ))}
-            </select>
-          </label>
-          <label>
-            Periodo
-            <select
-              data-cy="period-select"
+            </TextField>
+            <TextField
+              select
+              label="Periodo"
               value={period}
               onChange={(e) => setPeriod(e.target.value)}
+              sx={{ minWidth: 170 }}
+              slotProps={{
+                select: { native: true },
+                htmlInput: { 'data-cy': 'period-select' },
+              }}
             >
               {PERIODS.map((p) => (
                 <option key={p.value} value={p.value}>
                   {p.label}
                 </option>
               ))}
-            </select>
-          </label>
-        </div>
-        {selectedExerciseId ? (
-          <TrendChart points={trend} />
-        ) : (
-          <p className="hint">Scegli un esercizio per vedere l'andamento del peso nel tempo.</p>
-        )}
-      </section>
-      <section className="card">
-        <h2>Storico allenamenti</h2>
-        <ul className="history-list">
-          {sessions.map((session) => (
-            <li key={session.date} data-cy="session-item">
-              <h3>{formatDateIt(session.date)}</h3>
-              <ul>
-                {session.records.map((record) => (
-                  <li key={record.id} data-cy="session-exercise">
-                    <strong>{exerciseName(record.exerciseId)}</strong>:{' '}
-                    {record.sets.map((s) => `${s.weightKg} kg × ${s.reps}`).join(', ')}
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
-      </section>
+            </TextField>
+          </Stack>
+          {selectedExerciseId ? (
+            <TrendChart points={trend} />
+          ) : (
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+              Scegli un esercizio per vedere l'andamento del peso nel tempo.
+            </Typography>
+          )}
+        </CardContent>
+      </Card>
+      <Card component="section">
+        <CardContent>
+          <Typography variant="h2" gutterBottom>
+            Storico allenamenti
+          </Typography>
+          <Stack component="ul" spacing={2} sx={{ listStyle: 'none', m: 0, p: 0 }}>
+            {sessions.map((session) => (
+              <Box component="li" key={session.date} data-cy="session-item">
+                <Typography variant="h3" component="h3" gutterBottom>
+                  {formatDateIt(session.date)}
+                </Typography>
+                <Box component="ul" sx={{ listStyle: 'none', m: 0, p: 0 }}>
+                  {session.records.map((record) => (
+                    <Typography
+                      component="li"
+                      variant="body2"
+                      color="text.secondary"
+                      key={record.id}
+                      data-cy="session-exercise"
+                      sx={{ py: 0.25 }}
+                    >
+                      <Box component="strong" sx={{ color: 'text.primary', fontWeight: 600 }}>
+                        {exerciseName(record.exerciseId)}
+                      </Box>
+                      : {record.sets.map((s) => `${s.weightKg} kg × ${s.reps}`).join(', ')}
+                    </Typography>
+                  ))}
+                </Box>
+              </Box>
+            ))}
+          </Stack>
+        </CardContent>
+      </Card>
     </>
   )
 }

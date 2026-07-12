@@ -1,4 +1,12 @@
 import { useState, type ChangeEvent } from 'react'
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined'
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { backupFileName, importFromJson } from '../services/importExport'
 import { todayIso } from '../utils/date'
 
@@ -61,62 +69,89 @@ export function BackupPanel({ onExport, onReplace, onMerge }: Props) {
   }
 
   return (
-    <section className="card">
-      <h2>Backup dei dati</h2>
-      <p className="hint">
-        I dati vivono solo su questo dispositivo (localStorage): esporta un backup JSON per non
-        perderli o importane uno esistente.
-      </p>
-      <div className="backup-actions">
-        <button type="button" data-cy="export-button" onClick={handleExport}>
-          Esporta backup JSON
-        </button>
-        <label className="import-label">
-          Importa backup JSON
-          <input
-            type="file"
-            accept=".json,application/json"
-            data-cy="import-input"
-            onChange={handleFileSelected}
-          />
-        </label>
-      </div>
+    <Card component="section">
+      <CardContent>
+        <Typography variant="h2" gutterBottom>
+          Backup dei dati
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          I dati vivono solo su questo dispositivo (localStorage): esporta un backup JSON per non
+          perderli o importane uno esistente.
+        </Typography>
+        <Stack direction="row" spacing={1.5} useFlexGap sx={{ flexWrap: 'wrap' }}>
+          <Button
+            variant="outlined"
+            startIcon={<FileDownloadOutlinedIcon />}
+            data-cy="export-button"
+            onClick={handleExport}
+          >
+            Esporta backup JSON
+          </Button>
+          <Button variant="outlined" component="label" startIcon={<FileUploadOutlinedIcon />}>
+            Importa backup JSON
+            <Box
+              component="input"
+              type="file"
+              accept=".json,application/json"
+              data-cy="import-input"
+              onChange={handleFileSelected}
+              sx={{
+                clip: 'rect(0 0 0 0)',
+                position: 'absolute',
+                width: 1,
+                height: 1,
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+              }}
+            />
+          </Button>
+        </Stack>
 
-      {pendingJson && (
-        <div className="import-choice" data-cy="import-choice">
-          <p>Backup valido. Come lo importiamo?</p>
-          <div className="card-actions">
-            <button
-              type="button"
-              data-cy="import-replace"
-              onClick={() => applyImport(onReplace, 'Backup importato correttamente')}
-            >
-              Sostituisci tutto
-            </button>
-            <button
-              type="button"
-              data-cy="import-merge"
-              onClick={() => applyImport(onMerge, 'Backup unito ai dati presenti, senza duplicati')}
-            >
-              Unisci ai miei dati
-            </button>
-            <button
-              type="button"
-              className="btn-ghost"
-              data-cy="import-cancel-backup"
-              onClick={() => setPendingJson(null)}
-            >
-              Annulla
-            </button>
-          </div>
-        </div>
-      )}
+        {pendingJson && (
+          <Box
+            data-cy="import-choice"
+            sx={{ border: 1, borderColor: 'divider', borderRadius: 3, p: 2, mt: 2 }}
+          >
+            <Typography sx={{ mb: 1.5 }}>Backup valido. Come lo importiamo?</Typography>
+            <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
+              <Button
+                variant="contained"
+                data-cy="import-replace"
+                onClick={() => applyImport(onReplace, 'Backup importato correttamente')}
+              >
+                Sostituisci tutto
+              </Button>
+              <Button
+                variant="outlined"
+                data-cy="import-merge"
+                onClick={() =>
+                  applyImport(onMerge, 'Backup unito ai dati presenti, senza duplicati')
+                }
+              >
+                Unisci ai miei dati
+              </Button>
+              <Button
+                color="inherit"
+                data-cy="import-cancel-backup"
+                onClick={() => setPendingJson(null)}
+              >
+                Annulla
+              </Button>
+            </Stack>
+          </Box>
+        )}
 
-      {message && (
-        <p role="status" data-cy="backup-message" className={isError ? 'error' : 'success'}>
-          {message}
-        </p>
-      )}
-    </section>
+        {message && (
+          <Typography
+            variant="body2"
+            role="status"
+            data-cy="backup-message"
+            sx={{ mt: 2, color: isError ? 'error.main' : 'success.main' }}
+          >
+            {message}
+          </Typography>
+        )}
+      </CardContent>
+    </Card>
   )
 }

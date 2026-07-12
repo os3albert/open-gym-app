@@ -15,7 +15,9 @@ describe('Backup dei dati', () => {
 
   it('importa un backup JSON v1 sostituendo tutto e migrandolo allo schema corrente', () => {
     // La fixture è volutamente un backup v1: l'import deve migrarla senza perdite
-    cy.get('[data-cy=import-input]').selectFile('cypress/fixtures/backup-esempio.json')
+    cy.get('[data-cy=import-input]').selectFile('cypress/fixtures/backup-esempio.json', {
+      force: true,
+    })
 
     cy.get('[data-cy=import-choice]').should('be.visible')
     cy.get('[data-cy=import-replace]').click()
@@ -47,7 +49,9 @@ describe('Backup dei dati', () => {
       votedExerciseIds: [],
     })
 
-    cy.get('[data-cy=import-input]').selectFile('cypress/fixtures/backup-esempio.json')
+    cy.get('[data-cy=import-input]').selectFile('cypress/fixtures/backup-esempio.json', {
+      force: true,
+    })
     cy.get('[data-cy=import-merge]').click()
 
     cy.get('[data-cy=backup-message]').should('contain.text', 'senza duplicati')
@@ -56,7 +60,9 @@ describe('Backup dei dati', () => {
   })
 
   it('segnala un file di backup non valido senza proporre scelte', () => {
-    cy.get('[data-cy=import-input]').selectFile('cypress/fixtures/backup-non-valido.json')
+    cy.get('[data-cy=import-input]').selectFile('cypress/fixtures/backup-non-valido.json', {
+      force: true,
+    })
 
     cy.get('[data-cy=backup-message]').should('contain.text', 'non riconosciuto')
     cy.get('[data-cy=import-choice]').should('not.exist')
