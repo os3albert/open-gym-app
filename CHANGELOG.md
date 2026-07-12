@@ -2,6 +2,29 @@
 
 Tutte le modifiche rilevanti del progetto, per release.
 
+## 1.1.0 — 2026-07-12
+
+Redesign completo dell'interfaccia in **Material Design 3** con MUI (milestone M7, issue #31–#35).
+
+### Interfaccia (M7)
+
+- Tema MD3 **monocromo** chiaro/scuro (`src/theme.ts`) con palette ispirata ai mockup,
+  font **Inter** self-hosted e componenti a pillola (bottoni, chip, navigazione)
+- **BottomNavigation** MD3 fissa con le 4 viste (Esercizi, Schede, Allenamento, Storico)
+  e AppBar sticky con selettore del tema
+- Vista Esercizi: griglia di card (1–2 colonne) con miniatura video e overlay play,
+  badge come Chip, form di proposta con campi Material
+- Vista Schede: card per scheda con badge «✓ attiva», editor con riordino a IconButton,
+  importazione con anteprima in riquadro
+- Vista Allenamento: esercizi del giorno in riquadri con stato a Chip, stepper a pillola
+  per peso/ripetizioni, serie registrate come chip rimovibili
+- Vista Storico: card per andamento del carico e sessioni; grafico SVG invariato,
+  ora colorato dalle variabili del tema MUI
+- Backup come bottoni con icone; il tema auto/chiaro/scuro esistente ora guida anche
+  il color scheme MUI (nessun cambio di persistenza o schema dati)
+- Audit Lighthouse sulla build di produzione: performance 96, accessibilità 100,
+  best practices 100, SEO 100; piramide di test invariata e verde (203 test)
+
 ## 1.0.0 — 2026-07-11
 
 Prima release completa. Sviluppata per milestone (issue #1–#30 su GitHub).

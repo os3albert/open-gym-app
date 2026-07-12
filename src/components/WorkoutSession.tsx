@@ -82,6 +82,7 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
               sx={{ maxWidth: 320 }}
               slotProps={{
                 select: { native: true },
+                inputLabel: { shrink: true },
                 htmlInput: { 'data-cy': 'session-exercise-select' },
               }}
             >

@@ -71,6 +71,7 @@ export function HistoryView({ data }: Props) {
               sx={{ minWidth: 210 }}
               slotProps={{
                 select: { native: true },
+                inputLabel: { shrink: true },
                 htmlInput: { 'data-cy': 'history-exercise-select' },
               }}
             >
@@ -89,6 +90,7 @@ export function HistoryView({ data }: Props) {
               sx={{ minWidth: 170 }}
               slotProps={{
                 select: { native: true },
+                inputLabel: { shrink: true },
                 htmlInput: { 'data-cy': 'period-select' },
               }}
             >

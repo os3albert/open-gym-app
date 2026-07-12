@@ -27,7 +27,7 @@ docker compose up --build  # immagine di produzione su http://localhost:8080
 
 ## Stack (decisione registrata)
 
-React 19 + TypeScript + Vite, PWA via `vite-plugin-pwa` (scelto rispetto a Vue per l'ecosistema di testing richiesto: Testing Library/Cypress/Cucumber di prima classe). Test: **Vitest** (runner Vite-nativo, config nel blocco `test` di `vite.config.ts`) con asserzioni sia stile Jest sia **Chai**; BDD con `@cucumber/cucumber`; E2E con Cypress. Nessun backend: tutto lo stato vive in localStorage.
+React 19 + TypeScript + Vite, PWA via `vite-plugin-pwa` (scelto rispetto a Vue per l'ecosistema di testing richiesto: Testing Library/Cypress/Cucumber di prima classe). Test: **Vitest** (runner Vite-nativo, config nel blocco `test` di `vite.config.ts`) con asserzioni sia stile Jest sia **Chai**; BDD con `@cucumber/cucumber`; E2E con Cypress. Nessun backend: tutto lo stato vive in localStorage. UI: **MUI v9** (`@mui/material` + `@mui/icons-material`, import SEMPRE per-componente/per-icona) con tema MD3 monocromo in `src/theme.ts` e font Inter self-hosted (`@fontsource-variable/inter/index.css`).
 
 ## Architettura
 
@@ -43,8 +43,17 @@ Dipendenze a senso unico: `components/` → `hooks/` → `domain/` + `services/`
 - Condivisione senza backend (`services/share.ts`): payload JSON compresso con lz-string in codice URL-safe, apribile anche da link con fragment `#dati=…` (consumato in `App.tsx` al mount). La scheda condivisa INCORPORA gli esercizi; l'import deduplica sul **video id** YouTube (non sulla stringa del link). `INVALID_SHARE_CODE_ERROR` è contratto come gli altri messaggi.
 - Backup: `exportBackupJson` aggiunge `exportedAt` (che l'import ignora: il round-trip resta identico) e il file è datato (`backupFileName`); `exportToJson` senza data resta per localStorage. `mergeData` («Unisci») riusa le regole di dedup della condivisione; nei conflitti vincono SEMPRE i dati locali e il flag di voto del backup vale solo per gli esercizi davvero aggiunti (coerenza contatore/flag).
 - PWA: service worker in modalità **prompt** (`UpdateBanner` + `useRegisterSW`); il modulo virtuale `virtual:pwa-register/react` è stubbato sotto Vitest via `test.alias` (vedi `tests/stubs/pwa-register.ts`). I video YouTube richiedono rete: `YouTubePlayer` mostra un placeholder se la miniatura non si carica.
-- Tema: preferenza `auto|chiaro|scuro` in `hooks/useTheme.ts`, persistita in una chiave localStorage SEPARATA da AppData (niente nel backup, niente bump di schema); applicata come `data-theme` su `<html>`, i colori sono SOLO variabili CSS (`--bg`, `--border`, `--accent-contrast`…): mai colori hardcoded nei componenti.
+- Tema: preferenza `auto|chiaro|scuro` in `hooks/useTheme.ts` (fonte di verità, persistita in una chiave localStorage SEPARATA da AppData: niente nel backup, niente bump di schema), applicata come `data-theme` su `<html>`. Il tema MUI (`src/theme.ts`) usa `cssVariables: { colorSchemeSelector: 'data-theme' }` e `SyncMuiColorScheme` in `App.tsx` specchia il tema risolto nel color scheme MUI: senza quel ponte il provider sovrascrive `data-theme` al mount. Le var legacy (`--bg`, `--border`, `--accent`…) in `index.css` sono un ponte verso `var(--mui-palette-…)` per gli stili non-MUI (TrendChart, facade video): mai colori hardcoded nei componenti.
 - I componenti espongono attributi `data-cy` usati dalle spec Cypress: non rimuoverli.
+
+### Regole MUI (contratto dei test, imparate in M7)
+
+- Select: SEMPRE `TextField select` con `slotProps: { select: { native: true }, inputLabel: { shrink: true }, htmlInput: { 'data-cy': '…' } }` → resta un `<select>` nativo con `<option>` (`userEvent.selectOptions` e `cy.select()` funzionano) e la label non si sovrappone al testo. MAI il Select non-nativo.
+- Il `data-cy` degli input va sull'elemento vero via `slotProps.htmlInput` (input, textarea multiline, select nativi); sui Button va sul root. Lo slot `input` di Checkbox non tipizza i `data-*`: cast `as React.InputHTMLAttributes<HTMLInputElement>`.
+- MAI `required` su TextField: l'asterisco entra nel nome accessibile e rompe `getByLabelText`.
+- In MUI v9 `flexWrap`/`alignItems`/`justifyContent` NON sono prop dirette di Stack: vanno in `sx` (con `useFlexGap` quando serve il wrap).
+- Gli Alert MUI portano `role="alert"`/`role="status"` espliciti e il testo invariato (i messaggi sono contratto); il bottone di voto conserva `aria-pressed` e le classi `vote-button`/`voted`.
+- L'input file del backup è nascosto dentro un `Button component="label"`: nelle spec Cypress `selectFile(..., { force: true })`.
 
 ## Piramide di test (mappa)
 

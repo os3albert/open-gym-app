@@ -83,7 +83,11 @@ export function FilterBar({
           value={filters.muscleGroup ?? ''}
           onChange={(e) => onFiltersChange({ ...filters, muscleGroup: e.target.value || null })}
           sx={{ minWidth: 220 }}
-          slotProps={{ select: { native: true }, htmlInput: { 'data-cy': 'filter-muscle' } }}
+          slotProps={{
+            select: { native: true },
+            inputLabel: { shrink: true },
+            htmlInput: { 'data-cy': 'filter-muscle' },
+          }}
         >
           <option value="">Tutti</option>
           {muscleGroups.map((group) => (
@@ -98,7 +102,11 @@ export function FilterBar({
           value={filters.sort}
           onChange={(e) => onFiltersChange({ ...filters, sort: e.target.value as SortOrder })}
           sx={{ minWidth: 150 }}
-          slotProps={{ select: { native: true }, htmlInput: { 'data-cy': 'sort-select' } }}
+          slotProps={{
+            select: { native: true },
+            inputLabel: { shrink: true },
+            htmlInput: { 'data-cy': 'sort-select' },
+          }}
         >
           <option value="votes">Più votati</option>
           <option value="recent">Più recenti</option>

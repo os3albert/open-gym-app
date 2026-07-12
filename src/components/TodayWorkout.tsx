@@ -65,6 +65,7 @@ export function TodayWorkout({ data, today, onComplete }: Props) {
             sx={{ minWidth: 260 }}
             slotProps={{
               select: { native: true },
+              inputLabel: { shrink: true },
               htmlInput: { 'data-cy': 'today-day-select' },
             }}
           >

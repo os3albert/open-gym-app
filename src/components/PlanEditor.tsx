@@ -263,6 +263,7 @@ function DayEditor({
           sx={{ minWidth: 210 }}
           slotProps={{
             select: { native: true },
+            inputLabel: { shrink: true },
             htmlInput: { 'data-cy': 'entry-exercise-select' },
           }}
         >

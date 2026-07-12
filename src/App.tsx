@@ -132,6 +132,7 @@ export default function App() {
             onChange={(e) => setTheme(e.target.value as ThemePreference)}
             slotProps={{
               select: { native: true },
+              inputLabel: { shrink: true },
               htmlInput: { 'data-cy': 'theme-select' },
             }}
             sx={{ minWidth: 110 }}
