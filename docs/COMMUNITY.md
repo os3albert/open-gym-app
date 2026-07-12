@@ -51,7 +51,7 @@ npx wrangler deploy                    # primo deploy: stampa l'URL del worker
 sarebbe ricostruibile a partire da un IP noto. **Non cambiarlo dopo il primo voto**, o i voti
 già espressi non verranno più riconosciuti come dello stesso votante.
 
-L'URL stampato (es. `https://open-gym-community.<tuo-account>.workers.dev`) serve al punto 4.
+L'URL stampato (es. `https://open-gym-app.<tuo-account>.workers.dev`) serve al punto 4.
 
 **Rate limiting (consigliato).** Per limitare le scritture a 20/ora per IP:
 
@@ -81,7 +81,7 @@ Il deploy su GitHub Pages lo passa alla build come `VITE_COMMUNITY_API_URL`. Per
 locale, crea un file `.env.local`:
 
 ```
-VITE_COMMUNITY_API_URL=https://open-gym-community.<tuo-account>.workers.dev
+VITE_COMMUNITY_API_URL=https://open-gym-app.<tuo-account>.workers.dev
 ```
 
 ## Sviluppo locale del worker

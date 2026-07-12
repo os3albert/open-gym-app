@@ -22,7 +22,7 @@ function headers(token: string): HeadersInit {
   return {
     Authorization: `Bearer ${token}`,
     Accept: 'application/vnd.github+json',
-    'User-Agent': 'open-gym-community-worker',
+    'User-Agent': 'open-gym-app-worker',
     'X-GitHub-Api-Version': '2022-11-28',
   }
 }
