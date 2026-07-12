@@ -17,7 +17,7 @@ jobs:
         with:
           # Sonar usa la storia per attribuire le issue ai commit: niente clone superficiale
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 26
           cache: npm
