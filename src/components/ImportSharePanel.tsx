@@ -1,4 +1,13 @@
 import { useState } from 'react'
+import Alert from '@mui/material/Alert'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Chip from '@mui/material/Chip'
+import Stack from '@mui/material/Stack'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 import { decodeShare, type SharePayload } from '../services/share'
 
 interface Props {
@@ -57,104 +66,122 @@ export function ImportSharePanel({ initialCode, onImport, onActivatePlan }: Prop
   }
 
   return (
-    <section className="card" data-cy="import-panel">
-      <h2>Importa da un altro utente</h2>
-      <p className="hint">
-        Incolla il codice di condivisione ricevuto: vedrai un'anteprima prima di aggiungere.
-      </p>
-      <label>
-        Codice ricevuto
-        <textarea
-          rows={3}
-          data-cy="import-code-input"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-        />
-      </label>
-      <div className="card-actions">
-        <button
-          type="button"
-          data-cy="import-preview-btn"
-          disabled={!code.trim()}
-          onClick={handlePreview}
-        >
-          Anteprima
-        </button>
-      </div>
-
-      {error && (
-        <p role="alert" data-cy="import-error" className="error">
-          {error}
-        </p>
-      )}
-
-      {preview && (
-        <div className="import-preview" data-cy="import-preview">
-          {preview.kind === 'exercise' ? (
-            <>
-              <h3>Esercizio: {preview.exercise.name}</h3>
-              <p className="badges">
-                {preview.exercise.muscleGroup && (
-                  <span className="badge">{preview.exercise.muscleGroup}</span>
-                )}
-                {preview.exercise.stature && (
-                  <span className="badge">
-                    {preview.exercise.stature.minCm}–{preview.exercise.stature.maxCm} cm
-                  </span>
-                )}
-              </p>
-            </>
-          ) : (
-            <>
-              <h3>Scheda: {preview.plan.name}</h3>
-              {preview.plan.days.map((day) => (
-                <div key={day.name} data-cy="import-preview-day">
-                  <strong>{day.name}</strong>
-                  <ul>
-                    {day.entries.map((entry, i) => (
-                      <li key={i}>
-                        {entry.exercise.name} — {entry.sets}×{entry.reps}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </>
-          )}
-          <div className="card-actions">
-            <button type="button" data-cy="import-confirm" onClick={handleConfirm}>
-              Aggiungi ai miei
-            </button>
-            <button
-              type="button"
-              className="btn-ghost"
-              data-cy="import-cancel"
-              onClick={handleCancel}
+    <Card component="section" data-cy="import-panel">
+      <CardContent>
+        <Typography variant="h2" gutterBottom>
+          Importa da un altro utente
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          Incolla il codice di condivisione ricevuto: vedrai un'anteprima prima di aggiungere.
+        </Typography>
+        <Stack spacing={1.5}>
+          <TextField
+            label="Codice ricevuto"
+            multiline
+            rows={3}
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            slotProps={{
+              htmlInput: {
+                'data-cy': 'import-code-input',
+                sx: { fontFamily: 'monospace', fontSize: '0.8rem', wordBreak: 'break-all' },
+              },
+            }}
+          />
+          <Stack direction="row">
+            <Button
+              variant="contained"
+              data-cy="import-preview-btn"
+              disabled={!code.trim()}
+              onClick={handlePreview}
             >
-              Annulla
-            </button>
-          </div>
-        </div>
-      )}
+              Anteprima
+            </Button>
+          </Stack>
 
-      {message && (
-        <p className="success" data-cy="import-success">
-          {message}
-        </p>
-      )}
-      {importedPlanId && (
-        <button
-          type="button"
-          data-cy="try-imported-plan"
-          onClick={() => {
-            onActivatePlan(importedPlanId)
-            setImportedPlanId(null)
-            setMessage('Fatta! Ora è la tua scheda attiva.')
-          }}
-        >
-          Prova questa scheda
-        </button>
-      )}
-    </section>
+          {error && (
+            <Alert severity="error" role="alert" data-cy="import-error">
+              {error}
+            </Alert>
+          )}
+
+          {preview && (
+            <Box
+              data-cy="import-preview"
+              sx={{ border: 1, borderColor: 'divider', borderRadius: 3, p: 2 }}
+            >
+              {preview.kind === 'exercise' ? (
+                <>
+                  <Typography variant="h3" component="h3" gutterBottom>
+                    Esercizio: {preview.exercise.name}
+                  </Typography>
+                  <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
+                    {preview.exercise.muscleGroup && (
+                      <Chip size="small" label={preview.exercise.muscleGroup} />
+                    )}
+                    {preview.exercise.stature && (
+                      <Chip
+                        size="small"
+                        variant="outlined"
+                        label={`${preview.exercise.stature.minCm}–${preview.exercise.stature.maxCm} cm`}
+                      />
+                    )}
+                  </Stack>
+                </>
+              ) : (
+                <>
+                  <Typography variant="h3" component="h3" gutterBottom>
+                    Scheda: {preview.plan.name}
+                  </Typography>
+                  {preview.plan.days.map((day) => (
+                    <Box key={day.name} data-cy="import-preview-day" sx={{ mt: 1 }}>
+                      <Typography component="strong" sx={{ fontWeight: 600 }}>
+                        {day.name}
+                      </Typography>
+                      <Box component="ul" sx={{ m: 0, pl: 3 }}>
+                        {day.entries.map((entry, i) => (
+                          <Typography component="li" variant="body2" key={i}>
+                            {entry.exercise.name} — {entry.sets}×{entry.reps}
+                          </Typography>
+                        ))}
+                      </Box>
+                    </Box>
+                  ))}
+                </>
+              )}
+              <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap', mt: 2 }}>
+                <Button variant="contained" data-cy="import-confirm" onClick={handleConfirm}>
+                  Aggiungi ai miei
+                </Button>
+                <Button color="inherit" data-cy="import-cancel" onClick={handleCancel}>
+                  Annulla
+                </Button>
+              </Stack>
+            </Box>
+          )}
+
+          {message && (
+            <Typography variant="body2" sx={{ color: 'success.main' }} data-cy="import-success">
+              {message}
+            </Typography>
+          )}
+          {importedPlanId && (
+            <Stack direction="row">
+              <Button
+                variant="outlined"
+                data-cy="try-imported-plan"
+                onClick={() => {
+                  onActivatePlan(importedPlanId)
+                  setImportedPlanId(null)
+                  setMessage('Fatta! Ora è la tua scheda attiva.')
+                }}
+              >
+                Prova questa scheda
+              </Button>
+            </Stack>
+          )}
+        </Stack>
+      </CardContent>
+    </Card>
   )
 }

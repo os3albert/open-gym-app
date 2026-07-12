@@ -1,4 +1,16 @@
 import { useState } from 'react'
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
+import CloseIcon from '@mui/icons-material/Close'
+import Alert from '@mui/material/Alert'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import IconButton from '@mui/material/IconButton'
+import Stack from '@mui/material/Stack'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 import type { Exercise, PlanEntry, WorkoutDay, WorkoutPlan } from '../domain/types'
 import { WEEKDAYS_IT } from '../utils/date'
 
@@ -38,85 +50,98 @@ export function PlanEditor({ plan, exercises, actions, onClose }: Props) {
   }
 
   return (
-    <section className="card" data-cy="plan-editor">
-      <h2>Modifica scheda</h2>
-      <div className="plan-rename">
-        <label>
-          Nome della scheda
-          <input
-            data-cy="plan-rename-input"
+    <Card component="section" data-cy="plan-editor">
+      <CardContent>
+        <Typography variant="h2" gutterBottom>
+          Modifica scheda
+        </Typography>
+        <Stack
+          direction="row"
+          spacing={1.5}
+          useFlexGap
+          sx={{ flexWrap: 'wrap', alignItems: 'center', mb: 2 }}
+        >
+          <TextField
+            label="Nome della scheda"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            slotProps={{ htmlInput: { 'data-cy': 'plan-rename-input' } }}
           />
-        </label>
-        <button
-          type="button"
-          className="btn-ghost btn-small"
-          data-cy="plan-rename"
-          onClick={() => attempt(() => actions.renamePlan(plan.id, name))}
-        >
-          Rinomina
-        </button>
-      </div>
+          <Button
+            size="small"
+            variant="outlined"
+            data-cy="plan-rename"
+            onClick={() => attempt(() => actions.renamePlan(plan.id, name))}
+          >
+            Rinomina
+          </Button>
+        </Stack>
 
-      <div className="plan-add-day">
-        <label>
-          Nuovo giorno
-          <input
-            data-cy="day-name-input"
-            list="day-suggestions"
+        <Stack
+          direction="row"
+          spacing={1.5}
+          useFlexGap
+          sx={{ flexWrap: 'wrap', alignItems: 'center', mb: 2 }}
+        >
+          <TextField
+            label="Nuovo giorno"
             placeholder="Lunedì, Giorno A…"
             value={dayName}
             onChange={(e) => setDayName(e.target.value)}
+            slotProps={{ htmlInput: { 'data-cy': 'day-name-input', list: 'day-suggestions' } }}
           />
-        </label>
-        <datalist id="day-suggestions">
-          {DAY_SUGGESTIONS.map((suggestion) => (
-            <option key={suggestion} value={suggestion} />
+          <datalist id="day-suggestions">
+            {DAY_SUGGESTIONS.map((suggestion) => (
+              <option key={suggestion} value={suggestion} />
+            ))}
+          </datalist>
+          <Button
+            variant="contained"
+            data-cy="add-day"
+            onClick={() => {
+              if (attempt(() => actions.addPlanDay(plan.id, dayName))) setDayName('')
+            }}
+          >
+            Aggiungi giorno
+          </Button>
+        </Stack>
+
+        {error && (
+          <Alert severity="error" role="alert" data-cy="editor-error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
+
+        {plan.days.length === 0 && (
+          <Typography variant="body2" color="text.secondary">
+            Nessun giorno: aggiungi «Lunedì» o «Giorno A» per iniziare.
+          </Typography>
+        )}
+        <Stack spacing={2}>
+          {plan.days.map((day) => (
+            <DayEditor
+              key={day.name}
+              day={day}
+              exercises={exercises}
+              onAddEntry={(entry) => attempt(() => actions.addPlanEntry(plan.id, day.name, entry))}
+              onRemoveEntry={(exerciseId) =>
+                attempt(() => actions.removePlanEntry(plan.id, day.name, exerciseId))
+              }
+              onMoveEntry={(exerciseId, direction) =>
+                attempt(() => actions.movePlanEntry(plan.id, day.name, exerciseId, direction))
+              }
+              onRemoveDay={() => attempt(() => actions.removePlanDay(plan.id, day.name))}
+            />
           ))}
-        </datalist>
-        <button
-          type="button"
-          data-cy="add-day"
-          onClick={() => {
-            if (attempt(() => actions.addPlanDay(plan.id, dayName))) setDayName('')
-          }}
-        >
-          Aggiungi giorno
-        </button>
-      </div>
+        </Stack>
 
-      {error && (
-        <p role="alert" data-cy="editor-error" className="error">
-          {error}
-        </p>
-      )}
-
-      {plan.days.length === 0 && (
-        <p className="hint">Nessun giorno: aggiungi «Lunedì» o «Giorno A» per iniziare.</p>
-      )}
-      {plan.days.map((day) => (
-        <DayEditor
-          key={day.name}
-          day={day}
-          exercises={exercises}
-          onAddEntry={(entry) => attempt(() => actions.addPlanEntry(plan.id, day.name, entry))}
-          onRemoveEntry={(exerciseId) =>
-            attempt(() => actions.removePlanEntry(plan.id, day.name, exerciseId))
-          }
-          onMoveEntry={(exerciseId, direction) =>
-            attempt(() => actions.movePlanEntry(plan.id, day.name, exerciseId, direction))
-          }
-          onRemoveDay={() => attempt(() => actions.removePlanDay(plan.id, day.name))}
-        />
-      ))}
-
-      <div className="card-actions">
-        <button type="button" className="btn-ghost" data-cy="plan-editor-close" onClick={onClose}>
-          Chiudi editor
-        </button>
-      </div>
-    </section>
+        <Stack direction="row" sx={{ mt: 2 }}>
+          <Button color="inherit" data-cy="plan-editor-close" onClick={onClose}>
+            Chiudi editor
+          </Button>
+        </Stack>
+      </CardContent>
+    </Card>
   )
 }
 
@@ -145,101 +170,127 @@ function DayEditor({
   const exerciseName = (id: string) => exercises.find((e) => e.id === id)?.name ?? id
 
   return (
-    <div className="plan-day" data-cy="plan-day">
-      <div className="plan-day-header">
-        <h3 data-cy="plan-day-name">{day.name}</h3>
-        <button
-          type="button"
-          className="btn-ghost btn-small"
+    <Box data-cy="plan-day" sx={{ border: 1, borderColor: 'divider', borderRadius: 3, p: 2 }}>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+      >
+        <Typography variant="h3" component="h3" data-cy="plan-day-name">
+          {day.name}
+        </Typography>
+        <Button
+          size="small"
+          color="inherit"
           data-cy="remove-day"
           aria-label={`Rimuovi il giorno ${day.name}`}
           onClick={onRemoveDay}
+          sx={{ flexShrink: 0 }}
         >
           Rimuovi giorno
-        </button>
-      </div>
+        </Button>
+      </Stack>
 
       {day.entries.length === 0 ? (
-        <p className="hint">Nessun esercizio in questo giorno.</p>
+        <Typography variant="body2" color="text.secondary" sx={{ my: 1 }}>
+          Nessun esercizio in questo giorno.
+        </Typography>
       ) : (
-        <ul className="plan-entries">
+        <Box component="ul" sx={{ listStyle: 'none', m: 0, p: 0, my: 1 }}>
           {day.entries.map((entry, index) => (
-            <li key={entry.exerciseId} data-cy="plan-entry">
-              <span data-cy="plan-entry-text">
+            <Stack
+              key={entry.exerciseId}
+              component="li"
+              direction="row"
+              spacing={1}
+              data-cy="plan-entry"
+              sx={{
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                py: 0.5,
+                borderBottom: 1,
+                borderColor: 'divider',
+                '&:last-child': { borderBottom: 0 },
+              }}
+            >
+              <Typography component="span" variant="body2" data-cy="plan-entry-text">
                 {exerciseName(entry.exerciseId)} — {entry.sets}×{entry.reps}
-              </span>
-              <span className="entry-actions">
-                <button
-                  type="button"
-                  className="btn-ghost btn-small"
+              </Typography>
+              <Stack direction="row" spacing={0.5} sx={{ flexShrink: 0 }}>
+                <IconButton
+                  size="small"
                   data-cy="entry-up"
                   aria-label={`Sposta su ${exerciseName(entry.exerciseId)} in ${day.name}`}
                   disabled={index === 0}
                   onClick={() => onMoveEntry(entry.exerciseId, -1)}
                 >
-                  ↑
-                </button>
-                <button
-                  type="button"
-                  className="btn-ghost btn-small"
+                  <ArrowUpwardIcon fontSize="inherit" />
+                </IconButton>
+                <IconButton
+                  size="small"
                   data-cy="entry-down"
                   aria-label={`Sposta giù ${exerciseName(entry.exerciseId)} in ${day.name}`}
                   disabled={index === day.entries.length - 1}
                   onClick={() => onMoveEntry(entry.exerciseId, 1)}
                 >
-                  ↓
-                </button>
-                <button
-                  type="button"
-                  className="btn-ghost btn-small"
+                  <ArrowDownwardIcon fontSize="inherit" />
+                </IconButton>
+                <IconButton
+                  size="small"
                   data-cy="remove-entry"
                   aria-label={`Rimuovi ${exerciseName(entry.exerciseId)} da ${day.name}`}
                   onClick={() => onRemoveEntry(entry.exerciseId)}
                 >
-                  ×
-                </button>
-              </span>
-            </li>
+                  <CloseIcon fontSize="inherit" />
+                </IconButton>
+              </Stack>
+            </Stack>
           ))}
-        </ul>
+        </Box>
       )}
 
-      <div className="plan-add-entry">
-        <label>
-          Esercizio
-          <select
-            data-cy="entry-exercise-select"
-            value={exerciseId}
-            onChange={(e) => setExerciseId(e.target.value)}
-          >
-            <option value="">Scegli un esercizio…</option>
-            {exercisesByName.map((e) => (
-              <option key={e.id} value={e.id}>
-                {e.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Serie
-          <input
-            type="number"
-            data-cy="entry-sets"
-            value={sets}
-            onChange={(e) => setSets(e.target.value)}
-          />
-        </label>
-        <label>
-          Ripetizioni
-          <input
-            type="number"
-            data-cy="entry-reps"
-            value={reps}
-            onChange={(e) => setReps(e.target.value)}
-          />
-        </label>
-        <button
-          type="button"
+      <Stack
+        direction="row"
+        spacing={1.5}
+        useFlexGap
+        sx={{ flexWrap: 'wrap', alignItems: 'center', mt: 1.5 }}
+      >
+        <TextField
+          select
+          label="Esercizio"
+          value={exerciseId}
+          onChange={(e) => setExerciseId(e.target.value)}
+          sx={{ minWidth: 210 }}
+          slotProps={{
+            select: { native: true },
+            htmlInput: { 'data-cy': 'entry-exercise-select' },
+          }}
+        >
+          <option value="">Scegli un esercizio…</option>
+          {exercisesByName.map((e) => (
+            <option key={e.id} value={e.id}>
+              {e.name}
+            </option>
+          ))}
+        </TextField>
+        <TextField
+          label="Serie"
+          type="number"
+          value={sets}
+          onChange={(e) => setSets(e.target.value)}
+          sx={{ width: 90 }}
+          slotProps={{ htmlInput: { 'data-cy': 'entry-sets' } }}
+        />
+        <TextField
+          label="Ripetizioni"
+          type="number"
+          value={reps}
+          onChange={(e) => setReps(e.target.value)}
+          sx={{ width: 110 }}
+          slotProps={{ htmlInput: { 'data-cy': 'entry-reps' } }}
+        />
+        <Button
+          variant="contained"
           data-cy="add-entry"
           disabled={!exerciseId}
           onClick={() => {
@@ -249,8 +300,8 @@ function DayEditor({
           }}
         >
           Aggiungi
-        </button>
-      </div>
-    </div>
+        </Button>
+      </Stack>
+    </Box>
   )
 }
