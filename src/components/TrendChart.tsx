@@ -84,7 +84,13 @@ export function TrendChart({ points, metric = 'maxWeight' }: Props) {
       {coords.map((c, i) => (
         <g key={c.date}>
           {(i === 0 || i === coords.length - 1) && (
-            <text x={c.cx} y={c.cy - 10} textAnchor="middle" className="point-label">
+            <text
+              x={c.cx}
+              y={c.cy - 10}
+              // Etichette ancorate verso l'interno: quelle dei punti estremi uscirebbero dal riquadro
+              textAnchor={coords.length === 1 ? 'middle' : i === 0 ? 'start' : 'end'}
+              className="point-label"
+            >
               {c.value} {unit}
             </text>
           )}

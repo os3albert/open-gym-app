@@ -2,6 +2,37 @@
 
 Tutte le modifiche rilevanti del progetto, per release.
 
+## 1.2.0 — 2026-07-12
+
+Interfaccia più personale, statistiche sul lavoro svolto e community vera su GitHub
+(milestone M8, issue #36–#41).
+
+### Community condivisa su GitHub (M8)
+
+- Gli esercizi proposti finiscono in `community/exercises.json` e i voti in
+  `community/votes.json`, **nel repository**: un piccolo Cloudflare Worker (`worker/`)
+  valida e committa; l'app legge i file direttamente da GitHub
+- Gli esercizi della community compaiono in lista col badge «community»: si votano
+  (un voto per dispositivo, hash anonimo) e si condividono, ma non si modificano
+- La proposta non blocca nulla: l'esercizio è comunque salvato sul dispositivo, l'invio
+  alla community è un extra che, se fallisce, lo dice e basta
+- Senza configurazione la community è disattivata e l'app resta puramente locale
+  (setup in `docs/COMMUNITY.md`)
+
+### Statistiche (M8)
+
+- Il grafico dello storico misura **quattro metriche**: peso massimo, ripetizioni totali,
+  ripetizioni massime e volume (kg × ripetizioni)
+
+### Interfaccia (M8)
+
+- Nuovo tema con **accento lime** su superfici neutre calde, campi outlined arrotondati,
+  card morbide e pill tonale nella navigazione: meno «Material di default»
+- Si atterra sulla **lista della community**: il form di proposta è collassato dietro il
+  bottone «Nuova proposta»
+- Lighthouse sulla build di produzione: performance 96, accessibilità 100,
+  best practices 100, SEO 100
+
 ## 1.1.0 — 2026-07-12
 
 Redesign completo dell'interfaccia in **Material Design 3** con MUI (milestone M7, issue #31–#35).

@@ -15,9 +15,13 @@ sul tuo dispositivo.
 - **Esercizi della community** — proposte con video **YouTube** (volto offuscato con
   l'AI: si valuta l'esercizio, non la persona), fascia di statura consigliata,
   upvote per dispositivo, filtri per statura e gruppo muscolare.
+- **Catalogo condiviso su GitHub** — le proposte e i voti della community vivono nel
+  repository (`community/exercises.json`, `community/votes.json`), scritti da un piccolo
+  Cloudflare Worker: vedi **[docs/COMMUNITY.md](docs/COMMUNITY.md)**. Senza configurazione
+  l'app resta puramente locale.
 - **Tracking dei pesi** — serie, ripetizioni e carico con suggerimento automatico
   (tutte le serie ≥ 8 ripetizioni → +2,5 kg, altrimenti consolidamento) e grafico
-  dell'andamento per esercizio.
+  dell'andamento per esercizio: peso massimo, ripetizioni totali o massime, volume.
 - **Schede di allenamento** — organizzate per giorni (della settimana o generici),
   una attiva che propone l'**allenamento del giorno** con i pesi precompilati.
 - **Condivisione senza server** — esercizi e schede complete viaggiano in un codice
@@ -30,6 +34,8 @@ sul tuo dispositivo.
 ## Documentazione
 
 - **[Guida utente](docs/GUIDA_UTENTE.md)** — come usare l'app, backup compreso.
+- **[Community su GitHub](docs/COMMUNITY.md)** — come funziona il catalogo condiviso e come
+  configurare il worker.
 - **[Guida per contributori](CONTRIBUTING.md)** — setup, piramide di test, convenzioni.
 - **[Piano di progetto](docs/PROJECT_PLAN.md)** — milestone, issue e stime.
 

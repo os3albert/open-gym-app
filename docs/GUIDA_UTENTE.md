@@ -19,15 +19,23 @@ App: **https://os3albert.github.io/open-gym-app/**
 
 ## Proporre un esercizio
 
-1. Apri la scheda **Esercizi** e compila il modulo: nome, descrizione, gruppo muscolare.
+1. Apri la scheda **Esercizi**: atterri sulla lista della community. Premi **Nuova proposta**
+   per aprire il modulo e compila nome, descrizione, gruppo muscolare.
 2. Incolla il **link YouTube** del video (l'app non ospita video: solo link).
    Il volto nel video deve essere **offuscato con l'AI**: si valuta l'esercizio, non la persona.
    Spunta la casella di conferma, altrimenti l'invio è bloccato.
 3. (Facoltativo) Indica la **fascia di statura** (es. 170–190 cm) per cui l'esercizio è tarato.
 
+L'esercizio è subito tuo, sul dispositivo. Se l'istanza ha la community attiva, la proposta
+viene inviata anche al catalogo condiviso: te lo conferma un messaggio. Se la community non
+risponde, l'esercizio resta comunque salvato da te.
+
 ## Votare e filtrare gli esercizi
 
+- La lista mostra i tuoi esercizi e quelli della community (badge **community**): questi
+  ultimi si votano e si condividono, ma non si modificano né si eliminano.
 - Vota con la freccia **▲** come su Reddit: un voto per dispositivo, ripremi per toglierlo.
+  I voti degli esercizi della community sono condivisi con tutti.
 - Imposta la tua **statura** nella barra dei filtri e attiva «Adatti a me» per vedere solo
   gli esercizi tarati su di te (quelli senza fascia valgono per tutti).
 - Puoi filtrare per gruppo muscolare e ordinare per voti o per data.
@@ -40,8 +48,12 @@ App: **https://os3albert.github.io/open-gym-app/**
    lo stesso carico da consolidare.
 3. Regola con i pulsanti rapidi (−/+2,5 kg, −/+1 rip) e premi **Aggiungi serie**.
    Le serie di oggi compaiono come etichette rimovibili.
-4. In **Storico** trovi le sessioni per giorno e il **grafico dell'andamento del carico**
-   per esercizio, con filtro 30/90 giorni.
+4. In **Storico** trovi le sessioni per giorno e il **grafico dell'andamento** per esercizio,
+   con filtro 30/90 giorni. Il menu **Metrica** decide cosa misura il grafico:
+   - **Peso massimo** — il carico più alto del giorno;
+   - **Ripetizioni totali** — quante ripetizioni hai fatto in tutto quel giorno;
+   - **Ripetizioni massime** — la serie più lunga;
+   - **Volume (kg × reps)** — il lavoro complessivo, carico e ripetizioni insieme.
 
 ## Schede di allenamento
 
