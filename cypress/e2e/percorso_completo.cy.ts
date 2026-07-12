@@ -26,6 +26,7 @@ describe('Percorso completo esercizi (M2)', () => {
     cy.visitWithData(profiloConStatura)
 
     // Proposta con fascia che comprende la statura del profilo (180 cm)
+    cy.apriFormProposta()
     cy.get('[data-cy=exercise-name]').type('Rematore con bilanciere')
     cy.get('[data-cy=exercise-muscle]').type('Dorso')
     cy.get('[data-cy=exercise-stature-min]').type('170')

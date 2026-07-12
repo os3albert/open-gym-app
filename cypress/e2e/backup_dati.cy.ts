@@ -70,6 +70,7 @@ describe('Backup dei dati', () => {
   })
 
   it('esporta un backup JSON datato con lo schema corrente e la data di export', () => {
+    cy.apriFormProposta()
     cy.get('[data-cy=exercise-name]').type('Panca piana')
     cy.get('[data-cy=exercise-youtube]').type('https://youtu.be/dQw4w9WgXcQ')
     cy.get('[data-cy=face-blur-checkbox]').check()

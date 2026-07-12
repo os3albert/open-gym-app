@@ -11,12 +11,20 @@ beforeEach(() => {
   window.history.replaceState(null, '', '/')
 })
 
+/** Il form di proposta è collassato: si apre dal bottone «Nuova proposta» (issue #37). No-op se è già aperto. */
+async function openProposeForm() {
+  if (screen.queryByLabelText('Nome esercizio')) return
+  const user = userEvent.setup()
+  await user.click(screen.getByRole('button', { name: 'Nuova proposta' }))
+}
+
 async function proposeExercise(
   name: string,
   youtubeUrl: string,
   stature?: { min: number; max: number },
 ) {
   const user = userEvent.setup()
+  await openProposeForm()
   await user.type(screen.getByLabelText('Nome esercizio'), name)
   await user.type(screen.getByLabelText('Gruppo muscolare'), 'Petto')
   if (stature) {
@@ -50,9 +58,20 @@ describe('proposta di un esercizio', () => {
     expect(screen.queryByRole('heading', { name: 'Squat' })).not.toBeInTheDocument()
   })
 
-  it('senza conferma del volto offuscato il pulsante di invio è disabilitato', () => {
+  it('senza conferma del volto offuscato il pulsante di invio è disabilitato', async () => {
     render(<App />)
+    await openProposeForm()
     expect(screen.getByRole('button', { name: 'Proponi esercizio' })).toBeDisabled()
+  })
+
+  it('il form di proposta è chiuso di partenza: si atterra sulla lista della community', () => {
+    render(<App />)
+    expect(screen.queryByLabelText('Nome esercizio')).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Esercizi della community' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Nuova proposta' })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    )
   })
 
   it(`il dominio rifiuta comunque la proposta senza conferma (messaggio: ${FACE_BLUR_REQUIRED_ERROR})`, async () => {

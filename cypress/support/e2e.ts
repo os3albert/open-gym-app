@@ -8,9 +8,19 @@ declare global {
     interface Chainable {
       /** Visita l'app con un contenuto di localStorage predisposto prima del caricamento. */
       visitWithData(data: unknown): Chainable<Cypress.AUTWindow>
+      /** Apre il form di proposta (collassato all'atterraggio); no-op se è già aperto. */
+      apriFormProposta(): Chainable<void>
     }
   }
 }
+
+Cypress.Commands.add('apriFormProposta', () => {
+  cy.get('body').then(($body) => {
+    if ($body.find('[data-cy=exercise-name]').length === 0) {
+      cy.get('[data-cy=propose-toggle]').click()
+    }
+  })
+})
 
 Cypress.Commands.add('visitWithData', (data: unknown) => {
   // Niente onBeforeLoad: la test isolation di Cypress ripulisce localStorage a cavallo

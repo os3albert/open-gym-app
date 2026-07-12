@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react'
+import AddIcon from '@mui/icons-material/Add'
+import CloseIcon from '@mui/icons-material/Close'
 import Alert from '@mui/material/Alert'
 import AppBar from '@mui/material/AppBar'
+import Button from '@mui/material/Button'
+import Collapse from '@mui/material/Collapse'
 import Container from '@mui/material/Container'
 import CssBaseline from '@mui/material/CssBaseline'
+import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import { ThemeProvider, useColorScheme } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
@@ -85,12 +90,22 @@ export default function App() {
   const [editing, setEditing] = useState<Exercise | null>(null)
   const [formError, setFormError] = useState<string | null>(null)
   const [statureError, setStatureError] = useState<string | null>(null)
+  // Il form di proposta è chiuso all'atterraggio: la lista della community viene prima
+  const [formOpen, setFormOpen] = useState(false)
+
+  function closeForm() {
+    setFormOpen(false)
+    setEditing(null)
+    setFormError(null)
+  }
 
   function handleSubmitExercise(input: NewExercise): boolean {
     try {
       if (editing) {
+        // Salvata la modifica il pannello si richiude; proponendo si resta pronti al prossimo
         editExercise(editing.id, input)
         setEditing(null)
+        setFormOpen(false)
       } else {
         addExercise(input)
       }
@@ -165,43 +180,61 @@ export default function App() {
           </Alert>
         )}
         {view === 'esercizi' && (
-          <>
-            <ExerciseForm
-              key={editing?.id ?? 'new'}
-              initial={editing}
-              onSubmit={handleSubmitExercise}
-              onCancel={() => {
-                setEditing(null)
-                setFormError(null)
+          <section>
+            <Stack
+              direction="row"
+              spacing={2}
+              useFlexGap
+              sx={{
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                mb: 2,
               }}
-              error={formError}
+            >
+              <Typography variant="h2">Esercizi della community</Typography>
+              <Button
+                variant="contained"
+                startIcon={formOpen ? <CloseIcon /> : <AddIcon />}
+                data-cy="propose-toggle"
+                aria-expanded={formOpen}
+                onClick={() => (formOpen ? closeForm() : setFormOpen(true))}
+              >
+                {/* Non «Proponi esercizio»: è il nome del submit del form, le query per ruolo collidono */}
+                {formOpen ? 'Chiudi il form' : 'Nuova proposta'}
+              </Button>
+            </Stack>
+            <Collapse in={formOpen} unmountOnExit sx={{ mb: 3 }}>
+              <ExerciseForm
+                key={editing?.id ?? 'new'}
+                initial={editing}
+                onSubmit={handleSubmitExercise}
+                onCancel={closeForm}
+                error={formError}
+              />
+            </Collapse>
+            <FilterBar
+              filters={filters}
+              onFiltersChange={setFilters}
+              muscleGroups={muscleGroups(data.exercises)}
+              statureCm={data.profile.statureCm}
+              onSaveStature={handleSaveStature}
+              statureError={statureError}
+              requiresStature={suitabilityRequiresStature(filters, data)}
             />
-            <section>
-              <Typography variant="h2" sx={{ mb: 2 }}>
-                Esercizi della community
-              </Typography>
-              <FilterBar
-                filters={filters}
-                onFiltersChange={setFilters}
-                muscleGroups={muscleGroups(data.exercises)}
-                statureCm={data.profile.statureCm}
-                onSaveStature={handleSaveStature}
-                statureError={statureError}
-                requiresStature={suitabilityRequiresStature(filters, data)}
-              />
-              <ExerciseList
-                exercises={visibleExercises}
-                totalCount={data.exercises.length}
-                votedIds={new Set(data.votedExerciseIds)}
-                onToggleVote={vote}
-                onEdit={(exercise) => {
-                  setFormError(null)
-                  setEditing(exercise)
-                }}
-                onDelete={removeExercise}
-              />
-            </section>
-          </>
+            <ExerciseList
+              exercises={visibleExercises}
+              totalCount={data.exercises.length}
+              votedIds={new Set(data.votedExerciseIds)}
+              onToggleVote={vote}
+              onEdit={(exercise) => {
+                setFormError(null)
+                setEditing(exercise)
+                setFormOpen(true)
+              }}
+              onDelete={removeExercise}
+            />
+          </section>
         )}
         {view === 'schede' && (
           <PlansView

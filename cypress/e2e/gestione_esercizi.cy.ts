@@ -1,6 +1,7 @@
 // E2E del flusso principale: proporre esercizi, votarli, persistenza tra ricaricamenti.
 
 function proponiEsercizio(nome: string, link: string) {
+  cy.apriFormProposta()
   cy.get('[data-cy=exercise-name]').type(nome)
   cy.get('[data-cy=exercise-muscle]').type('Petto')
   cy.get('[data-cy=exercise-youtube]').type(link)
@@ -23,6 +24,7 @@ describe('Gestione esercizi', () => {
   })
 
   it('senza la conferma del volto offuscato il pulsante di invio resta disabilitato', () => {
+    cy.apriFormProposta()
     cy.get('[data-cy=exercise-submit]').should('be.disabled')
     cy.get('[data-cy=face-blur-checkbox]').check()
     cy.get('[data-cy=exercise-submit]').should('be.enabled')
@@ -45,6 +47,15 @@ describe('Gestione esercizi', () => {
     cy.get('[data-cy=exercise-upvote]').click()
     cy.get('[data-cy=exercise-votes]').should('have.text', '0')
     cy.get('[data-cy=exercise-upvote]').should('have.attr', 'aria-pressed', 'false')
+  })
+
+  it('atterra sulla lista della community, con il form di proposta chiuso e apribile', () => {
+    cy.get('[data-cy=exercise-name]').should('not.exist')
+    cy.get('[data-cy=propose-toggle]').should('have.attr', 'aria-expanded', 'false').click()
+
+    cy.get('[data-cy=exercise-name]').should('be.visible')
+    cy.get('[data-cy=propose-toggle]').should('have.attr', 'aria-expanded', 'true').click()
+    cy.get('[data-cy=exercise-name]').should('not.exist')
   })
 
   it('modifica un esercizio esistente', () => {
