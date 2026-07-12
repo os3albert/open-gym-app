@@ -16,6 +16,8 @@ async function openProposeForm() {
   if (screen.queryByLabelText('Nome esercizio')) return
   const user = userEvent.setup()
   await user.click(screen.getByRole('button', { name: 'Nuova proposta' }))
+  // Il pannello deve essere davvero in pagina prima di scriverci dentro
+  await screen.findByLabelText('Nome esercizio')
 }
 
 async function proposeExercise(

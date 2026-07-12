@@ -1,6 +1,13 @@
 import { createTheme } from '@mui/material/styles'
 
 /**
+ * Sotto Vitest le animazioni si azzerano: durante una transizione MUI mette
+ * `pointer-events: none` sul contenuto, e userEvent (che clicca davvero) fallisce
+ * in modo intermittente, tanto più su macchine lente come i runner della CI.
+ */
+const underTest = import.meta.env.MODE === 'test'
+
+/**
  * Tema 2.0 (M8): accento lime «energia» su superfici neutre calde, look de-materializzato
  * (campi outlined arrotondati, card morbide, pill tonali). Gli schemi light/dark restano
  * agganciati all'attributo data-theme su <html>, governato da hooks/useTheme.ts.
@@ -8,6 +15,7 @@ import { createTheme } from '@mui/material/styles'
  */
 export const theme = createTheme({
   cssVariables: { colorSchemeSelector: 'data-theme' },
+  ...(underTest ? { transitions: { create: () => 'none' } } : {}),
   colorSchemes: {
     light: {
       palette: {
@@ -44,6 +52,8 @@ export const theme = createTheme({
     button: { textTransform: 'none', fontWeight: 600, letterSpacing: '0.01em' },
   },
   components: {
+    // Il Collapse del form di proposta deve essere già "aperto" al primo tick nei test
+    MuiCollapse: { defaultProps: { timeout: underTest ? 0 : undefined } },
     MuiButton: {
       defaultProps: { disableElevation: true },
       styleOverrides: {
