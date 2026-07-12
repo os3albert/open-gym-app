@@ -159,6 +159,37 @@ describe('storico allenamenti (issue #15)', () => {
     ).toBeInTheDocument()
   })
 
+  it('la metrica cambia ciò che il grafico misura: peso, ripetizioni, volume (issue #38)', async () => {
+    const user = userEvent.setup()
+    // Ieri 80 kg × 5; oggi due serie: 85×5 e 85×3 (8 reps totali, 680 kg×reps)
+    let data = seed({ history: { weightKg: 80, reps: 5 } })
+    data = recordSet(data, data.exercises[0].id, todayIso(), { weightKg: 85, reps: 5 })
+    data = recordSet(data, data.exercises[0].id, todayIso(), { weightKg: 85, reps: 3 })
+    saveData(data)
+    render(<App />)
+    await user.click(screen.getByRole('button', { name: 'Storico' }))
+    await user.selectOptions(screen.getByLabelText('Esercizio'), 'Squat')
+
+    await user.selectOptions(screen.getByLabelText('Metrica'), 'Ripetizioni totali')
+    expect(
+      screen.getByRole('img', {
+        name: /Andamento delle ripetizioni totali: da 5 reps .* a 8 reps/,
+      }),
+    ).toBeInTheDocument()
+
+    await user.selectOptions(screen.getByLabelText('Metrica'), 'Ripetizioni massime')
+    expect(
+      screen.getByRole('img', {
+        name: /Andamento delle ripetizioni massime: da 5 reps .* a 5 reps/,
+      }),
+    ).toBeInTheDocument()
+
+    await user.selectOptions(screen.getByLabelText('Metrica'), 'Volume (kg × reps)')
+    expect(
+      screen.getByRole('img', { name: /Andamento del volume: da 400 kg×reps .* a 680 kg×reps/ }),
+    ).toBeInTheDocument()
+  })
+
   it('senza sessioni mostra lo stato vuoto', async () => {
     const user = userEvent.setup()
     seed()

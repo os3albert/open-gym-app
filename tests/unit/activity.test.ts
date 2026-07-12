@@ -117,15 +117,49 @@ describe('lastSession', () => {
 })
 
 describe('exerciseHistory', () => {
-  it('produce il peso massimo per giorno in ordine cronologico', () => {
+  /** Due giorni: l'11 con due serie (60×8 e 70×4), il 1° con una sola (55×8). */
+  function historyFixture() {
     const { data, id } = withExercise()
     let updated = recordSet(data, id, '2026-07-11', { weightKg: 60, reps: 8 })
     updated = recordSet(updated, id, '2026-07-11', { weightKg: 70, reps: 4 })
     updated = recordSet(updated, id, '2026-07-01', { weightKg: 55, reps: 8 })
+    return { activity: updated.activity, id }
+  }
 
-    expect(exerciseHistory(updated.activity, id)).to.deep.equal([
-      { date: '2026-07-01', maxWeightKg: 55 },
-      { date: '2026-07-11', maxWeightKg: 70 },
+  it('produce il peso massimo per giorno in ordine cronologico (metrica di default)', () => {
+    const { activity, id } = historyFixture()
+
+    expect(exerciseHistory(activity, id)).to.deep.equal([
+      { date: '2026-07-01', value: 55 },
+      { date: '2026-07-11', value: 70 },
+    ])
+  })
+
+  it('somma le ripetizioni del giorno con la metrica «totalReps»', () => {
+    const { activity, id } = historyFixture()
+
+    expect(exerciseHistory(activity, id, 'totalReps')).to.deep.equal([
+      { date: '2026-07-01', value: 8 },
+      { date: '2026-07-11', value: 12 },
+    ])
+  })
+
+  it('prende la serie più lunga del giorno con la metrica «maxReps»', () => {
+    const { activity, id } = historyFixture()
+
+    expect(exerciseHistory(activity, id, 'maxReps')).to.deep.equal([
+      { date: '2026-07-01', value: 8 },
+      { date: '2026-07-11', value: 8 },
+    ])
+  })
+
+  it('somma peso × ripetizioni con la metrica «volume»', () => {
+    const { activity, id } = historyFixture()
+
+    // 11 luglio: 60×8 + 70×4 = 480 + 280 = 760; 1° luglio: 55×8 = 440
+    expect(exerciseHistory(activity, id, 'volume')).to.deep.equal([
+      { date: '2026-07-01', value: 440 },
+      { date: '2026-07-11', value: 760 },
     ])
   })
 
@@ -147,9 +181,9 @@ describe('exerciseHistory', () => {
 
 describe('filterByPeriod', () => {
   const points = [
-    { date: '2026-01-01', maxWeightKg: 50 },
-    { date: '2026-06-20', maxWeightKg: 60 },
-    { date: '2026-07-10', maxWeightKg: 65 },
+    { date: '2026-01-01', value: 50 },
+    { date: '2026-06-20', value: 60 },
+    { date: '2026-07-10', value: 65 },
   ]
 
   it('limita agli ultimi N giorni', () => {

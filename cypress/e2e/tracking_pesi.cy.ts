@@ -57,6 +57,26 @@ describe('Tracking pesi (M3)', () => {
     cy.get('[data-cy=session-item]').should('have.length', 2)
   })
 
+  it('il grafico segue la metrica scelta: peso, ripetizioni, volume', () => {
+    cy.visitWithData(seed)
+
+    cy.get('[data-cy=tab-storico]').click()
+    cy.get('[data-cy=history-exercise-select]').select('Stacco da terra')
+    cy.get('[data-cy=trend-chart]').should('have.attr', 'aria-label').and('include', 'del carico')
+
+    cy.get('[data-cy=metric-select]').select('Ripetizioni totali')
+    cy.get('[data-cy=trend-chart]')
+      .should('have.attr', 'aria-label')
+      .and('include', 'ripetizioni totali')
+      .and('include', '5 reps')
+
+    cy.get('[data-cy=metric-select]').select('Volume (kg × reps)')
+    cy.get('[data-cy=trend-chart]')
+      .should('have.attr', 'aria-label')
+      .and('include', 'volume')
+      .and('include', '500 kg×reps')
+  })
+
   it('senza storico il campo peso resta vuoto e i +/- funzionano', () => {
     cy.visitWithData({ ...seed, activity: [] })
 

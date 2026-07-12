@@ -72,22 +72,45 @@ export function lastSession(activity: ActivityRecord[], exerciseId: string): Act
   return sessions.reduce((a, b) => (a.date >= b.date ? a : b))
 }
 
+/** Cosa si misura nel grafico dello storico: non solo il carico, anche il lavoro svolto. */
+export type TrendMetric = 'maxWeight' | 'totalReps' | 'maxReps' | 'volume'
+
 export interface TrendPoint {
   date: string
-  maxWeightKg: number
+  value: number
 }
 
-/** Andamento del carico: peso massimo per giorno, in ordine cronologico. */
-export function exerciseHistory(activity: ActivityRecord[], exerciseId: string): TrendPoint[] {
-  const byDate = new Map<string, number>()
+/** Aggrega le serie di un giorno secondo la metrica scelta. */
+function aggregate(sets: WorkoutSet[], metric: TrendMetric): number {
+  switch (metric) {
+    case 'maxWeight':
+      return Math.max(...sets.map((s) => s.weightKg))
+    case 'totalReps':
+      return sets.reduce((sum, s) => sum + s.reps, 0)
+    case 'maxReps':
+      return Math.max(...sets.map((s) => s.reps))
+    case 'volume':
+      return sets.reduce((sum, s) => sum + s.weightKg * s.reps, 0)
+  }
+}
+
+/**
+ * Andamento di un esercizio per giorno, in ordine cronologico.
+ * Un giorno può avere più record (raro ma possibile): le serie si uniscono prima di aggregare.
+ */
+export function exerciseHistory(
+  activity: ActivityRecord[],
+  exerciseId: string,
+  metric: TrendMetric = 'maxWeight',
+): TrendPoint[] {
+  const byDate = new Map<string, WorkoutSet[]>()
   for (const record of activity) {
     if (record.exerciseId !== exerciseId || record.sets.length === 0) continue
-    const max = Math.max(...record.sets.map((s) => s.weightKg))
-    byDate.set(record.date, Math.max(byDate.get(record.date) ?? 0, max))
+    byDate.set(record.date, [...(byDate.get(record.date) ?? []), ...record.sets])
   }
   return [...byDate.entries()]
     .sort(([a], [b]) => a.localeCompare(b))
-    .map(([date, maxWeightKg]) => ({ date, maxWeightKg }))
+    .map(([date, sets]) => ({ date, value: aggregate(sets, metric) }))
 }
 
 /** Limita l'andamento agli ultimi N giorni; null = tutto lo storico. */

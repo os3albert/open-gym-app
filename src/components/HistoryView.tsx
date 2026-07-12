@@ -5,7 +5,12 @@ import CardContent from '@mui/material/CardContent'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import { exerciseHistory, filterByPeriod, sessionsByDate } from '../domain/activity'
+import {
+  exerciseHistory,
+  filterByPeriod,
+  sessionsByDate,
+  type TrendMetric,
+} from '../domain/activity'
 import type { AppData } from '../domain/types'
 import { formatDateIt, todayIso } from '../utils/date'
 import { TrendChart } from './TrendChart'
@@ -20,9 +25,17 @@ const PERIODS = [
   { value: '90', label: 'Ultimi 90 giorni', days: 90 },
 ] as const
 
+const METRICS: Array<{ value: TrendMetric; label: string }> = [
+  { value: 'maxWeight', label: 'Peso massimo' },
+  { value: 'totalReps', label: 'Ripetizioni totali' },
+  { value: 'maxReps', label: 'Ripetizioni massime' },
+  { value: 'volume', label: 'Volume (kg × reps)' },
+]
+
 export function HistoryView({ data }: Props) {
   const [selectedExerciseId, setSelectedExerciseId] = useState('')
   const [period, setPeriod] = useState<string>('')
+  const [metric, setMetric] = useState<TrendMetric>('maxWeight')
 
   const sessions = sessionsByDate(data.activity)
   const exerciseName = (id: string) => data.exercises.find((e) => e.id === id)?.name ?? id
@@ -47,7 +60,7 @@ export function HistoryView({ data }: Props) {
 
   const days = PERIODS.find((p) => p.value === period)?.days ?? null
   const trend = selectedExerciseId
-    ? filterByPeriod(exerciseHistory(data.activity, selectedExerciseId), days, todayIso())
+    ? filterByPeriod(exerciseHistory(data.activity, selectedExerciseId, metric), days, todayIso())
     : []
 
   return (
@@ -84,6 +97,24 @@ export function HistoryView({ data }: Props) {
             </TextField>
             <TextField
               select
+              label="Metrica"
+              value={metric}
+              onChange={(e) => setMetric(e.target.value as TrendMetric)}
+              sx={{ minWidth: 190 }}
+              slotProps={{
+                select: { native: true },
+                inputLabel: { shrink: true },
+                htmlInput: { 'data-cy': 'metric-select' },
+              }}
+            >
+              {METRICS.map((m) => (
+                <option key={m.value} value={m.value}>
+                  {m.label}
+                </option>
+              ))}
+            </TextField>
+            <TextField
+              select
               label="Periodo"
               value={period}
               onChange={(e) => setPeriod(e.target.value)}
@@ -102,7 +133,7 @@ export function HistoryView({ data }: Props) {
             </TextField>
           </Stack>
           {selectedExerciseId ? (
-            <TrendChart points={trend} />
+            <TrendChart points={trend} metric={metric} />
           ) : (
             <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
               Scegli un esercizio per vedere l'andamento del peso nel tempo.
