@@ -1,4 +1,12 @@
 import { useState, type FormEvent } from 'react'
+import Alert from '@mui/material/Alert'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Checkbox from '@mui/material/Checkbox'
+import Divider from '@mui/material/Divider'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Stack from '@mui/material/Stack'
+import TextField from '@mui/material/TextField'
 import type { ExerciseFilters, SortOrder } from '../domain/filters'
 
 interface Props {
@@ -30,69 +38,78 @@ export function FilterBar({
   }
 
   return (
-    <div className="filter-bar">
-      <form className="stature-editor" onSubmit={handleStatureSubmit}>
-        <label>
-          La mia statura (cm)
-          <input
-            type="number"
-            data-cy="stature-input"
-            value={statureInput}
-            onChange={(e) => setStatureInput(e.target.value)}
-            placeholder="es. 180"
-          />
-        </label>
-        <button type="submit" className="btn-small" data-cy="stature-save">
+    <Stack spacing={2} sx={{ mb: 2 }}>
+      <Box
+        component="form"
+        onSubmit={handleStatureSubmit}
+        sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap' }}
+      >
+        <TextField
+          label="La mia statura (cm)"
+          type="number"
+          placeholder="es. 180"
+          value={statureInput}
+          onChange={(e) => setStatureInput(e.target.value)}
+          slotProps={{ htmlInput: { 'data-cy': 'stature-input' } }}
+        />
+        <Button type="submit" variant="outlined" size="small" data-cy="stature-save">
           Salva
-        </button>
-      </form>
+        </Button>
+      </Box>
       {statureError && (
-        <p role="alert" data-cy="stature-error" className="error">
+        <Alert severity="error" role="alert" data-cy="stature-error">
           {statureError}
-        </p>
+        </Alert>
       )}
-      <div className="filters-row">
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
-            data-cy="filter-suitable"
-            checked={filters.suitableOnly}
-            onChange={(e) => onFiltersChange({ ...filters, suitableOnly: e.target.checked })}
-          />
-          Adatti a me
-        </label>
-        <label>
-          Filtra per gruppo muscolare
-          <select
-            data-cy="filter-muscle"
-            value={filters.muscleGroup ?? ''}
-            onChange={(e) => onFiltersChange({ ...filters, muscleGroup: e.target.value || null })}
-          >
-            <option value="">Tutti</option>
-            {muscleGroups.map((group) => (
-              <option key={group} value={group}>
-                {group}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Ordina per
-          <select
-            data-cy="sort-select"
-            value={filters.sort}
-            onChange={(e) => onFiltersChange({ ...filters, sort: e.target.value as SortOrder })}
-          >
-            <option value="votes">Più votati</option>
-            <option value="recent">Più recenti</option>
-          </select>
-        </label>
-      </div>
+      <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: 'wrap', alignItems: 'center' }}>
+        <FormControlLabel
+          label="Adatti a me"
+          control={
+            <Checkbox
+              checked={filters.suitableOnly}
+              onChange={(e) => onFiltersChange({ ...filters, suitableOnly: e.target.checked })}
+              // Lo slot input di Checkbox non tipizza i data-*: cast al tipo HTML nativo
+              slotProps={{
+                input: {
+                  'data-cy': 'filter-suitable',
+                } as React.InputHTMLAttributes<HTMLInputElement>,
+              }}
+            />
+          }
+        />
+        <TextField
+          select
+          label="Filtra per gruppo muscolare"
+          value={filters.muscleGroup ?? ''}
+          onChange={(e) => onFiltersChange({ ...filters, muscleGroup: e.target.value || null })}
+          sx={{ minWidth: 220 }}
+          slotProps={{ select: { native: true }, htmlInput: { 'data-cy': 'filter-muscle' } }}
+        >
+          <option value="">Tutti</option>
+          {muscleGroups.map((group) => (
+            <option key={group} value={group}>
+              {group}
+            </option>
+          ))}
+        </TextField>
+        <TextField
+          select
+          label="Ordina per"
+          value={filters.sort}
+          onChange={(e) => onFiltersChange({ ...filters, sort: e.target.value as SortOrder })}
+          sx={{ minWidth: 150 }}
+          slotProps={{ select: { native: true }, htmlInput: { 'data-cy': 'sort-select' } }}
+        >
+          <option value="votes">Più votati</option>
+          <option value="recent">Più recenti</option>
+        </TextField>
+      </Stack>
       {requiresStature && (
-        <p data-cy="stature-required" className="warning" role="status">
+        <Alert severity="warning" role="status" data-cy="stature-required">
           Per usare «Adatti a me» inserisci prima la tua statura qui sopra.
-        </p>
+        </Alert>
       )}
-    </div>
+      <Divider />
+    </Stack>
   )
 }

@@ -1,4 +1,12 @@
 import { useState } from 'react'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
+import CardActions from '@mui/material/CardActions'
+import CardContent from '@mui/material/CardContent'
+import Chip from '@mui/material/Chip'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import type { Exercise } from '../domain/types'
 import { encodeExerciseShare } from '../services/share'
 import { parseYouTubeVideoId } from '../services/youtube'
@@ -27,108 +35,152 @@ export function ExerciseList({
   const [sharingId, setSharingId] = useState<string | null>(null)
 
   if (totalCount === 0) {
-    return <p data-cy="empty-state">Nessun esercizio proposto finora. Proponi tu il primo!</p>
+    return (
+      <Typography data-cy="empty-state">
+        Nessun esercizio proposto finora. Proponi tu il primo!
+      </Typography>
+    )
   }
   if (exercises.length === 0) {
-    return <p data-cy="no-results">Nessun esercizio corrisponde ai filtri scelti.</p>
+    return (
+      <Typography data-cy="no-results">Nessun esercizio corrisponde ai filtri scelti.</Typography>
+    )
   }
 
   return (
-    <ul className="exercise-list" data-cy="exercise-list">
+    <Box
+      component="ul"
+      data-cy="exercise-list"
+      sx={{
+        listStyle: 'none',
+        m: 0,
+        p: 0,
+        display: 'grid',
+        gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+        gap: 2,
+        alignItems: 'start',
+      }}
+    >
       {exercises.map((exercise) => {
         const videoId = parseYouTubeVideoId(exercise.youtubeUrl)
         const voted = votedIds.has(exercise.id)
         const confirming = confirmingDeleteId === exercise.id
         return (
-          <li key={exercise.id} className="exercise-item" data-cy="exercise-item">
-            <div className="exercise-votes">
-              <button
-                type="button"
-                data-cy="exercise-upvote"
-                className={voted ? 'vote-button voted' : 'vote-button'}
-                aria-pressed={voted}
-                aria-label={voted ? `Rimuovi il voto a ${exercise.name}` : `Vota ${exercise.name}`}
-                onClick={() => onToggleVote(exercise.id)}
+          <Card key={exercise.id} component="li" data-cy="exercise-item">
+            {videoId && <YouTubePlayer videoId={videoId} title={exercise.name} />}
+            <CardContent sx={{ pb: 0 }}>
+              <Stack
+                direction="row"
+                spacing={1}
+                sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}
               >
-                ▲
-              </button>
-              <span data-cy="exercise-votes">{exercise.votes}</span>
-            </div>
-            <div className="exercise-body">
-              <h3>{exercise.name}</h3>
-              <p className="badges">
-                {exercise.muscleGroup && <span className="badge">{exercise.muscleGroup}</span>}
+                <Typography variant="h3" component="h3">
+                  {exercise.name}
+                </Typography>
+                {/* Upvote stile Reddit: un voto per dispositivo, toggle */}
+                <Button
+                  size="small"
+                  variant={voted ? 'contained' : 'outlined'}
+                  className={voted ? 'vote-button voted' : 'vote-button'}
+                  data-cy="exercise-upvote"
+                  aria-pressed={voted}
+                  aria-label={
+                    voted ? `Rimuovi il voto a ${exercise.name}` : `Vota ${exercise.name}`
+                  }
+                  onClick={() => onToggleVote(exercise.id)}
+                  sx={{ minWidth: 0, flexShrink: 0, gap: 0.5 }}
+                >
+                  ▲ <span data-cy="exercise-votes">{exercise.votes}</span>
+                </Button>
+              </Stack>
+              <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap', mt: 1 }}>
+                {exercise.muscleGroup && <Chip size="small" label={exercise.muscleGroup} />}
                 {exercise.stature && (
-                  <span className="badge" data-cy="stature-badge">
-                    {exercise.stature.minCm}–{exercise.stature.maxCm} cm
-                  </span>
+                  <Chip
+                    size="small"
+                    variant="outlined"
+                    data-cy="stature-badge"
+                    label={`${exercise.stature.minCm}–${exercise.stature.maxCm} cm`}
+                  />
                 )}
                 {exercise.faceBlurConfirmed && (
-                  <span className="badge badge-ok" data-cy="face-blur-badge">
-                    ✓ volto offuscato
-                  </span>
+                  <Chip
+                    size="small"
+                    color="success"
+                    variant="outlined"
+                    data-cy="face-blur-badge"
+                    label="✓ volto offuscato"
+                  />
                 )}
-              </p>
-              {exercise.description && <p>{exercise.description}</p>}
-              {videoId && <YouTubePlayer videoId={videoId} title={exercise.name} />}
-              <div className="card-actions">
-                <button
-                  type="button"
-                  className="btn-ghost"
-                  data-cy="exercise-edit"
-                  onClick={() => {
-                    setConfirmingDeleteId(null)
-                    onEdit(exercise)
-                  }}
-                >
-                  Modifica
-                </button>
-                <button
-                  type="button"
-                  className="btn-ghost"
-                  data-cy="exercise-share"
-                  onClick={() => setSharingId(sharingId === exercise.id ? null : exercise.id)}
-                >
-                  Condividi
-                </button>
-                {confirming ? (
-                  <>
-                    <button
-                      type="button"
-                      className="btn-danger"
-                      data-cy="exercise-delete-confirm"
-                      onClick={() => {
-                        setConfirmingDeleteId(null)
-                        onDelete(exercise.id)
-                      }}
-                    >
-                      Conferma eliminazione
-                    </button>
-                    <button
-                      type="button"
-                      className="btn-ghost"
-                      data-cy="exercise-delete-cancel"
-                      onClick={() => setConfirmingDeleteId(null)}
-                    >
-                      Annulla
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    type="button"
-                    className="btn-ghost"
-                    data-cy="exercise-delete"
-                    onClick={() => setConfirmingDeleteId(exercise.id)}
+              </Stack>
+              {exercise.description && (
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>
+                  {exercise.description}
+                </Typography>
+              )}
+            </CardContent>
+            <CardActions sx={{ px: 2, pb: 2, flexWrap: 'wrap', gap: 0.5 }}>
+              <Button
+                size="small"
+                color="inherit"
+                data-cy="exercise-edit"
+                onClick={() => {
+                  setConfirmingDeleteId(null)
+                  onEdit(exercise)
+                }}
+              >
+                Modifica
+              </Button>
+              <Button
+                size="small"
+                color="inherit"
+                data-cy="exercise-share"
+                onClick={() => setSharingId(sharingId === exercise.id ? null : exercise.id)}
+              >
+                Condividi
+              </Button>
+              {confirming ? (
+                <>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    color="error"
+                    data-cy="exercise-delete-confirm"
+                    onClick={() => {
+                      setConfirmingDeleteId(null)
+                      onDelete(exercise.id)
+                    }}
                   >
-                    Elimina
-                  </button>
-                )}
-              </div>
-              {sharingId === exercise.id && <ShareCodeBox code={encodeExerciseShare(exercise)} />}
-            </div>
-          </li>
+                    Conferma eliminazione
+                  </Button>
+                  <Button
+                    size="small"
+                    color="inherit"
+                    data-cy="exercise-delete-cancel"
+                    onClick={() => setConfirmingDeleteId(null)}
+                  >
+                    Annulla
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  size="small"
+                  color="inherit"
+                  data-cy="exercise-delete"
+                  onClick={() => setConfirmingDeleteId(exercise.id)}
+                >
+                  Elimina
+                </Button>
+              )}
+            </CardActions>
+            {sharingId === exercise.id && (
+              <Box sx={{ px: 2, pb: 2 }}>
+                <ShareCodeBox code={encodeExerciseShare(exercise)} />
+              </Box>
+            )}
+          </Card>
         )
       })}
-    </ul>
+    </Box>
   )
 }

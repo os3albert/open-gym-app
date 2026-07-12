@@ -312,12 +312,28 @@ button:disabled {
 .play-icon {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.5rem;
+  display: grid;
+  place-items: center;
+  font-size: 1.75rem;
   color: #fff;
-  background: rgba(15, 23, 42, 0.35);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* Cerchio traslucido con blur dietro al play, come nei mockup ui/ */
+.play-icon::before {
+  content: '';
+  position: absolute;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(6px);
+}
+
+.video-facade {
+  max-width: none;
+  width: 100%;
 }
 
 .video-frame {

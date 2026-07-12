@@ -1,4 +1,13 @@
 import { useState, type FormEvent } from 'react'
+import Alert from '@mui/material/Alert'
+import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Stack from '@mui/material/Stack'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 import type { NewExercise } from '../domain/exercises'
 import type { Exercise } from '../domain/types'
 import { parseYouTubeVideoId, youtubeThumbnailUrl } from '../services/youtube'
@@ -50,117 +59,123 @@ export function ExerciseForm({ initial = null, onSubmit, onCancel, error }: Prop
   }
 
   return (
-    <section className="card">
-      <h2>{initial ? 'Modifica esercizio' : 'Proponi un esercizio'}</h2>
-      <p className="hint">
-        Carica il link di un video YouTube con il volto offuscato dall'AI: si valuta l'esercizio,
-        non la persona.
-      </p>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Nome esercizio
-          <input
-            data-cy="exercise-name"
+    <Card>
+      <CardContent>
+        <Typography variant="h2" gutterBottom>
+          {initial ? 'Modifica esercizio' : 'Proponi un esercizio'}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          Carica il link di un video YouTube con il volto offuscato dall'AI: si valuta l'esercizio,
+          non la persona.
+        </Typography>
+        <Stack component="form" spacing={2} onSubmit={handleSubmit}>
+          <TextField
+            label="Nome esercizio"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            required
+            slotProps={{ htmlInput: { 'data-cy': 'exercise-name' } }}
           />
-        </label>
-        <label>
-          Gruppo muscolare
-          <input
-            data-cy="exercise-muscle"
+          <TextField
+            label="Gruppo muscolare"
             value={muscleGroup}
             onChange={(e) => setMuscleGroup(e.target.value)}
+            slotProps={{ htmlInput: { 'data-cy': 'exercise-muscle' } }}
           />
-        </label>
-        <div className="stature-fields">
-          <label>
-            Statura consigliata da (cm)
-            <input
+          <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: 'wrap' }}>
+            <TextField
+              label="Statura consigliata da (cm)"
               type="number"
-              data-cy="exercise-stature-min"
+              placeholder="es. 170"
               value={statureMin}
               onChange={(e) => setStatureMin(e.target.value)}
-              placeholder="es. 170"
+              slotProps={{ htmlInput: { 'data-cy': 'exercise-stature-min' } }}
             />
-          </label>
-          <label>
-            a (cm)
-            <input
+            <TextField
+              label="a (cm)"
               type="number"
-              data-cy="exercise-stature-max"
+              placeholder="es. 190"
               value={statureMax}
               onChange={(e) => setStatureMax(e.target.value)}
-              placeholder="es. 190"
+              slotProps={{ htmlInput: { 'data-cy': 'exercise-stature-max' } }}
             />
-          </label>
-        </div>
-        <p className="hint">Lascia vuota la fascia di statura se l'esercizio è adatto a tutti.</p>
-        <label>
-          Link YouTube (volto offuscato)
-          <input
-            data-cy="exercise-youtube"
+          </Stack>
+          <Typography variant="caption" color="text.secondary">
+            Lascia vuota la fascia di statura se l'esercizio è adatto a tutti.
+          </Typography>
+          <TextField
+            label="Link YouTube (volto offuscato)"
+            placeholder="https://www.youtube.com/watch?v=..."
             value={youtubeUrl}
             onChange={(e) => setYoutubeUrl(e.target.value)}
-            placeholder="https://www.youtube.com/watch?v=..."
-            required
+            slotProps={{ htmlInput: { 'data-cy': 'exercise-youtube' } }}
           />
-        </label>
-        {previewVideoId && (
-          <img
-            className="video-preview"
-            data-cy="video-preview"
-            src={youtubeThumbnailUrl(previewVideoId)}
-            alt="Anteprima del video YouTube"
-          />
-        )}
-        <label>
-          Descrizione
-          <textarea
-            data-cy="exercise-description"
+          {previewVideoId && (
+            <img
+              className="video-preview"
+              data-cy="video-preview"
+              src={youtubeThumbnailUrl(previewVideoId)}
+              alt="Anteprima del video YouTube"
+            />
+          )}
+          <TextField
+            label="Descrizione"
+            multiline
+            rows={3}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            rows={3}
+            slotProps={{ htmlInput: { 'data-cy': 'exercise-description' } }}
           />
-        </label>
-        <details className="guidelines" data-cy="video-guidelines">
-          <summary>Linee guida video (volto offuscato)</summary>
-          <ul>
-            <li>
-              Su YouTube Studio: Editor → Sfoca → «Sfocatura viso», rileva e segue i volti
-              automaticamente (gratuito).
-            </li>
-            <li>In alternativa: app di editing con blur AI (es. CapCut) prima del caricamento.</li>
-            <li>Il video deve mostrare l'esecuzione completa dell'esercizio.</li>
-            <li>Carica come «Non in elenco» se non vuoi che appaia nel tuo canale.</li>
-          </ul>
-        </details>
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
-            data-cy="face-blur-checkbox"
-            checked={faceBlurConfirmed}
-            onChange={(e) => setFaceBlurConfirmed(e.target.checked)}
+          <details className="guidelines" data-cy="video-guidelines">
+            <summary>Linee guida video (volto offuscato)</summary>
+            <ul>
+              <li>
+                Su YouTube Studio: Editor → Sfoca → «Sfocatura viso», rileva e segue i volti
+                automaticamente (gratuito).
+              </li>
+              <li>
+                In alternativa: app di editing con blur AI (es. CapCut) prima del caricamento.
+              </li>
+              <li>Il video deve mostrare l'esecuzione completa dell'esercizio.</li>
+              <li>Carica come «Non in elenco» se non vuoi che appaia nel tuo canale.</li>
+            </ul>
+          </details>
+          <FormControlLabel
+            label="Confermo che il volto nel video è offuscato"
+            control={
+              <Checkbox
+                checked={faceBlurConfirmed}
+                onChange={(e) => setFaceBlurConfirmed(e.target.checked)}
+                // Lo slot input di Checkbox non tipizza i data-*: cast al tipo HTML nativo
+                slotProps={{
+                  input: {
+                    'data-cy': 'face-blur-checkbox',
+                  } as React.InputHTMLAttributes<HTMLInputElement>,
+                }}
+              />
+            }
           />
-          Confermo che il volto nel video è offuscato
-        </label>
-        {error && (
-          <p role="alert" data-cy="form-error" className="error">
-            {error}
-          </p>
-        )}
-        <div className="form-actions">
-          <button type="submit" data-cy="exercise-submit" disabled={!faceBlurConfirmed}>
-            {initial ? 'Salva modifiche' : 'Proponi esercizio'}
-          </button>
-          {initial && onCancel && (
-            <button type="button" className="btn-ghost" data-cy="edit-cancel" onClick={onCancel}>
-              Annulla modifica
-            </button>
+          {error && (
+            <Alert severity="error" role="alert" data-cy="form-error">
+              {error}
+            </Alert>
           )}
-        </div>
-      </form>
-    </section>
+          <Stack direction="row" spacing={1.5} useFlexGap sx={{ flexWrap: 'wrap' }}>
+            <Button
+              type="submit"
+              variant="contained"
+              data-cy="exercise-submit"
+              disabled={!faceBlurConfirmed}
+            >
+              {initial ? 'Salva modifiche' : 'Proponi esercizio'}
+            </Button>
+            {initial && onCancel && (
+              <Button variant="text" color="inherit" data-cy="edit-cancel" onClick={onCancel}>
+                Annulla modifica
+              </Button>
+            )}
+          </Stack>
+        </Stack>
+      </CardContent>
+    </Card>
   )
 }

@@ -175,8 +175,10 @@ export default function App() {
               }}
               error={formError}
             />
-            <section className="card">
-              <h2>Esercizi della community</h2>
+            <section>
+              <Typography variant="h2" sx={{ mb: 2 }}>
+                Esercizi della community
+              </Typography>
               <FilterBar
                 filters={filters}
                 onFiltersChange={setFilters}

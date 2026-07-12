@@ -1,4 +1,8 @@
 import { useState } from 'react'
+import Button from '@mui/material/Button'
+import Stack from '@mui/material/Stack'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 import { SHARE_HASH_PREFIX } from '../services/share'
 
 interface Props {
@@ -24,48 +28,54 @@ export function ShareCodeBox({ code }: Props) {
   }
 
   return (
-    <div className="share-box" data-cy="share-box">
-      <textarea
-        readOnly
+    <Stack spacing={1} className="share-box" data-cy="share-box">
+      <TextField
+        multiline
         rows={3}
-        data-cy="share-code"
-        aria-label="Codice di condivisione"
         value={code}
-        onFocus={(e) => e.currentTarget.select()}
+        onFocus={(e) => (e.target as HTMLTextAreaElement).select?.()}
+        slotProps={{
+          htmlInput: {
+            readOnly: true,
+            'data-cy': 'share-code',
+            'aria-label': 'Codice di condivisione',
+            sx: { fontFamily: 'monospace', fontSize: '0.8rem', wordBreak: 'break-all' },
+          },
+        }}
       />
-      <div className="card-actions">
-        <button
-          type="button"
-          className="btn-ghost btn-small"
+      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
+        <Button
+          size="small"
+          variant="outlined"
           data-cy="share-copy"
           onClick={() => copy(code, 'Codice copiato negli appunti!')}
         >
           Copia codice
-        </button>
-        <button
-          type="button"
-          className="btn-ghost btn-small"
+        </Button>
+        <Button
+          size="small"
+          variant="outlined"
           data-cy="share-copy-link"
           onClick={() => copy(link, 'Link copiato negli appunti!')}
         >
           Copia link
-        </button>
+        </Button>
         {typeof navigator.share === 'function' && (
-          <button
-            type="button"
-            className="btn-ghost btn-small"
+          <Button
+            size="small"
+            variant="outlined"
             data-cy="share-native"
             onClick={() => navigator.share({ text: link }).catch(() => {})}
           >
             Condividi…
-          </button>
+          </Button>
         )}
-      </div>
+      </Stack>
       {feedback && (
-        <p className="success" data-cy="share-copied">
+        <Typography variant="body2" sx={{ color: 'success.main' }} data-cy="share-copied">
           {feedback}
-        </p>
+        </Typography>
       )}
-    </div>
+    </Stack>
   )
 }
