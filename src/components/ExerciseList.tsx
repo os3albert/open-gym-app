@@ -8,14 +8,15 @@ import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Exercise } from '../domain/types'
+import type { DisplayExercise } from '../services/community'
 import { encodeExerciseShare } from '../services/share'
 import { parseYouTubeVideoId } from '../services/youtube'
 import { ShareCodeBox } from './ShareCodeBox'
 import { YouTubePlayer } from './YouTubePlayer'
 
 interface Props {
-  /** Esercizi già filtrati e ordinati dal chiamante. */
-  exercises: Exercise[]
+  /** Esercizi già filtrati e ordinati dal chiamante (locali e/o della community). */
+  exercises: DisplayExercise[]
   totalCount: number
   votedIds: ReadonlySet<string>
   onToggleVote: (exerciseId: string) => void
@@ -94,6 +95,15 @@ export function ExerciseList({
                 </Button>
               </Stack>
               <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap', mt: 1 }}>
+                {exercise.fromCommunity && (
+                  <Chip
+                    size="small"
+                    color="primary"
+                    variant="outlined"
+                    data-cy="community-badge"
+                    label="community"
+                  />
+                )}
                 {exercise.muscleGroup && <Chip size="small" label={exercise.muscleGroup} />}
                 {exercise.stature && (
                   <Chip
@@ -120,17 +130,20 @@ export function ExerciseList({
               )}
             </CardContent>
             <CardActions sx={{ px: 2, pb: 2, flexWrap: 'wrap', gap: 0.5 }}>
-              <Button
-                size="small"
-                color="inherit"
-                data-cy="exercise-edit"
-                onClick={() => {
-                  setConfirmingDeleteId(null)
-                  onEdit(exercise)
-                }}
-              >
-                Modifica
-              </Button>
+              {/* Gli esercizi della community non sono miei: si votano e si condividono, non si modificano */}
+              {!exercise.fromCommunity && (
+                <Button
+                  size="small"
+                  color="inherit"
+                  data-cy="exercise-edit"
+                  onClick={() => {
+                    setConfirmingDeleteId(null)
+                    onEdit(exercise)
+                  }}
+                >
+                  Modifica
+                </Button>
+              )}
               <Button
                 size="small"
                 color="inherit"
@@ -139,7 +152,7 @@ export function ExerciseList({
               >
                 Condividi
               </Button>
-              {confirming ? (
+              {exercise.fromCommunity ? null : confirming ? (
                 <>
                   <Button
                     size="small"

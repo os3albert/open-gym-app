@@ -34,12 +34,18 @@ export function muscleGroups(exercises: Exercise[]): string[] {
   )
 }
 
-/** Applica filtri e ordinamento; il filtro statura è ignorato finché il profilo non ha una statura. */
-export function applyFilters(data: AppData, filters: ExerciseFilters): Exercise[] {
-  let result = data.exercises
-  if (filters.suitableOnly && data.profile.statureCm !== null) {
-    const stature = data.profile.statureCm
-    result = result.filter((e) => isSuitableForStature(e, stature))
+/**
+ * Applica filtri e ordinamento a una lista qualunque di esercizi (locali, della community o
+ * entrambi); il filtro statura è ignorato finché il profilo non ha una statura.
+ */
+export function applyFiltersTo<T extends Exercise>(
+  exercises: T[],
+  filters: ExerciseFilters,
+  statureCm: number | null,
+): T[] {
+  let result = exercises
+  if (filters.suitableOnly && statureCm !== null) {
+    result = result.filter((e) => isSuitableForStature(e, statureCm))
   }
   if (filters.muscleGroup !== null) {
     result = result.filter((e) => e.muscleGroup === filters.muscleGroup)
@@ -47,4 +53,9 @@ export function applyFilters(data: AppData, filters: ExerciseFilters): Exercise[
   return filters.sort === 'votes'
     ? rankExercises(result)
     : [...result].sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+}
+
+/** Come applyFiltersTo, sugli esercizi salvati sul dispositivo. */
+export function applyFilters(data: AppData, filters: ExerciseFilters): Exercise[] {
+  return applyFiltersTo(data.exercises, filters, data.profile.statureCm)
 }

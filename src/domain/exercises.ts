@@ -115,6 +115,6 @@ export function toggleVote(data: AppData, exerciseId: string): AppData {
 }
 
 /** Classifica stile Reddit: più voti in alto; a parità, il più recente prima. */
-export function rankExercises(exercises: Exercise[]): Exercise[] {
+export function rankExercises<T extends Exercise>(exercises: T[]): T[] {
   return [...exercises].sort((a, b) => b.votes - a.votes || b.createdAt.localeCompare(a.createdAt))
 }

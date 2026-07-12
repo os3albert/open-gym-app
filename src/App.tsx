@@ -24,12 +24,14 @@ import { TodayWorkout } from './components/TodayWorkout'
 import { UpdateBanner } from './components/UpdateBanner'
 import { WorkoutSession } from './components/WorkoutSession'
 import type { NewExercise } from './domain/exercises'
-import { applyFilters, muscleGroups, suitabilityRequiresStature } from './domain/filters'
+import { applyFiltersTo, muscleGroups, suitabilityRequiresStature } from './domain/filters'
 import type { Exercise } from './domain/types'
 import { useAppData } from './hooks/useAppData'
+import { useCommunity } from './hooks/useCommunity'
 import { useFilters } from './hooks/useFilters'
 import { useTheme, type ThemePreference } from './hooks/useTheme'
 import { useView } from './hooks/useView'
+import { mergeForDisplay } from './services/community'
 import { shareCodeFromHash } from './services/share'
 import { todayIso } from './utils/date'
 
@@ -87,6 +89,7 @@ export default function App() {
   const [view, setView] = useView(initialShareCode ? 'schede' : 'esercizi')
   const [filters, setFilters] = useFilters()
   const [theme, setTheme, resolvedTheme] = useTheme()
+  const community = useCommunity()
   const [editing, setEditing] = useState<Exercise | null>(null)
   const [formError, setFormError] = useState<string | null>(null)
   const [statureError, setStatureError] = useState<string | null>(null)
@@ -108,6 +111,8 @@ export default function App() {
         setFormOpen(false)
       } else {
         addExercise(input)
+        // La proposta è già salvata in locale: l'invio alla community è un extra, mai un blocco
+        if (community.enabled) void community.propose(input)
       }
       setFormError(null)
       return true
@@ -126,7 +131,10 @@ export default function App() {
     }
   }
 
-  const visibleExercises = applyFilters(data, filters)
+  const allExercises = mergeForDisplay(data.exercises, community.exercises, community.votes)
+  const visibleExercises = applyFiltersTo(allExercises, filters, data.profile.statureCm)
+  const votedIds = new Set([...data.votedExerciseIds, ...community.votedIds])
+  const communityIds = new Set(community.exercises.map((e) => e.id))
 
   return (
     <ThemeProvider theme={muiTheme}>
@@ -213,10 +221,21 @@ export default function App() {
                 error={formError}
               />
             </Collapse>
+            {community.message && (
+              <Alert
+                severity="info"
+                role="status"
+                data-cy="community-message"
+                onClose={community.dismissMessage}
+                sx={{ mb: 2 }}
+              >
+                {community.message}
+              </Alert>
+            )}
             <FilterBar
               filters={filters}
               onFiltersChange={setFilters}
-              muscleGroups={muscleGroups(data.exercises)}
+              muscleGroups={muscleGroups(allExercises)}
               statureCm={data.profile.statureCm}
               onSaveStature={handleSaveStature}
               statureError={statureError}
@@ -224,9 +243,12 @@ export default function App() {
             />
             <ExerciseList
               exercises={visibleExercises}
-              totalCount={data.exercises.length}
-              votedIds={new Set(data.votedExerciseIds)}
-              onToggleVote={vote}
+              totalCount={allExercises.length}
+              votedIds={votedIds}
+              // Il voto di un esercizio della community passa dal worker, quello locale dal dominio
+              onToggleVote={(id) =>
+                communityIds.has(id) ? void community.toggleVote(id) : vote(id)
+              }
               onEdit={(exercise) => {
                 setFormError(null)
                 setEditing(exercise)
