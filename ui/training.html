@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      try {
+        tailwind.config = {
+          darkMode: 'class',
+          theme: {
+            extend: {
+              colors: {
+                'secondary-container': '#e4e2e1',
+                'surface-container': '#eeeeee',
+                'on-secondary': '#ffffff',
+                'surface-container-highest': '#e2e2e2',
+                'on-tertiary-fixed': '#1b1c1c',
+                'surface-container-lowest': '#ffffff',
+                'surface-dim': '#dadada',
+                'surface-tint': '#5f5e5e',
+                'surface-container-low': '#f3f3f3',
+                'on-surface-variant': '#444748',
+                'on-background': '#1a1c1c',
+                'on-primary-fixed': '#1c1b1b',
+                'error-container': '#ffdad6',
+                'surface-bright': '#f9f9f9',
+                'on-error': '#ffffff',
+                outline: '#747878',
+                'primary-container': '#1c1b1b',
+                tertiary: '#000000',
+                'on-tertiary-container': '#848484',
+                'on-primary-container': '#858383',
+                'secondary-fixed-dim': '#c8c6c6',
+                'on-tertiary': '#ffffff',
+                'inverse-primary': '#c8c6c5',
+                error: '#ba1a1a',
+                'on-primary-fixed-variant': '#474746',
+                'on-surface': '#1a1c1c',
+                'inverse-surface': '#2f3131',
+                background: '#f9f9f9',
+                'on-secondary-container': '#656464',
+                'primary-fixed-dim': '#c8c6c5',
+                'on-secondary-fixed': '#1b1c1c',
+                'tertiary-fixed-dim': '#c7c6c6',
+                'outline-variant': '#c4c7c7',
+                'surface-variant': '#e2e2e2',
+                primary: '#000000',
+                'on-secondary-fixed-variant': '#474747',
+                secondary: '#5f5e5e',
+                'surface-container-high': '#e8e8e8',
+                'secondary-fixed': '#e4e2e1',
+                'inverse-on-surface': '#f1f1f1',
+                'tertiary-container': '#1b1c1c',
+                'on-error-container': '#93000a',
+                surface: '#f9f9f9',
+                'on-tertiary-fixed-variant': '#464747',
+                'on-primary': '#ffffff',
+                'primary-fixed': '#e5e2e1',
+                'tertiary-fixed': '#e3e2e2',
+              },
+              borderRadius: {
+                DEFAULT: '0.25rem',
+                lg: '0.5rem',
+                xl: '0.75rem',
+                full: '9999px',
+              },
+              spacing: {
+                'margin-desktop': '32px',
+                sm: '12px',
+                md: '16px',
+                gutter: '16px',
+                xs: '4px',
+                lg: '24px',
+                'margin-mobile': '16px',
+                base: '8px',
+                xl: '32px',
+              },
+              fontFamily: {
+                'body-lg': ['Inter'],
+                'label-sm': ['Inter'],
+                'headline-lg': ['Inter'],
+                'title-lg': ['Inter'],
+                'body-md': ['Inter'],
+                'headline-lg-mobile': ['Inter'],
+                'display-lg': ['Inter'],
+                'label-lg': ['Inter'],
+              },
+              fontSize: {
+                'body-lg': ['16px', { lineHeight: '24px', fontWeight: '400' }],
+                'label-sm': [
+                  '11px',
+                  { lineHeight: '16px', letterSpacing: '0.5px', fontWeight: '500' },
+                ],
+                'headline-lg': ['32px', { lineHeight: '40px', fontWeight: '600' }],
+                'title-lg': ['22px', { lineHeight: '28px', fontWeight: '500' }],
+                'body-md': ['14px', { lineHeight: '20px', fontWeight: '400' }],
+                'headline-lg-mobile': ['28px', { lineHeight: '36px', fontWeight: '600' }],
+                'display-lg': [
+                  '57px',
+                  { lineHeight: '64px', letterSpacing: '-0.25px', fontWeight: '700' },
+                ],
+                'label-lg': [
+                  '14px',
+                  { lineHeight: '20px', letterSpacing: '0.1px', fontWeight: '500' },
+                ],
+              },
+            },
+          },
+        }
+      } catch (_e) {}
+    </script>
+    <meta charset="utf-8" />
+  </head>
+  <body class="flex flex-col min-h-screen text-on-background">
+    <!-- TopAppBar -->
+    <header
+      class="w-full top-0 sticky z-50 bg-surface border-b border-outline-variant shadow-sm flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16"
+    >
+      <div class="flex items-center gap-4">
+        <button
+          class="hover:bg-surface-container-low transition-colors p-2 rounded-full active:scale-95 transition-transform"
+        >
+          <span class="material-symbols-outlined text-primary">menu</span>
+        </button>
+        <h1
+          class="font-display-lg text-[24px] md:text-display-lg font-bold tracking-tighter text-primary"
+        >
+          ogapp
+        </h1>
+      </div>
+      <div class="flex items-center">
+        <div
+          class="w-10 h-10 rounded-full bg-surface-container-highest border border-outline-variant overflow-hidden"
+        >
+          <img
+            class="w-full h-full object-cover"
+            data-alt="A professional studio portrait of a fit athlete looking directly at the camera, styled with high-contrast, moody lighting that emphasizes muscular definition. The background is a clean, dark gray corporate gym environment. The overall aesthetic is high-performance and technical, using a monochrome color palette to align with the APEX_SYNC brand identity."
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAs3Nv1-_qhyVqNGWf4hRLxOqOHkWqh4VAXKhlUIUB8odcjO4ir8cjNJNzAyTHKLBIpgmsnLLNcuYMtBS6UeUk94Dcf3LfRBjgmtMlEAStEyPGAWD6zBWARp-b1FqaKtSFor9r16rdBVjibLWvC3PI-lOwfVFvmm8qjbcimnHLaLqx_MaYraiwnNMNj4QPhjWC1TR4MVh42O53mj8ffEVKfrsIhKp9nbnFpHrLEWFNbN9D55vh0pCG8G_BIzoiHtvgQEjrg0uFXxUSr"
+          />
+        </div>
+      </div>
+    </header>
+    <main class="flex-grow pb-32">
+      <!-- Status Bar -->
+      <section class="px-margin-mobile md:px-margin-desktop py-lg bg-surface-container-low">
+        <div
+          class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
+        >
+          <div>
+            <span
+              class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-container text-on-primary text-label-sm font-label-sm uppercase tracking-widest mb-2"
+            >
+              <span class="w-2 h-2 rounded-full bg-error animate-pulse"></span>
+              ACTIVE SESSION
+            </span>
+            <h2
+              class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg"
+            >
+              Leg Day Performance
+            </h2>
+          </div>
+          <div
+            class="bg-surface p-4 rounded-xl shadow-sm border border-outline-variant flex flex-col items-center min-w-[160px]"
+          >
+            <span class="text-label-sm font-label-sm text-on-surface-variant uppercase"
+              >Current Duration</span
+            >
+            <span
+              class="font-display-lg text-4xl md:text-display-lg text-primary tabular-nums tracking-tight"
+              >00:14:32</span
+            >
+          </div>
+        </div>
+      </section>
+      <div
+        class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop mt-lg grid grid-cols-1 lg:grid-cols-12 gap-gutter"
+      >
+        <!-- Video Player Area -->
+        <div class="lg:col-span-7">
+          <div
+            class="relative aspect-video w-full rounded-2xl overflow-hidden shadow-sm border border-outline-variant bg-tertiary-container group"
+          >
+            <img
+              class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+              data-alt="A high-resolution instructional video frame showing a professional weightlifter in perfect form performing a barbell back squat. The environment is a clean, neo-industrial gym with concrete floors and soft overhead industrial lighting. The color grading is cool and cinematic, emphasizing the structural integrity and precision of the movement."
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCh1mzUMMSmo9om2Igk5FHMaXUfv2IQ7ETmJsAuAD06jkFb7KwHxu32rMwXmYTyFdee4notR9HbjN0IJ5HaPGYKGKuMeM6Yk_rjWpQ4ZhtcYgMcbkhy1Gpr_0ctOBxIrhZo0PClmLwqbTmOheAy-TCd3851_jxODNAhLqnGiOUiNtJRxKugSxJ48G3DFOSprEJCmRzvVvRja7DNwLq1Xn0A6nz7iEWpukH5i8HVYEs3dybmFfnlWHAgkygX5mSoGL4sifHOpHE9_cys"
+            />
+            <div class="absolute inset-0 flex items-center justify-center">
+              <button
+                class="w-20 h-20 rounded-full bg-primary/90 text-on-primary flex items-center justify-center shadow-lg active:scale-90 transition-transform"
+              >
+                <span
+                  class="material-symbols-outlined text-4xl"
+                  style="font-variation-settings: 'FILL' 1"
+                  >play_arrow</span
+                >
+              </button>
+            </div>
+            <div
+              class="absolute bottom-0 left-0 right-0 p-lg bg-gradient-to-t from-black/80 to-transparent"
+            >
+              <h3 class="text-white font-title-lg text-title-lg">Squat con Bilanciere</h3>
+              <p class="text-white/80 font-body-md text-body-md">
+                Primary Muscle: Quadriceps • Difficulty: Advanced
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- Performance Table / List -->
+        <div class="lg:col-span-5">
+          <div
+            class="bg-surface rounded-2xl border border-outline-variant shadow-sm overflow-hidden flex flex-col h-full"
+          >
+            <div
+              class="p-md border-b border-outline-variant bg-surface-container-low flex justify-between items-center"
+            >
+              <h4 class="font-title-lg text-title-lg flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">format_list_numbered</span>
+                Workout Tracking
+              </h4>
+              <span class="text-label-sm font-label-sm text-on-surface-variant"
+                >4 SETS PLANNED</span
+              >
+            </div>
+            <div class="flex-grow">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr
+                    class="bg-surface-container text-on-surface-variant uppercase text-[11px] font-semibold tracking-wider"
+                  >
+                    <th class="px-md py-sm">Set</th>
+                    <th class="px-md py-sm">Weight (KG)</th>
+                    <th class="px-md py-sm">Reps</th>
+                    <th class="px-md py-sm text-right">Status</th>
+                  </tr>
+                </thead>
+                <tbody class="font-body-md text-body-md">
+                  <!-- Set 1 -->
+                  <tr
+                    class="border-b border-outline-variant hover:bg-surface-container-low transition-colors"
+                  >
+                    <td class="px-md py-lg font-medium">1</td>
+                    <td class="px-md py-lg">80.0</td>
+                    <td class="px-md py-lg">12</td>
+                    <td class="px-md py-lg text-right">
+                      <span
+                        class="material-symbols-outlined text-secondary"
+                        style="font-variation-settings: 'FILL' 1"
+                        >check_circle</span
+                      >
+                    </td>
+                  </tr>
+                  <!-- Set 2 (ACTIVE FOCUS) -->
+                  <tr
+                    class="bg-secondary-container/50 border-y-2 border-primary ring-inset shadow-inner transition-all"
+                  >
+                    <td class="px-md py-lg font-bold text-primary">2</td>
+                    <td class="px-md py-lg">
+                      <div class="flex items-center gap-1">
+                        <input
+                          class="w-16 bg-transparent border-b-2 border-primary text-center font-bold text-primary focus:ring-0 focus:outline-none py-1"
+                          type="text"
+                          value="85.0"
+                        />
+                        <span class="text-xs text-on-surface-variant">KG</span>
+                      </div>
+                    </td>
+                    <td class="px-md py-lg">
+                      <div class="flex items-center gap-1">
+                        <input
+                          class="w-12 bg-transparent border-b-2 border-primary text-center font-bold text-primary focus:ring-0 focus:outline-none py-1"
+                          type="text"
+                          value="10"
+                        />
+                        <span class="text-xs text-on-surface-variant">REPS</span>
+                      </div>
+                    </td>
+                    <td class="px-md py-lg text-right">
+                      <span
+                        class="px-3 py-1 bg-primary text-on-primary rounded-full text-label-sm font-label-sm uppercase animate-pulse"
+                        >Live</span
+                      >
+                    </td>
+                  </tr>
+                  <!-- Set 3 -->
+                  <tr class="border-b border-outline-variant opacity-50">
+                    <td class="px-md py-lg font-medium">3</td>
+                    <td class="px-md py-lg">90.0</td>
+                    <td class="px-md py-lg">8</td>
+                    <td class="px-md py-lg text-right">
+                      <span class="material-symbols-outlined text-outline">circle</span>
+                    </td>
+                  </tr>
+                  <!-- -->
+                  <tr class="border-b border-outline-variant opacity-50">
+                    <td class="px-md py-lg font-medium">4</td>
+                    <td class="px-md py-lg">90.0</td>
+                    <td class="px-md py-lg">8</td>
+                    <td class="px-md py-lg text-right">
+                      <span class="material-symbols-outlined text-outline">circle</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="p-md bg-surface-container-low border-t border-outline-variant">
+              <button
+                class="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed border-outline text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all active:scale-95"
+              >
+                <span class="material-symbols-outlined">add</span>
+                <span class="font-label-lg text-label-lg">Add Extra Set</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- Bottom Actions & Navigation Shell -->
+    <div class="fixed bottom-0 w-full z-50">
+      <!-- Floating Action Area -->
+      <div class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop mb-4">
+        <div
+          class="flex flex-col sm:flex-row gap-4 items-center justify-center p-4 glass-card rounded-2xl shadow-xl border border-outline-variant"
+        >
+          <button
+            class="w-full sm:w-auto px-12 py-4 bg-primary text-on-primary rounded-full font-label-lg text-label-lg uppercase tracking-widest shadow-lg hover:bg-secondary transition-all active:scale-95 flex items-center justify-center gap-3"
+          >
+            <span class="material-symbols-outlined">navigate_next</span>
+            Next Exercise
+          </button>
+          <button
+            class="w-full sm:w-auto px-12 py-4 border-2 border-outline text-on-surface rounded-full font-label-lg text-label-lg uppercase tracking-widest hover:bg-surface-container transition-all active:scale-95 flex items-center justify-center gap-3"
+          >
+            <span class="material-symbols-outlined">check</span>
+            Finish Workout
+          </button>
+        </div>
+      </div>
+      <!-- Material 3 Bottom Nav Bar -->
+      <nav
+        class="bg-surface-container dark:bg-surface-container-high shadow-lg flex justify-around items-center h-20 pb-safe px-2"
+      >
+        <a
+          class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface active:scale-90 transition-transform duration-200 group"
+          href="#"
+        >
+          <span
+            class="material-symbols-outlined mb-1 group-hover:bg-surface-container-highest p-1 rounded-full transition-colors"
+            >home</span
+          >
+          <span class="font-label-sm text-label-sm">Home</span>
+        </a>
+        <a
+          class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 active:scale-90 transition-transform duration-200"
+          href="#"
+        >
+          <span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1"
+            >fitness_center</span
+          >
+          <span class="font-label-sm text-label-sm">Training</span>
+        </a>
+        <a
+          class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface active:scale-90 transition-transform duration-200 group"
+          href="#"
+        >
+          <span
+            class="material-symbols-outlined mb-1 group-hover:bg-surface-container-highest p-1 rounded-full transition-colors"
+            >explore</span
+          >
+          <span class="font-label-sm text-label-sm">Discover</span>
+        </a>
+        <a
+          class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface active:scale-90 transition-transform duration-200 group"
+          href="#"
+        >
+          <span
+            class="material-symbols-outlined mb-1 group-hover:bg-surface-container-highest p-1 rounded-full transition-colors"
+            >settings</span
+          >
+          <span class="font-label-sm text-label-sm">Settings</span>
+        </a>
+      </nav>
+    </div>
+    <script>
+      // Simple timer logic simulation
+      let seconds = 872 // Starting from 14:32
+      const timerElement = document.querySelector('.tabular-nums')
+
+      function formatTime(sec) {
+        const h = Math.floor(sec / 3600)
+          .toString()
+          .padStart(2, '0')
+        const m = Math.floor((sec % 3600) / 60)
+          .toString()
+          .padStart(2, '0')
+        const s = (sec % 60).toString().padStart(2, '0')
+        return `${h}:${m}:${s}`
+      }
+
+      setInterval(() => {
+        seconds++
+        timerElement.textContent = formatTime(seconds)
+      }, 1000)
+
+      // Interaction for the 'Finish' button
+      document.querySelectorAll('button').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const originalColor = btn.style.backgroundColor
+          btn.classList.add('scale-95')
+          setTimeout(() => btn.classList.remove('scale-95'), 150)
+        })
+      })
+    </script>
+  </body>
+</html>
