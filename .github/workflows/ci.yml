@@ -114,7 +114,7 @@ jobs:
       - name: Fallback SPA (404 → index)
         run: cp dist/index.html dist/404.html
       - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: dist
       - id: deployment
