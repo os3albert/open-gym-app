@@ -3,6 +3,12 @@ name: CI
 on:
   push:
     branches: [main]
+    # I file di community/ li scrive il worker a ogni proposta e a ogni voto: sono DATI, non
+    # codice, e l'app li legge a runtime da raw.githubusercontent. Senza questo, un singolo
+    # upvote farebbe girare test, build, deploy di Pages e push dell'immagine su GHCR.
+    # Salta solo i push che toccano ESCLUSIVAMENTE community/: un commit misto fa girare tutto.
+    paths-ignore:
+      - 'community/**'
   pull_request:
     branches: [main]
 
