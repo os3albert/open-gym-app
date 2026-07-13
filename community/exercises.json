@@ -25,5 +25,14 @@
     "muscleGroup": "Spalle",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-13T18:34:01.575Z"
+  },
+  {
+    "id": "70eba042-0f62-4fdd-8889-ab621e837598",
+    "name": "affondi",
+    "description": "",
+    "youtubeUrl": "https://youtube.com/shorts/mJilHWIBWO8?si=fkFAfJoQfOjUNVWW",
+    "muscleGroup": "",
+    "faceBlurConfirmed": true,
+    "createdAt": "2026-07-13T21:09:38.773Z"
   }
 ]
