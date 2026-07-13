@@ -45,7 +45,13 @@ describe('Rifinitura UX (M5)', () => {
     cy.viewport(375, 667)
     cy.visitWithData(seed)
 
-    for (const tab of ['tab-esercizi', 'tab-schede', 'tab-allenamento', 'tab-storico']) {
+    for (const tab of [
+      'tab-esercizi',
+      'tab-schede',
+      'tab-allenamento',
+      'tab-storico',
+      'tab-impostazioni',
+    ]) {
       cy.get(`[data-cy=${tab}]`).click()
       assertNoHorizontalScroll()
     }

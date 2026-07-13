@@ -14,7 +14,8 @@ import { useT } from '../i18n/context'
 import type { AppData, WorkoutSet } from '../domain/types'
 import { suggestNextWeight } from '../services/weightSuggestion'
 import { formatDateIt } from '../utils/date'
-import { NumberField, range } from './NumberField'
+import { range } from '../utils/number'
+import { NumberField } from './NumberField'
 import { SelectField } from './SelectField'
 
 interface Props {

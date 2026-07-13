@@ -15,7 +15,8 @@ import { translateError } from '../i18n'
 import { useT } from '../i18n/context'
 import type { Exercise, PlanEntry, WorkoutDay, WorkoutPlan } from '../domain/types'
 import { WEEKDAYS_IT } from '../utils/date'
-import { NumberField, range } from './NumberField'
+import { range } from '../utils/number'
+import { NumberField } from './NumberField'
 import { SelectField } from './SelectField'
 
 export interface PlanEditorActions {

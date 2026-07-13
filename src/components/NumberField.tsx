@@ -35,16 +35,6 @@ interface Props {
   sx?: SxProps<Theme>
 }
 
-/** Elenco di valori da min a max: `range(0, 300, 2.5)` = i carichi di un bilanciere. */
-export function range(min: number, max: number, step = 1): number[] {
-  const values: number[] = []
-  // Si conta in passi interi e si arrotonda: 0.1+0.2 in virgola mobile non fa 0.3
-  for (let i = 0; min + i * step <= max + 1e-9; i++) {
-    values.push(Number((min + i * step).toFixed(2)))
-  }
-  return values
-}
-
 /** Somma `delta` al valore corrente senza scendere sotto `min`; il vuoto vale 0. */
 function applyStep(current: string, delta: number, min: number): string {
   const next = Number(((Number(current) || 0) + delta).toFixed(2))
@@ -74,7 +64,7 @@ export function NumberField({
 }: Props) {
   const t = useT()
   const [open, setOpen] = useState(false)
-  const anchor = useRef<HTMLDivElement>(null)
+  const [anchor, setAnchor] = useState<HTMLDivElement | null>(null)
   const selectedRef = useRef<HTMLLIElement>(null)
 
   // All'apertura la lista si posiziona sul valore corrente: 121 carichi non si scorrono a mano
@@ -86,7 +76,7 @@ export function NumberField({
     <ClickAwayListener onClickAway={() => setOpen(false)}>
       <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
         <TextField
-          ref={anchor}
+          ref={setAnchor}
           label={label}
           type="number"
           value={value}
@@ -142,7 +132,7 @@ export function NumberField({
         )}
         <Popper
           open={open}
-          anchorEl={anchor.current}
+          anchorEl={anchor}
           placement="bottom-start"
           sx={{ zIndex: (theme) => theme.zIndex.modal }}
         >

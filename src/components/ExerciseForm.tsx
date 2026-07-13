@@ -9,7 +9,8 @@ import type { NewExercise } from '../domain/exercises'
 import { useT } from '../i18n/context'
 import type { Exercise } from '../domain/types'
 import { parseYouTubeVideoId, youtubeThumbnailUrl } from '../services/youtube'
-import { NumberField, range } from './NumberField'
+import { range } from '../utils/number'
+import { NumberField } from './NumberField'
 
 interface Props {
   /** Esercizio in modifica; null = nuova proposta. Rimontare il form (key) quando cambia. */

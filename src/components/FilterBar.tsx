@@ -8,7 +8,8 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Stack from '@mui/material/Stack'
 import type { ExerciseFilters, SortOrder } from '../domain/filters'
 import { useT } from '../i18n/context'
-import { NumberField, range } from './NumberField'
+import { range } from '../utils/number'
+import { NumberField } from './NumberField'
 import { SelectField } from './SelectField'
 
 interface Props {
