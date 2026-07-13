@@ -36,7 +36,7 @@ export function BackupPanel({ onExport, onReplace, onMerge }: Props) {
     anchor.click()
     URL.revokeObjectURL(url)
     setIsError(false)
-    setMessage('Backup esportato: controlla i download del dispositivo')
+    setMessage(t('backup.exported'))
   }
 
   async function handleFileSelected(event: ChangeEvent<HTMLInputElement>) {
@@ -75,11 +75,10 @@ export function BackupPanel({ onExport, onReplace, onMerge }: Props) {
     <Card component="section">
       <CardContent>
         <Typography variant="h2" gutterBottom>
-          Backup dei dati
+          {t('backup.title')}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          I dati vivono solo su questo dispositivo (localStorage): esporta un backup JSON per non
-          perderli o importane uno esistente.
+          {t('backup.explanation')}
         </Typography>
         <Stack direction="row" spacing={1.5} useFlexGap sx={{ flexWrap: 'wrap' }}>
           <Button
@@ -88,10 +87,10 @@ export function BackupPanel({ onExport, onReplace, onMerge }: Props) {
             data-cy="export-button"
             onClick={handleExport}
           >
-            Esporta backup JSON
+            {t('backup.export')}
           </Button>
           <Button variant="outlined" component="label" startIcon={<FileUploadOutlinedIcon />}>
-            Importa backup JSON
+            {t('backup.import')}
             <Box
               component="input"
               type="file"
@@ -115,30 +114,28 @@ export function BackupPanel({ onExport, onReplace, onMerge }: Props) {
             data-cy="import-choice"
             sx={{ border: 1, borderColor: 'divider', borderRadius: 3, p: 2, mt: 2 }}
           >
-            <Typography sx={{ mb: 1.5 }}>Backup valido. Come lo importiamo?</Typography>
+            <Typography sx={{ mb: 1.5 }}>{t('backup.howToImport')}</Typography>
             <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
               <Button
                 variant="contained"
                 data-cy="import-replace"
-                onClick={() => applyImport(onReplace, 'Backup importato correttamente')}
+                onClick={() => applyImport(onReplace, t('backup.replaced'))}
               >
-                Sostituisci tutto
+                {t('backup.replaceAll')}
               </Button>
               <Button
                 variant="outlined"
                 data-cy="import-merge"
-                onClick={() =>
-                  applyImport(onMerge, 'Backup unito ai dati presenti, senza duplicati')
-                }
+                onClick={() => applyImport(onMerge, t('backup.merged'))}
               >
-                Unisci ai miei dati
+                {t('backup.mergeMine')}
               </Button>
               <Button
                 color="inherit"
                 data-cy="import-cancel-backup"
                 onClick={() => setPendingJson(null)}
               >
-                Annulla
+                {t('backup.cancel')}
               </Button>
             </Stack>
           </Box>

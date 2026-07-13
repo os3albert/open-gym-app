@@ -67,25 +67,23 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
     <Card component="section">
       <CardContent>
         <Typography variant="h2" gutterBottom>
-          Allenamento di oggi
+          {t('session.title')}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          {formatDateIt(today)} — registra serie, ripetizioni e peso.
+          {t('session.subtitle', { date: formatDateIt(today) })}
         </Typography>
         {exercisesByName.length === 0 ? (
-          <Typography data-cy="session-no-exercises">
-            Non c'è ancora nessun esercizio: proponine uno nella scheda «Esercizi».
-          </Typography>
+          <Typography data-cy="session-no-exercises">{t('session.noExercises')}</Typography>
         ) : (
           <Stack spacing={2}>
             <SelectField
-              label="Esercizio"
+              label={t('session.exercise')}
               value={exerciseId}
               onChange={handleSelectExercise}
               dataCy="session-exercise-select"
               sx={{ maxWidth: 320 }}
               options={[
-                { value: '', label: 'Scegli un esercizio…' },
+                { value: '', label: t('session.chooseExercise') },
                 ...exercisesByName.map((e) => ({ value: e.id, label: e.name })),
               ]}
             />
@@ -97,7 +95,7 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
                 sx={{ flexWrap: 'wrap', alignItems: 'center' }}
               >
                 <TextField
-                  label="Peso (kg)"
+                  label={t('session.weight')}
                   type="number"
                   value={weight}
                   onChange={(e) => setWeight(e.target.value)}
@@ -109,7 +107,7 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
                   variant="outlined"
                   color="inherit"
                   data-cy="weight-minus"
-                  aria-label="Diminuisci il peso di 2,5 kg"
+                  aria-label={t('session.weightMinus')}
                   onClick={() => setWeight((w) => step(w, -2.5, 0))}
                   sx={{ minWidth: 0 }}
                 >
@@ -120,7 +118,7 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
                   variant="outlined"
                   color="inherit"
                   data-cy="weight-plus"
-                  aria-label="Aumenta il peso di 2,5 kg"
+                  aria-label={t('session.weightPlus')}
                   onClick={() => setWeight((w) => step(w, +2.5, 0))}
                   sx={{ minWidth: 0 }}
                 >
@@ -134,7 +132,7 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
                 sx={{ flexWrap: 'wrap', alignItems: 'center' }}
               >
                 <TextField
-                  label="Ripetizioni"
+                  label={t('session.reps')}
                   type="number"
                   value={reps}
                   onChange={(e) => setReps(e.target.value)}
@@ -146,7 +144,7 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
                   variant="outlined"
                   color="inherit"
                   data-cy="reps-minus"
-                  aria-label="Diminuisci le ripetizioni"
+                  aria-label={t('session.repsMinus')}
                   onClick={() => setReps((r) => step(r, -1, 1))}
                   sx={{ minWidth: 0 }}
                 >
@@ -157,7 +155,7 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
                   variant="outlined"
                   color="inherit"
                   data-cy="reps-plus"
-                  aria-label="Aumenta le ripetizioni"
+                  aria-label={t('session.repsPlus')}
                   onClick={() => setReps((r) => step(r, +1, 1))}
                   sx={{ minWidth: 0 }}
                 >
@@ -177,7 +175,7 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
                 disabled={!exerciseId}
                 onClick={handleAddSet}
               >
-                Aggiungi serie
+                {t('session.addSet')}
               </Button>
             </Stack>
           </Stack>
@@ -186,7 +184,7 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
         {todayRecords.length > 0 && (
           <Box data-cy="today-session" sx={{ mt: 3 }}>
             <Typography variant="h3" component="h3" gutterBottom>
-              Serie registrate oggi
+              {t('session.todaySets')}
             </Typography>
             <Stack component="ul" spacing={1.5} sx={{ listStyle: 'none', m: 0, p: 0 }}>
               {todayRecords.map((record) => (
@@ -225,7 +223,11 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
                         <IconButton
                           size="small"
                           data-cy="remove-set"
-                          aria-label={`Rimuovi la serie ${set.weightKg} kg × ${set.reps} di ${exerciseName(record.exerciseId)}`}
+                          aria-label={t('session.removeSet', {
+                            weight: set.weightKg,
+                            reps: set.reps,
+                            name: exerciseName(record.exerciseId),
+                          })}
                           onClick={() => onRemoveSet(record.id, index)}
                         >
                           <CloseIcon sx={{ fontSize: '0.9rem' }} />

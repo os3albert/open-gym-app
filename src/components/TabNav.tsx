@@ -7,12 +7,14 @@ import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined'
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter'
 import ShowChartIcon from '@mui/icons-material/ShowChart'
 import type { AppView } from '../hooks/useView'
+import { useT } from '../i18n/context'
+import type { TextKey } from '../i18n'
 
-const TABS: Array<{ view: AppView; label: string; icon: React.ReactNode }> = [
-  { view: 'esercizi', label: 'Esercizi', icon: <ExploreOutlinedIcon /> },
-  { view: 'schede', label: 'Schede', icon: <CalendarMonthOutlinedIcon /> },
-  { view: 'allenamento', label: 'Allenamento', icon: <FitnessCenterIcon /> },
-  { view: 'storico', label: 'Storico', icon: <ShowChartIcon /> },
+const TABS: Array<{ view: AppView; label: TextKey; icon: React.ReactNode }> = [
+  { view: 'esercizi', label: 'nav.exercises', icon: <ExploreOutlinedIcon /> },
+  { view: 'schede', label: 'nav.plans', icon: <CalendarMonthOutlinedIcon /> },
+  { view: 'allenamento', label: 'nav.workout', icon: <FitnessCenterIcon /> },
+  { view: 'storico', label: 'nav.history', icon: <ShowChartIcon /> },
 ]
 
 interface Props {
@@ -22,10 +24,12 @@ interface Props {
 
 /** Barra di navigazione MD3 flottante in basso (pillola su vetro): le 4 viste dell'app. */
 export function TabNav({ view, onChange }: Props) {
+  const t = useT()
+
   return (
     <Box
       component="nav"
-      aria-label="Sezioni dell'app"
+      aria-label={t('nav.label')}
       sx={{
         position: 'fixed',
         left: 0,
@@ -70,7 +74,7 @@ export function TabNav({ view, onChange }: Props) {
             <BottomNavigationAction
               key={tab.view}
               value={tab.view}
-              label={tab.label}
+              label={t(tab.label)}
               icon={tab.icon}
               data-cy={`tab-${tab.view}`}
               aria-current={view === tab.view ? 'page' : undefined}

@@ -12,6 +12,8 @@ import {
 } from '../domain/activity'
 import type { AppData } from '../domain/types'
 import { formatDateIt, todayIso } from '../utils/date'
+import type { TextKey } from '../i18n'
+import { useT } from '../i18n/context'
 import { SelectField } from './SelectField'
 import { TrendChart } from './TrendChart'
 
@@ -20,19 +22,20 @@ interface Props {
 }
 
 const PERIODS = [
-  { value: '', label: 'Tutto lo storico', days: null },
-  { value: '30', label: 'Ultimi 30 giorni', days: 30 },
-  { value: '90', label: 'Ultimi 90 giorni', days: 90 },
+  { value: '', label: 'history.all' as const, days: null },
+  { value: '30', label: 'history.last30' as const, days: 30 },
+  { value: '90', label: 'history.last90' as const, days: 90 },
 ] as const
 
-const METRICS: Array<{ value: TrendMetric; label: string }> = [
-  { value: 'maxWeight', label: 'Peso massimo' },
-  { value: 'totalReps', label: 'Ripetizioni totali' },
-  { value: 'maxReps', label: 'Ripetizioni massime' },
-  { value: 'volume', label: 'Volume (kg × reps)' },
+const METRICS: Array<{ value: TrendMetric; label: TextKey }> = [
+  { value: 'maxWeight', label: 'history.maxWeight' as const },
+  { value: 'totalReps', label: 'history.totalReps' as const },
+  { value: 'maxReps', label: 'history.maxReps' as const },
+  { value: 'volume', label: 'history.volume' as const },
 ]
 
 export function HistoryView({ data }: Props) {
+  const t = useT()
   const [selectedExerciseId, setSelectedExerciseId] = useState('')
   const [period, setPeriod] = useState<string>('')
   const [metric, setMetric] = useState<TrendMetric>('maxWeight')
@@ -48,11 +51,9 @@ export function HistoryView({ data }: Props) {
       <Card component="section">
         <CardContent>
           <Typography variant="h2" gutterBottom>
-            Storico allenamenti
+            {t('history.title')}
           </Typography>
-          <Typography data-cy="history-empty">
-            Nessuna sessione registrata: inizia dalla scheda «Allenamento».
-          </Typography>
+          <Typography data-cy="history-empty">{t('history.empty')}</Typography>
         </CardContent>
       </Card>
     )
@@ -68,7 +69,7 @@ export function HistoryView({ data }: Props) {
       <Card component="section">
         <CardContent>
           <Typography variant="h2" gutterBottom>
-            Andamento del carico
+            {t('history.trendTitle')}
           </Typography>
           <Stack
             direction="row"
@@ -77,38 +78,38 @@ export function HistoryView({ data }: Props) {
             sx={{ flexWrap: 'wrap', alignItems: 'center' }}
           >
             <SelectField
-              label="Esercizio"
+              label={t('session.exercise')}
               value={selectedExerciseId}
               onChange={setSelectedExerciseId}
               dataCy="history-exercise-select"
               sx={{ minWidth: 210 }}
               options={[
-                { value: '', label: 'Scegli un esercizio…' },
+                { value: '', label: t('session.chooseExercise') },
                 ...trackedExercises.map((e) => ({ value: e.id, label: e.name })),
               ]}
             />
             <SelectField
-              label="Metrica"
+              label={t('history.metric')}
               value={metric}
               onChange={(value) => setMetric(value as TrendMetric)}
               dataCy="metric-select"
               sx={{ minWidth: 200 }}
-              options={METRICS.map((m) => ({ value: m.value, label: m.label }))}
+              options={METRICS.map((m) => ({ value: m.value, label: t(m.label) }))}
             />
             <SelectField
-              label="Periodo"
+              label={t('history.period')}
               value={period}
               onChange={setPeriod}
               dataCy="period-select"
               sx={{ minWidth: 175 }}
-              options={PERIODS.map((p) => ({ value: p.value, label: p.label }))}
+              options={PERIODS.map((p) => ({ value: p.value, label: t(p.label) }))}
             />
           </Stack>
           {selectedExerciseId ? (
             <TrendChart points={trend} metric={metric} />
           ) : (
             <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-              Scegli un esercizio per vedere l'andamento del peso nel tempo.
+              {t('history.pickExercise')}
             </Typography>
           )}
         </CardContent>
@@ -116,7 +117,7 @@ export function HistoryView({ data }: Props) {
       <Card component="section">
         <CardContent>
           <Typography variant="h2" gutterBottom>
-            Storico allenamenti
+            {t('history.title')}
           </Typography>
           <Stack component="ul" spacing={2} sx={{ listStyle: 'none', m: 0, p: 0 }}>
             {sessions.map((session) => (

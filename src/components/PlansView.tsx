@@ -56,7 +56,7 @@ export function PlansView({ data, actions, initialShareCode }: Props) {
       <Card component="section">
         <CardContent>
           <Typography variant="h2" gutterBottom>
-            Le mie schede
+            {t('plans.title')}
           </Typography>
           <Stack
             direction="row"
@@ -65,14 +65,14 @@ export function PlansView({ data, actions, initialShareCode }: Props) {
             sx={{ flexWrap: 'wrap', alignItems: 'center', mb: 2 }}
           >
             <TextField
-              label="Nuova scheda"
-              placeholder="Es. Full Body 3x"
+              label={t('plans.newPlan')}
+              placeholder={t('plans.newPlanExample')}
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               slotProps={{ htmlInput: { 'data-cy': 'plan-name-input' } }}
             />
             <Button variant="contained" data-cy="plan-create" onClick={handleCreate}>
-              Crea scheda
+              {t('plans.create')}
             </Button>
           </Stack>
           {createError && (
@@ -82,9 +82,7 @@ export function PlansView({ data, actions, initialShareCode }: Props) {
           )}
 
           {data.plans.length === 0 ? (
-            <Typography data-cy="plans-empty">
-              Nessuna scheda: creane una o importane una condivisa.
-            </Typography>
+            <Typography data-cy="plans-empty">{t('plans.empty')}</Typography>
           ) : (
             <Box
               component="ul"
@@ -111,13 +109,13 @@ export function PlansView({ data, actions, initialShareCode }: Props) {
                             color="success"
                             variant="outlined"
                             data-cy="active-badge"
-                            label="✓ attiva"
+                            label={t('plans.activeBadge')}
                           />
                         )}
                       </Stack>
                       <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
                         {plan.days.length === 0
-                          ? 'Nessun giorno'
+                          ? t('plans.noDays')
                           : plan.days.map((d) => d.name).join(' · ')}
                       </Typography>
                       <Stack
@@ -133,7 +131,7 @@ export function PlansView({ data, actions, initialShareCode }: Props) {
                             data-cy="plan-activate"
                             onClick={() => actions.activatePlan(plan.id)}
                           >
-                            Attiva
+                            {t('plans.activate')}
                           </Button>
                         )}
                         <Button
@@ -142,7 +140,7 @@ export function PlansView({ data, actions, initialShareCode }: Props) {
                           data-cy="plan-edit"
                           onClick={() => setEditingPlanId(plan.id)}
                         >
-                          Modifica
+                          {t('list.edit')}
                         </Button>
                         <Button
                           size="small"
@@ -152,7 +150,7 @@ export function PlansView({ data, actions, initialShareCode }: Props) {
                             setSharingPlanId(sharingPlanId === plan.id ? null : plan.id)
                           }
                         >
-                          Condividi
+                          {t('list.share')}
                         </Button>
                         {confirming ? (
                           <>
@@ -167,7 +165,7 @@ export function PlansView({ data, actions, initialShareCode }: Props) {
                                 actions.removePlan(plan.id)
                               }}
                             >
-                              Conferma eliminazione
+                              {t('list.confirmDelete')}
                             </Button>
                             <Button
                               size="small"
@@ -175,7 +173,7 @@ export function PlansView({ data, actions, initialShareCode }: Props) {
                               data-cy="plan-delete-cancel"
                               onClick={() => setConfirmingDeleteId(null)}
                             >
-                              Annulla
+                              {t('list.cancel')}
                             </Button>
                           </>
                         ) : (
@@ -185,7 +183,7 @@ export function PlansView({ data, actions, initialShareCode }: Props) {
                             data-cy="plan-delete"
                             onClick={() => setConfirmingDeleteId(plan.id)}
                           >
-                            Elimina
+                            {t('list.delete')}
                           </Button>
                         )}
                       </Stack>

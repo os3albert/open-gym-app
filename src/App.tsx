@@ -217,15 +217,15 @@ export default function App() {
               <Typography variant="h1">Open Gym</Typography>
             </Stack>
             <SelectField
-              label="Tema"
+              label={t('settings.theme')}
               value={theme}
               onChange={(value) => setTheme(value as ThemePreference)}
               dataCy="theme-select"
               sx={{ minWidth: 120 }}
               options={[
-                { value: 'auto', label: 'Auto' },
-                { value: 'chiaro', label: 'Chiaro' },
-                { value: 'scuro', label: 'Scuro' },
+                { value: 'auto', label: t('settings.themeAuto') },
+                { value: 'chiaro', label: t('settings.themeLight') },
+                { value: 'scuro', label: t('settings.themeDark') },
               ]}
             />
           </Toolbar>
@@ -238,7 +238,7 @@ export default function App() {
           <UpdateBanner />
           <Box
             component="section"
-            aria-label="Presentazione"
+            aria-label={t('hero.label')}
             sx={{
               p: { xs: 2.5, sm: 3 },
               borderRadius: '24px',
@@ -250,25 +250,23 @@ export default function App() {
             }}
           >
             <Typography variant="overline" color="primary" component="p">
-              Open source · Nessuna registrazione
+              {t('hero.tagline')}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, maxWidth: '46ch' }}>
-              Esercizi proposti dalla community, votati come su Reddit. Nessuna registrazione: i
-              dati restano sul tuo dispositivo.
+              {t('hero.description')}
             </Typography>
             <HeroStats
               items={[
-                { label: 'Proposte', value: allExercises.length },
-                { label: 'Voti dati', value: votedIds.size },
-                { label: 'Sessioni', value: data.activity.length },
+                { label: t('hero.proposals'), value: allExercises.length },
+                { label: t('hero.votesCast'), value: votedIds.size },
+                { label: t('hero.sessions'), value: data.activity.length },
               ]}
             />
             <InstallPanel />
           </Box>
           {corruptedAtStartup && (
             <Alert severity="warning" role="alert" data-cy="corrupted-banner">
-              I dati salvati su questo dispositivo non erano leggibili: si riparte da zero. Se hai
-              un backup JSON puoi ripristinarlo dalla sezione «Backup dei dati».
+              {t('app.corrupted')}
             </Alert>
           )}
           {saveError && (
@@ -295,7 +293,7 @@ export default function App() {
                     mb: 2,
                   }}
                 >
-                  <Typography variant="h2">Esercizi della community</Typography>
+                  <Typography variant="h2">{t('app.communityExercises')}</Typography>
                   <Button
                     variant="contained"
                     startIcon={formOpen ? <CloseIcon /> : <AddIcon />}
@@ -304,7 +302,7 @@ export default function App() {
                     onClick={() => (formOpen ? closeForm() : setFormOpen(true))}
                   >
                     {/* Non «Proponi esercizio»: è il nome del submit del form, le query per ruolo collidono */}
-                    {formOpen ? 'Chiudi il form' : 'Nuova proposta'}
+                    {formOpen ? t('app.closeForm') : t('app.newProposal')}
                   </Button>
                 </Stack>
                 <Collapse in={formOpen} unmountOnExit sx={{ mb: 3 }}>

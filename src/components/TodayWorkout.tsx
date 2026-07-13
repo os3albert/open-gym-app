@@ -28,6 +28,7 @@ interface Props {
  * peso proposto dallo storico, «Fatto ✓» che registra la sessione nello storico.
  */
 export function TodayWorkout({ data, today, onComplete }: Props) {
+  const t = useT()
   const [manualDayName, setManualDayName] = useState('')
   const plan = activePlan(data)
   if (!plan || plan.days.length === 0) return null
@@ -41,15 +42,16 @@ export function TodayWorkout({ data, today, onComplete }: Props) {
     <Card component="section" data-cy="today-workout">
       <CardContent>
         <Typography variant="h2" gutterBottom>
-          La tua scheda: {plan.name}
+          {t('today.yourPlan', { name: plan.name })}
         </Typography>
 
         {restDay && !day && (
           <Typography data-cy="rest-day" sx={{ mb: 2 }}>
-            Oggi riposo 💤{' '}
+            {t('today.restDay')}{' '}
             {next && (
               <span data-cy="next-workout">
-                Prossimo allenamento: <strong>{next.day.name}</strong> ({formatDateIt(next.date)})
+                {t('today.nextWorkout')} <strong>{next.day.name}</strong> ({formatDateIt(next.date)}
+                )
               </span>
             )}
           </Typography>
@@ -57,17 +59,13 @@ export function TodayWorkout({ data, today, onComplete }: Props) {
 
         {!autoDay && (
           <SelectField
-            label={
-              restDay
-                ? 'Ti alleni lo stesso? Scegli il giorno'
-                : 'Che giorno della scheda fai oggi?'
-            }
+            label={restDay ? t('today.chooseDayAnyway') : t('today.whichDay')}
             value={manualDayName}
             onChange={setManualDayName}
             dataCy="today-day-select"
             sx={{ minWidth: 260 }}
             options={[
-              { value: '', label: 'Scegli…' },
+              { value: '', label: t('today.choose') },
               ...plan.days.map((d) => ({ value: d.name, label: d.name })),
             ]}
           />
@@ -81,11 +79,11 @@ export function TodayWorkout({ data, today, onComplete }: Props) {
               data-cy="today-day-name"
               sx={{ my: 1.5 }}
             >
-              {day.name} — spunta gli esercizi man mano che li completi.
+              {t('today.dayHint', { name: day.name })}
             </Typography>
             {day.entries.length === 0 ? (
               <Typography variant="body2" color="text.secondary">
-                Questo giorno non ha esercizi: aggiungili dalla scheda.
+                {t('today.dayEmpty')}
               </Typography>
             ) : (
               <Box component="ul" sx={{ listStyle: 'none', m: 0, p: 0, display: 'grid', gap: 2 }}>
@@ -169,18 +167,18 @@ function TodayEntry({ exercise, entry, done, suggestedWeight, onComplete }: Entr
           color="success"
           variant="outlined"
           data-cy="today-entry-done"
-          label="✓ Registrato oggi"
+          label={t('today.done')}
         />
       ) : skipped ? (
         <Typography component="span" variant="body2" data-cy="today-entry-skipped">
-          Saltato per oggi{' '}
+          {t('today.skipped')}{' '}
           <Button
             size="small"
             color="inherit"
             data-cy="today-entry-unskip"
             onClick={() => setSkipped(false)}
           >
-            Annulla
+            {t('today.undoSkip')}
           </Button>
         </Typography>
       ) : (
@@ -192,7 +190,7 @@ function TodayEntry({ exercise, entry, done, suggestedWeight, onComplete }: Entr
             sx={{ flexWrap: 'wrap', alignItems: 'center' }}
           >
             <TextField
-              label="Peso (kg)"
+              label={t('session.weight')}
               type="number"
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
@@ -200,7 +198,7 @@ function TodayEntry({ exercise, entry, done, suggestedWeight, onComplete }: Entr
               slotProps={{ htmlInput: { 'data-cy': 'today-weight', step: '0.5' } }}
             />
             <TextField
-              label="Ripetizioni"
+              label={t('session.reps')}
               type="number"
               value={reps}
               onChange={(e) => setReps(e.target.value)}
@@ -208,7 +206,7 @@ function TodayEntry({ exercise, entry, done, suggestedWeight, onComplete }: Entr
               slotProps={{ htmlInput: { 'data-cy': 'today-reps' } }}
             />
             <Button variant="contained" data-cy="today-entry-complete" onClick={handleComplete}>
-              Fatto ✓
+              {t('today.complete')}
             </Button>
             <Button
               size="small"
@@ -216,7 +214,7 @@ function TodayEntry({ exercise, entry, done, suggestedWeight, onComplete }: Entr
               data-cy="today-entry-skip"
               onClick={() => setSkipped(true)}
             >
-              Salta
+              {t('today.skip')}
             </Button>
           </Stack>
           {error && (

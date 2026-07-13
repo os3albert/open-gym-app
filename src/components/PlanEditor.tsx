@@ -57,7 +57,7 @@ export function PlanEditor({ plan, exercises, actions, onClose }: Props) {
     <Card component="section" data-cy="plan-editor">
       <CardContent>
         <Typography variant="h2" gutterBottom>
-          Modifica scheda
+          {t('planEditor.title')}
         </Typography>
         <Stack
           direction="row"
@@ -66,7 +66,7 @@ export function PlanEditor({ plan, exercises, actions, onClose }: Props) {
           sx={{ flexWrap: 'wrap', alignItems: 'center', mb: 2 }}
         >
           <TextField
-            label="Nome della scheda"
+            label={t('planEditor.planName')}
             value={name}
             onChange={(e) => setName(e.target.value)}
             slotProps={{ htmlInput: { 'data-cy': 'plan-rename-input' } }}
@@ -77,7 +77,7 @@ export function PlanEditor({ plan, exercises, actions, onClose }: Props) {
             data-cy="plan-rename"
             onClick={() => attempt(() => actions.renamePlan(plan.id, name))}
           >
-            Rinomina
+            {t('planEditor.rename')}
           </Button>
         </Stack>
 
@@ -88,8 +88,8 @@ export function PlanEditor({ plan, exercises, actions, onClose }: Props) {
           sx={{ flexWrap: 'wrap', alignItems: 'center', mb: 2 }}
         >
           <TextField
-            label="Nuovo giorno"
-            placeholder="Lunedì, Giorno A…"
+            label={t('planEditor.newDay')}
+            placeholder={t('planEditor.newDayExample')}
             value={dayName}
             onChange={(e) => setDayName(e.target.value)}
             slotProps={{ htmlInput: { 'data-cy': 'day-name-input', list: 'day-suggestions' } }}
@@ -106,7 +106,7 @@ export function PlanEditor({ plan, exercises, actions, onClose }: Props) {
               if (attempt(() => actions.addPlanDay(plan.id, dayName))) setDayName('')
             }}
           >
-            Aggiungi giorno
+            {t('planEditor.addDay')}
           </Button>
         </Stack>
 
@@ -118,7 +118,7 @@ export function PlanEditor({ plan, exercises, actions, onClose }: Props) {
 
         {plan.days.length === 0 && (
           <Typography variant="body2" color="text.secondary">
-            Nessun giorno: aggiungi «Lunedì» o «Giorno A» per iniziare.
+            {t('planEditor.noDays')}
           </Typography>
         )}
         <Stack spacing={2}>
@@ -141,7 +141,7 @@ export function PlanEditor({ plan, exercises, actions, onClose }: Props) {
 
         <Stack direction="row" sx={{ mt: 2 }}>
           <Button color="inherit" data-cy="plan-editor-close" onClick={onClose}>
-            Chiudi editor
+            {t('planEditor.close')}
           </Button>
         </Stack>
       </CardContent>
@@ -166,6 +166,7 @@ function DayEditor({
   onMoveEntry,
   onRemoveDay,
 }: DayProps) {
+  const t = useT()
   const [exerciseId, setExerciseId] = useState('')
   const [sets, setSets] = useState('3')
   const [reps, setReps] = useState('8')
@@ -187,17 +188,17 @@ function DayEditor({
           size="small"
           color="inherit"
           data-cy="remove-day"
-          aria-label={`Rimuovi il giorno ${day.name}`}
+          aria-label={t('planEditor.removeDayLabel', { day: day.name })}
           onClick={onRemoveDay}
           sx={{ flexShrink: 0 }}
         >
-          Rimuovi giorno
+          {t('planEditor.removeDay')}
         </Button>
       </Stack>
 
       {day.entries.length === 0 ? (
         <Typography variant="body2" color="text.secondary" sx={{ my: 1 }}>
-          Nessun esercizio in questo giorno.
+          {t('planEditor.dayEmpty')}
         </Typography>
       ) : (
         <Box component="ul" sx={{ listStyle: 'none', m: 0, p: 0, my: 1 }}>
@@ -224,7 +225,10 @@ function DayEditor({
                 <IconButton
                   size="small"
                   data-cy="entry-up"
-                  aria-label={`Sposta su ${exerciseName(entry.exerciseId)} in ${day.name}`}
+                  aria-label={t('planEditor.moveUp', {
+                    name: exerciseName(entry.exerciseId),
+                    day: day.name,
+                  })}
                   disabled={index === 0}
                   onClick={() => onMoveEntry(entry.exerciseId, -1)}
                 >
@@ -233,7 +237,10 @@ function DayEditor({
                 <IconButton
                   size="small"
                   data-cy="entry-down"
-                  aria-label={`Sposta giù ${exerciseName(entry.exerciseId)} in ${day.name}`}
+                  aria-label={t('planEditor.moveDown', {
+                    name: exerciseName(entry.exerciseId),
+                    day: day.name,
+                  })}
                   disabled={index === day.entries.length - 1}
                   onClick={() => onMoveEntry(entry.exerciseId, 1)}
                 >
@@ -242,7 +249,10 @@ function DayEditor({
                 <IconButton
                   size="small"
                   data-cy="remove-entry"
-                  aria-label={`Rimuovi ${exerciseName(entry.exerciseId)} da ${day.name}`}
+                  aria-label={t('planEditor.removeEntry', {
+                    name: exerciseName(entry.exerciseId),
+                    day: day.name,
+                  })}
                   onClick={() => onRemoveEntry(entry.exerciseId)}
                 >
                   <CloseIcon fontSize="inherit" />
@@ -260,18 +270,18 @@ function DayEditor({
         sx={{ flexWrap: 'wrap', alignItems: 'center', mt: 1.5 }}
       >
         <SelectField
-          label="Esercizio"
+          label={t('session.exercise')}
           value={exerciseId}
           onChange={setExerciseId}
           dataCy="entry-exercise-select"
           sx={{ minWidth: 210 }}
           options={[
-            { value: '', label: 'Scegli un esercizio…' },
+            { value: '', label: t('session.chooseExercise') },
             ...exercisesByName.map((e) => ({ value: e.id, label: e.name })),
           ]}
         />
         <TextField
-          label="Serie"
+          label={t('planEditor.sets')}
           type="number"
           value={sets}
           onChange={(e) => setSets(e.target.value)}
@@ -279,7 +289,7 @@ function DayEditor({
           slotProps={{ htmlInput: { 'data-cy': 'entry-sets' } }}
         />
         <TextField
-          label="Ripetizioni"
+          label={t('session.reps')}
           type="number"
           value={reps}
           onChange={(e) => setReps(e.target.value)}
@@ -296,7 +306,7 @@ function DayEditor({
             }
           }}
         >
-          Aggiungi
+          {t('planEditor.add')}
         </Button>
       </Stack>
     </Box>

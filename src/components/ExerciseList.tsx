@@ -8,6 +8,7 @@ import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Exercise } from '../domain/types'
+import { useT } from '../i18n/context'
 import type { DisplayExercise } from '../services/community'
 import { encodeExerciseShare } from '../services/share'
 import { parseYouTubeVideoId } from '../services/youtube'
@@ -52,20 +53,15 @@ export function ExerciseList({
   onEdit,
   onDelete,
 }: Props) {
+  const t = useT()
   const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null)
   const [sharingId, setSharingId] = useState<string | null>(null)
 
   if (totalCount === 0) {
-    return (
-      <EmptyState dataCy="empty-state">
-        Nessun esercizio proposto finora. Proponi tu il primo!
-      </EmptyState>
-    )
+    return <EmptyState dataCy="empty-state">{t('list.empty')}</EmptyState>
   }
   if (exercises.length === 0) {
-    return (
-      <EmptyState dataCy="no-results">Nessun esercizio corrisponde ai filtri scelti.</EmptyState>
-    )
+    return <EmptyState dataCy="no-results">{t('list.noResults')}</EmptyState>
   }
 
   return (
@@ -106,7 +102,9 @@ export function ExerciseList({
                   data-cy="exercise-upvote"
                   aria-pressed={voted}
                   aria-label={
-                    voted ? `Rimuovi il voto a ${exercise.name}` : `Vota ${exercise.name}`
+                    voted
+                      ? t('list.removeVote', { name: exercise.name })
+                      : t('list.vote', { name: exercise.name })
                   }
                   onClick={() => onToggleVote(exercise.id)}
                   sx={{
@@ -153,7 +151,7 @@ export function ExerciseList({
                     color="success"
                     variant="outlined"
                     data-cy="face-blur-badge"
-                    label="✓ volto offuscato"
+                    label={t('list.faceBlurBadge')}
                   />
                 )}
               </Stack>
@@ -186,7 +184,7 @@ export function ExerciseList({
                     onEdit(exercise)
                   }}
                 >
-                  Modifica
+                  {t('list.edit')}
                 </Button>
               )}
               <Button
@@ -195,7 +193,7 @@ export function ExerciseList({
                 data-cy="exercise-share"
                 onClick={() => setSharingId(sharingId === exercise.id ? null : exercise.id)}
               >
-                Condividi
+                {t('list.share')}
               </Button>
               {exercise.fromCommunity ? null : confirming ? (
                 <>
@@ -209,7 +207,7 @@ export function ExerciseList({
                       onDelete(exercise.id)
                     }}
                   >
-                    Conferma eliminazione
+                    {t('list.confirmDelete')}
                   </Button>
                   <Button
                     size="small"
@@ -217,7 +215,7 @@ export function ExerciseList({
                     data-cy="exercise-delete-cancel"
                     onClick={() => setConfirmingDeleteId(null)}
                   >
-                    Annulla
+                    {t('list.cancel')}
                   </Button>
                 </>
               ) : (
@@ -227,7 +225,7 @@ export function ExerciseList({
                   data-cy="exercise-delete"
                   onClick={() => setConfirmingDeleteId(exercise.id)}
                 >
-                  Elimina
+                  {t('list.delete')}
                 </Button>
               )}
             </CardActions>

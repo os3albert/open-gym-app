@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useT } from '../i18n/context'
 import { youtubeEmbedUrl, youtubeThumbnailUrl } from '../services/youtube'
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
  * al primo click, così la lista non apre connessioni verso YouTube.
  */
 export function YouTubePlayer({ videoId, title }: Props) {
+  const t = useT()
   const [playing, setPlaying] = useState(false)
   const [thumbnailFailed, setThumbnailFailed] = useState(false)
 
@@ -33,18 +35,18 @@ export function YouTubePlayer({ videoId, title }: Props) {
       type="button"
       className="video-facade"
       data-cy="video-facade"
-      aria-label={`Riproduci il video di ${title}`}
+      aria-label={t('video.play', { title })}
       onClick={() => setPlaying(true)}
     >
       {thumbnailFailed ? (
         // L'app funziona offline, ma i video YouTube richiedono la rete (issue #25)
         <span className="video-offline" data-cy="video-offline">
-          Video non disponibile senza connessione
+          {t('video.offline')}
         </span>
       ) : (
         <img
           src={youtubeThumbnailUrl(videoId)}
-          alt={`Anteprima video di ${title}`}
+          alt={t('video.thumbnailAlt', { title })}
           loading="lazy"
           onError={() => setThumbnailFailed(true)}
         />
