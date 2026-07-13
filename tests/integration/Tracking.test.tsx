@@ -8,6 +8,7 @@ import { addExercise } from '../../src/domain/exercises'
 import type { AppData } from '../../src/domain/types'
 import { emptyData, saveData } from '../../src/services/storage'
 import { addDaysIso, formatDateIt, todayIso } from '../../src/utils/date'
+import { scegliOpzione } from './helpers'
 
 beforeEach(() => {
   localStorage.clear()
@@ -41,7 +42,7 @@ describe('suggerimento del carico (issue #16)', () => {
     render(<App />)
     await openTraining(user)
 
-    await user.selectOptions(screen.getByLabelText('Esercizio'), 'Squat')
+    await scegliOpzione(user, 'Esercizio', 'Squat')
 
     expect(screen.getByLabelText('Peso (kg)')).toHaveValue(80)
     expect(screen.getByLabelText('Ripetizioni')).toHaveValue(5)
@@ -53,7 +54,7 @@ describe('suggerimento del carico (issue #16)', () => {
     render(<App />)
     await openTraining(user)
 
-    await user.selectOptions(screen.getByLabelText('Esercizio'), 'Squat')
+    await scegliOpzione(user, 'Esercizio', 'Squat')
 
     expect(screen.getByLabelText('Peso (kg)')).toHaveValue(82.5)
   })
@@ -64,7 +65,7 @@ describe('suggerimento del carico (issue #16)', () => {
     render(<App />)
     await openTraining(user)
 
-    await user.selectOptions(screen.getByLabelText('Esercizio'), 'Squat')
+    await scegliOpzione(user, 'Esercizio', 'Squat')
 
     expect(screen.getByLabelText('Peso (kg)')).toHaveValue(null)
     expect(screen.getByLabelText('Ripetizioni')).toHaveValue(null)
@@ -78,7 +79,7 @@ describe('registrazione della sessione (issue #14)', () => {
     const first = render(<App />)
     await openTraining(user)
 
-    await user.selectOptions(screen.getByLabelText('Esercizio'), 'Squat')
+    await scegliOpzione(user, 'Esercizio', 'Squat')
     await user.type(screen.getByLabelText('Peso (kg)'), '60')
     await user.type(screen.getByLabelText('Ripetizioni'), '8')
     await user.click(screen.getByRole('button', { name: 'Aggiungi serie' }))
@@ -101,7 +102,7 @@ describe('registrazione della sessione (issue #14)', () => {
     seed()
     render(<App />)
     await openTraining(user)
-    await user.selectOptions(screen.getByLabelText('Esercizio'), 'Squat')
+    await scegliOpzione(user, 'Esercizio', 'Squat')
 
     await user.click(screen.getByRole('button', { name: 'Aumenta il peso di 2,5 kg' }))
     await user.click(screen.getByRole('button', { name: 'Aumenta il peso di 2,5 kg' }))
@@ -116,7 +117,7 @@ describe('registrazione della sessione (issue #14)', () => {
     seed()
     render(<App />)
     await openTraining(user)
-    await user.selectOptions(screen.getByLabelText('Esercizio'), 'Squat')
+    await scegliOpzione(user, 'Esercizio', 'Squat')
 
     await user.type(screen.getByLabelText('Peso (kg)'), '60')
     await user.click(screen.getByRole('button', { name: 'Aggiungi serie' }))
@@ -129,7 +130,7 @@ describe('registrazione della sessione (issue #14)', () => {
     seed()
     render(<App />)
     await openTraining(user)
-    await user.selectOptions(screen.getByLabelText('Esercizio'), 'Squat')
+    await scegliOpzione(user, 'Esercizio', 'Squat')
     await user.type(screen.getByLabelText('Peso (kg)'), '60')
     await user.type(screen.getByLabelText('Ripetizioni'), '8')
     await user.click(screen.getByRole('button', { name: 'Aggiungi serie' }))
@@ -153,7 +154,7 @@ describe('storico allenamenti (issue #15)', () => {
     expect(dates[0]).toBe(formatDateIt(todayIso()))
     expect(dates[1]).toBe(formatDateIt(addDaysIso(todayIso(), -1)))
 
-    await user.selectOptions(screen.getByLabelText('Esercizio'), 'Squat')
+    await scegliOpzione(user, 'Esercizio', 'Squat')
     expect(
       screen.getByRole('img', { name: /Andamento del carico: da 80 kg .* a 85 kg/ }),
     ).toBeInTheDocument()
@@ -168,23 +169,23 @@ describe('storico allenamenti (issue #15)', () => {
     saveData(data)
     render(<App />)
     await user.click(screen.getByRole('button', { name: 'Storico' }))
-    await user.selectOptions(screen.getByLabelText('Esercizio'), 'Squat')
+    await scegliOpzione(user, 'Esercizio', 'Squat')
 
-    await user.selectOptions(screen.getByLabelText('Metrica'), 'Ripetizioni totali')
+    await scegliOpzione(user, 'Metrica', 'Ripetizioni totali')
     expect(
       screen.getByRole('img', {
         name: /Andamento delle ripetizioni totali: da 5 reps .* a 8 reps/,
       }),
     ).toBeInTheDocument()
 
-    await user.selectOptions(screen.getByLabelText('Metrica'), 'Ripetizioni massime')
+    await scegliOpzione(user, 'Metrica', 'Ripetizioni massime')
     expect(
       screen.getByRole('img', {
         name: /Andamento delle ripetizioni massime: da 5 reps .* a 5 reps/,
       }),
     ).toBeInTheDocument()
 
-    await user.selectOptions(screen.getByLabelText('Metrica'), 'Volume (kg × reps)')
+    await scegliOpzione(user, 'Metrica', 'Volume (kg × reps)')
     expect(
       screen.getByRole('img', { name: /Andamento del volume: da 400 kg×reps .* a 680 kg×reps/ }),
     ).toBeInTheDocument()

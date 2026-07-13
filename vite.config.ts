@@ -3,7 +3,7 @@ import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
-import { cloudflare } from "@cloudflare/vite-plugin";
+import { cloudflare } from '@cloudflare/vite-plugin'
 
 /** Origine di un URL configurato (per la CSP): stringa vuota se non c'è. */
 function origin(url: string | undefined): string {
@@ -23,6 +23,10 @@ function origin(url: string | undefined): string {
 function cspPlugin(): Plugin {
   return {
     name: 'open-gym-csp',
+    // Solo in build: in dev Vite serve script inline (preamble react-refresh, HMR) che
+    // `script-src 'self'` bloccherebbe, lasciando la pagina bianca. L'E2E gira sulla
+    // build di produzione, quindi la policy resta comunque coperta dai test.
+    apply: 'build',
     transformIndexHtml() {
       const worker = origin(process.env.VITE_COMMUNITY_API_URL)
       const umami = origin(process.env.VITE_UMAMI_SRC)
@@ -51,40 +55,55 @@ function cspPlugin(): Plugin {
   }
 }
 
+/**
+ * L'app è installabile da due origini diverse: GitHub Pages in sottopercorso
+ * (VITE_BASE=/open-gym-app/) e il Worker Cloudflare in root. `id`, `start_url` e `scope`
+ * del manifest DEVONO seguire la base, o il browser considera l'app fuori dal suo scope
+ * e non la installa. Per il browser restano due app distinte: è voluto.
+ */
+const base = process.env.VITE_BASE || '/'
+
 export default defineConfig({
-  // Su GitHub Pages l'app vive in un sottopercorso: il workflow passa VITE_BASE=/open-gym-app/
-  base: process.env.VITE_BASE || '/',
-  plugins: [react(), cspPlugin(), VitePWA({
-    // 'prompt': la nuova versione non si attiva da sola, l'utente la applica dal banner
-    registerType: 'prompt',
-    includeAssets: ['favicon.svg'],
-    manifest: {
-      name: 'Open Gym',
-      short_name: 'OpenGym',
-      description:
-        'Piattaforma open source di esercizi da palestra: schede di allenamento, tracking dei pesi e voti della community.',
-      lang: 'it',
-      display: 'standalone',
-      // Niente start_url/scope espliciti né percorsi assoluti: li deriva il plugin
-      // dalla base di Vite, così manifest e icone funzionano anche nel sottopercorso Pages
-      theme_color: '#4d7c0f',
-      background_color: '#fafaf9',
-      icons: [
-        { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
-        { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },
-        // Maskable a parte: contiene solo il glifo nella safe zone, senza il riquadro
-        {
-          src: 'pwa-512x512-maskable.png',
-          sizes: '512x512',
-          type: 'image/png',
-          purpose: 'maskable',
-        },
-      ],
-    },
-    workbox: {
-      globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest}'],
-    },
-  }), cloudflare()],
+  base,
+  plugins: [
+    react(),
+    cspPlugin(),
+    VitePWA({
+      // 'prompt': la nuova versione non si attiva da sola, l'utente la applica dal banner
+      registerType: 'prompt',
+      includeAssets: ['favicon.svg'],
+      manifest: {
+        // id/start_url/scope seguono la base: senza, l'app non è installabile fuori dalla root
+        id: base,
+        start_url: base,
+        scope: base,
+        name: 'Open Gym',
+        short_name: 'OpenGym',
+        description:
+          'Piattaforma open source di esercizi da palestra: schede di allenamento, tracking dei pesi e voti della community.',
+        lang: 'it',
+        display: 'standalone',
+        theme_color: '#4d7c0f',
+        // Stesso background.default dello schema chiaro in src/theme.ts
+        background_color: '#f6f6f4',
+        icons: [
+          { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          // Maskable a parte: contiene solo il glifo nella safe zone, senza il riquadro
+          {
+            src: 'pwa-512x512-maskable.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
+          },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest}'],
+      },
+    }),
+    cloudflare(),
+  ],
   test: {
     environment: 'jsdom',
     // Il modulo virtuale del service worker non esiste sotto Vitest: stub esplicito

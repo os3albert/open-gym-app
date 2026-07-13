@@ -13,6 +13,7 @@ import { lastSession, sessionsByDate } from '../domain/activity'
 import type { AppData, WorkoutSet } from '../domain/types'
 import { suggestNextWeight } from '../services/weightSuggestion'
 import { formatDateIt } from '../utils/date'
+import { SelectField } from './SelectField'
 
 interface Props {
   data: AppData
@@ -74,25 +75,17 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
           </Typography>
         ) : (
           <Stack spacing={2}>
-            <TextField
-              select
+            <SelectField
               label="Esercizio"
               value={exerciseId}
-              onChange={(e) => handleSelectExercise(e.target.value)}
+              onChange={handleSelectExercise}
+              dataCy="session-exercise-select"
               sx={{ maxWidth: 320 }}
-              slotProps={{
-                select: { native: true },
-                inputLabel: { shrink: true },
-                htmlInput: { 'data-cy': 'session-exercise-select' },
-              }}
-            >
-              <option value="">Scegli un esercizio…</option>
-              {exercisesByName.map((e) => (
-                <option key={e.id} value={e.id}>
-                  {e.name}
-                </option>
-              ))}
-            </TextField>
+              options={[
+                { value: '', label: 'Scegli un esercizio…' },
+                ...exercisesByName.map((e) => ({ value: e.id, label: e.name })),
+              ]}
+            />
             <Stack direction="row" spacing={3} useFlexGap sx={{ flexWrap: 'wrap' }}>
               <Stack
                 direction="row"

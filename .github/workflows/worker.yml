@@ -29,3 +29,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: worker
+          # --config esplicito: se nella root esiste .wrangler/deploy/config.json (il redirect che
+          # @cloudflare/vite-plugin genera a ogni build) wrangler lo preferisce al wrangler.toml
+          # che ha sotto il naso, e deploierebbe l'APP al posto del worker della community.
+          command: deploy --config wrangler.toml

@@ -18,7 +18,7 @@ npm test -- tests/unit/youtube.test.ts         # un singolo file
 npm test -- -t "propone un esercizio"          # un singolo test per nome
 
 npm run test:bdd           # Cucumber (features/*.feature, Gherkin in italiano)
-npm run test:e2e           # builda, avvia vite preview :4173, esegue Cypress headless
+npm run test:e2e           # builda, avvia wrangler dev :8787, esegue Cypress headless
 npm run test:e2e:open      # Cypress interattivo contro il dev server :5173
 npm run test:all           # lint + format + jest + bdd + e2e (stessi gate della CI)
 
@@ -51,7 +51,7 @@ Dipendenze a senso unico: `components/` → `hooks/` → `domain/` + `services/`
 
 ### Regole MUI (contratto dei test, imparate in M7)
 
-- Select: SEMPRE `TextField select` con `slotProps: { select: { native: true }, inputLabel: { shrink: true }, htmlInput: { 'data-cy': '…' } }` → resta un `<select>` nativo con `<option>` (`userEvent.selectOptions` e `cy.select()` funzionano) e la label non si sovrappone al testo. MAI il Select non-nativo.
+- Select: SEMPRE il componente `components/SelectField.tsx` (unico select dell'app, M11), mai `TextField select` a mano. È un Select MUI **non nativo**: il menu lo disegna l'app, non il sistema operativo. Conseguenze da rispettare: `userEvent.selectOptions` e `cy.select()` NON funzionano più — si usano gli helper `scegliOpzione(user, label, opzione)` (`tests/integration/helpers.ts`) e `cy.scegliOpzione(dataCy, opzione)` (`cypress/support/e2e.ts`), che aprono il menu e cliccano la voce per etichetta. Il `data-cy` sta sul div che mostra il valore (via `SelectDisplayProps`), NON sul root del Select: il root ingloba la legenda della label e il suo testo sarebbe «AutoTema» invece di «Auto». La scelta corrente si asserisce sul **testo** mostrato (`toHaveTextContent` / `have.text`), mai su un `value`.
 - Il `data-cy` degli input va sull'elemento vero via `slotProps.htmlInput` (input, textarea multiline, select nativi); sui Button va sul root. Lo slot `input` di Checkbox non tipizza i `data-*`: cast `as React.InputHTMLAttributes<HTMLInputElement>`.
 - MAI `required` su TextField: l'asterisco entra nel nome accessibile e rompe `getByLabelText`.
 - In MUI v9 `flexWrap`/`alignItems`/`justifyContent` NON sono prop dirette di Stack: vanno in `sx` (con `useFlexGap` quando serve il wrap).
@@ -79,6 +79,7 @@ Dipendenze a senso unico: `components/` → `hooks/` → `domain/` + `services/`
 - Sicurezza (vedi `SECURITY.md`): il worker NON si fida del client — l'identità del votante è derivata lì (hash di `VOTE_SALT` + IP), il client dice solo _cosa_ vota e il conteggio autorevole torna nella risposta; l'origine è verificata server-side (il CORS non ferma `curl`); corpo ≤ 4 KB e campi con `FIELD_LIMITS`. Le variabili `VITE_*` finiscono nel bundle pubblico: possono contenere solo URL e id pubblici, mai segreti. La CSP è generata a build time in `vite.config.ts` (meta tag: Pages non manda header): se aggiungi un host esterno, va aggiunto lì o il browser lo blocca in produzione — e l'E2E gira sulla build, quindi lo vedi subito.
 - Il form «Proponi un esercizio» è collassato all'atterraggio (si apre da «Nuova proposta»): i test che compilano il form lo aprono prima (`cy.apriFormProposta()` in Cypress, helper equivalente nei test di integrazione). Il bottone NON può chiamarsi «Proponi esercizio»: è il nome accessibile del submit e le query per ruolo collidono.
 - Il worker (`worker/`) ha la sua tsconfig ed entra nello script `typecheck`; la logica che condivide con l'app sta in `src/services/communityData.ts` (pura, testata in Vitest). Il deploy (`worker.yml`) richiede i secret Cloudflare: finché non sono configurati il workflow fallisce ed è normale (la app resta comunque verde e la community spenta).
+- Su Cloudflare vivono **due** Worker: `open-gym-app` (l'app, `wrangler.jsonc` nella root, soli asset statici) e `open-gym-community` (`worker/wrangler.toml`). Il nome È l'identità del Worker: **mai lo stesso nome**, o il secondo deploy sovrascrive il primo. E i comandi wrangler della community passano SEMPRE dagli script `npm run worker:deploy|worker:secret|worker:tail` (= `--config worker/wrangler.toml`): un `wrangler` nudo, anche lanciato da dentro `worker/`, viene dirottato sul Worker dell'app dal redirect `.wrangler/deploy/config.json` che `@cloudflare/vite-plugin` genera nella root a ogni build — segreti compresi.
 
 ## Visione prodotto (da README.md, in italiano)
 

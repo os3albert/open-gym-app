@@ -8,6 +8,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import type { ExerciseFilters, SortOrder } from '../domain/filters'
+import { SelectField } from './SelectField'
 
 interface Props {
   filters: ExerciseFilters
@@ -38,7 +39,17 @@ export function FilterBar({
   }
 
   return (
-    <Stack spacing={2} sx={{ mb: 2 }}>
+    <Stack
+      spacing={2}
+      sx={{
+        mb: 3,
+        p: 2,
+        borderRadius: '20px',
+        border: 1,
+        borderColor: 'divider',
+        bgcolor: 'background.paper',
+      }}
+    >
       <Box
         component="form"
         onSubmit={handleStatureSubmit}
@@ -61,6 +72,7 @@ export function FilterBar({
           {statureError}
         </Alert>
       )}
+      <Divider />
       <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: 'wrap', alignItems: 'center' }}>
         <FormControlLabel
           label="Adatti a me"
@@ -77,47 +89,34 @@ export function FilterBar({
             />
           }
         />
-        <TextField
-          select
+        <SelectField
           label="Filtra per gruppo muscolare"
           value={filters.muscleGroup ?? ''}
-          onChange={(e) => onFiltersChange({ ...filters, muscleGroup: e.target.value || null })}
+          onChange={(value) => onFiltersChange({ ...filters, muscleGroup: value || null })}
+          dataCy="filter-muscle"
           sx={{ minWidth: 220 }}
-          slotProps={{
-            select: { native: true },
-            inputLabel: { shrink: true },
-            htmlInput: { 'data-cy': 'filter-muscle' },
-          }}
-        >
-          <option value="">Tutti</option>
-          {muscleGroups.map((group) => (
-            <option key={group} value={group}>
-              {group}
-            </option>
-          ))}
-        </TextField>
-        <TextField
-          select
+          options={[
+            { value: '', label: 'Tutti' },
+            ...muscleGroups.map((group) => ({ value: group, label: group })),
+          ]}
+        />
+        <SelectField
           label="Ordina per"
           value={filters.sort}
-          onChange={(e) => onFiltersChange({ ...filters, sort: e.target.value as SortOrder })}
-          sx={{ minWidth: 150 }}
-          slotProps={{
-            select: { native: true },
-            inputLabel: { shrink: true },
-            htmlInput: { 'data-cy': 'sort-select' },
-          }}
-        >
-          <option value="votes">Più votati</option>
-          <option value="recent">Più recenti</option>
-        </TextField>
+          onChange={(value) => onFiltersChange({ ...filters, sort: value as SortOrder })}
+          dataCy="sort-select"
+          sx={{ minWidth: 160 }}
+          options={[
+            { value: 'votes', label: 'Più votati' },
+            { value: 'recent', label: 'Più recenti' },
+          ]}
+        />
       </Stack>
       {requiresStature && (
         <Alert severity="warning" role="status" data-cy="stature-required">
           Per usare «Adatti a me» inserisci prima la tua statura qui sopra.
         </Alert>
       )}
-      <Divider />
     </Stack>
   )
 }

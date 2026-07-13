@@ -38,6 +38,75 @@ img {
   outline-offset: 2px;
 }
 
+/* --- Movimento (tutte le durate sotto i 400 ms: vivace, mai d'intralcio) --- */
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pop {
+  50% {
+    transform: scale(1.14);
+  }
+}
+
+/* Entrata della vista al cambio di sezione (la key su <main> rimonta il contenuto) */
+.view-enter {
+  animation: rise-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/*
+ * Le card entrano a cascata. Lo scaglionamento si ferma alla sesta: oltre, l'ultima
+ * card aspetterebbe troppo prima di comparire.
+ */
+.exercise-card {
+  animation: rise-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.exercise-card:nth-child(2) {
+  animation-delay: 50ms;
+}
+
+.exercise-card:nth-child(3) {
+  animation-delay: 100ms;
+}
+
+.exercise-card:nth-child(4) {
+  animation-delay: 150ms;
+}
+
+.exercise-card:nth-child(5) {
+  animation-delay: 200ms;
+}
+
+.exercise-card:nth-child(n + 6) {
+  animation-delay: 250ms;
+}
+
+/* Il voto «scatta»: la conferma dell'azione si vede, senza toccare il conteggio */
+.vote-button.voted {
+  animation: pop 260ms ease-out;
+}
+
+/* Chi ha chiesto meno movimento resta servito: niente animazioni, solo stati finali */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* --- Form esercizio: anteprima e linee guida video --- */
 
 .video-preview {
@@ -71,6 +140,27 @@ img {
 .video-facade img {
   display: block;
   width: 100%;
+  /* La miniatura di YouTube è 4:3 con bande nere: la ritagliamo a 16:9 */
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* La miniatura respira quando la card è sotto il puntatore (mai su touch) */
+@media (hover: hover) {
+  .exercise-card:hover .video-facade img {
+    transform: scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .video-facade img {
+    transition: none;
+  }
+
+  .exercise-card:hover .video-facade img {
+    transform: none;
+  }
 }
 
 .play-icon {
@@ -78,21 +168,45 @@ img {
   inset: 0;
   display: grid;
   place-items: center;
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   color: #fff;
-  background: rgba(0, 0, 0, 0.15);
+  /* Velo scuro in basso: i titoli delle miniature restano leggibili sotto il play */
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.08) 55%);
 }
 
-/* Cerchio traslucido con blur dietro al play, come nei mockup ui/ */
-.play-icon::before {
-  content: '';
-  position: absolute;
-  width: 3.5rem;
-  height: 3.5rem;
+/*
+ * Il cerchio è il glifo stesso, non uno ::before: backdrop-filter crea un contesto
+ * di impilamento e lo pseudo-elemento finirebbe SOPRA il triangolo, nascondendolo.
+ */
+.play-glyph {
+  display: grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  padding-left: 0.2rem; /* il triangolo ha il baricentro spostato a sinistra */
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  backdrop-filter: blur(6px);
+  /* Opaco quasi del tutto: al 50% il ▶ bianco spariva sulle miniature chiare */
+  background: rgba(15, 16, 14, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  transition: transform 200ms ease;
+}
+
+@media (hover: hover) {
+  .video-facade:hover .play-glyph {
+    transform: scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .play-glyph {
+    transition: none;
+  }
+
+  .video-facade:hover .play-glyph {
+    transform: none;
+  }
 }
 
 .video-frame {

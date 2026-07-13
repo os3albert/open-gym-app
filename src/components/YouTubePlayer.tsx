@@ -50,7 +50,7 @@ export function YouTubePlayer({ videoId, title }: Props) {
         />
       )}
       <span className="play-icon" aria-hidden="true">
-        ▶
+        <span className="play-glyph">▶</span>
       </span>
     </button>
   )

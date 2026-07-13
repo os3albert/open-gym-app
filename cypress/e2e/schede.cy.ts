@@ -66,7 +66,7 @@ describe('Schede di allenamento (M4)', () => {
     cy.get('[data-cy=plan-day-name]').should('have.text', 'Lunedì')
 
     // Target di default 3×8: basta scegliere l'esercizio
-    cy.get('[data-cy=entry-exercise-select]').select('Panca piana')
+    cy.scegliOpzione('entry-exercise-select', 'Panca piana')
     cy.get('[data-cy=add-entry]').click()
     cy.get('[data-cy=plan-entry-text]').should('have.text', 'Panca piana — 3×8')
 

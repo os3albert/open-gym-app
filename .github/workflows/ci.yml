@@ -58,7 +58,7 @@ jobs:
         with:
           build: npm run build
           start: npm run preview
-          wait-on: 'http://localhost:4173'
+          wait-on: 'http://localhost:8787'
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

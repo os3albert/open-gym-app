@@ -24,6 +24,26 @@ interface Props {
   onDelete: (exerciseId: string) => void
 }
 
+/** Riquadro tratteggiato per le liste vuote (il testo resta contratto dei test). */
+function EmptyState({ dataCy, children }: { dataCy: string; children: React.ReactNode }) {
+  return (
+    <Typography
+      data-cy={dataCy}
+      color="text.secondary"
+      sx={{
+        py: 5,
+        px: 2,
+        textAlign: 'center',
+        borderRadius: '20px',
+        border: '1px dashed',
+        borderColor: 'divider',
+      }}
+    >
+      {children}
+    </Typography>
+  )
+}
+
 export function ExerciseList({
   exercises,
   totalCount,
@@ -37,14 +57,14 @@ export function ExerciseList({
 
   if (totalCount === 0) {
     return (
-      <Typography data-cy="empty-state">
+      <EmptyState dataCy="empty-state">
         Nessun esercizio proposto finora. Proponi tu il primo!
-      </Typography>
+      </EmptyState>
     )
   }
   if (exercises.length === 0) {
     return (
-      <Typography data-cy="no-results">Nessun esercizio corrisponde ai filtri scelti.</Typography>
+      <EmptyState dataCy="no-results">Nessun esercizio corrisponde ai filtri scelti.</EmptyState>
     )
   }
 
@@ -67,15 +87,15 @@ export function ExerciseList({
         const voted = votedIds.has(exercise.id)
         const confirming = confirmingDeleteId === exercise.id
         return (
-          <Card key={exercise.id} component="li" data-cy="exercise-item">
+          <Card key={exercise.id} component="li" data-cy="exercise-item" className="exercise-card">
             {videoId && <YouTubePlayer videoId={videoId} title={exercise.name} />}
             <CardContent sx={{ pb: 0 }}>
               <Stack
                 direction="row"
-                spacing={1}
+                spacing={1.5}
                 sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}
               >
-                <Typography variant="h3" component="h3">
+                <Typography variant="h3" component="h3" sx={{ pt: 0.5 }}>
                   {exercise.name}
                 </Typography>
                 {/* Upvote stile Reddit: un voto per dispositivo, toggle */}
@@ -89,9 +109,23 @@ export function ExerciseList({
                     voted ? `Rimuovi il voto a ${exercise.name}` : `Vota ${exercise.name}`
                   }
                   onClick={() => onToggleVote(exercise.id)}
-                  sx={{ minWidth: 0, flexShrink: 0, gap: 0.5 }}
+                  sx={{
+                    // Colonnina freccia+conteggio: la stessa gestualità di Reddit
+                    flexDirection: 'column',
+                    gap: 0,
+                    minWidth: 52,
+                    px: 0.5,
+                    py: 0.75,
+                    borderRadius: '14px',
+                    flexShrink: 0,
+                    lineHeight: 1.15,
+                    fontVariantNumeric: 'tabular-nums',
+                  }}
                 >
-                  ▲ <span data-cy="exercise-votes">{exercise.votes}</span>
+                  <Box component="span" aria-hidden sx={{ fontSize: '0.75rem' }}>
+                    ▲
+                  </Box>
+                  <span data-cy="exercise-votes">{exercise.votes}</span>
                 </Button>
               </Stack>
               <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap', mt: 1 }}>
@@ -129,7 +163,18 @@ export function ExerciseList({
                 </Typography>
               )}
             </CardContent>
-            <CardActions sx={{ px: 2, pb: 2, flexWrap: 'wrap', gap: 0.5 }}>
+            <CardActions
+              sx={{
+                px: 1.5,
+                pt: 1.5,
+                pb: 1.5,
+                mt: 2,
+                flexWrap: 'wrap',
+                gap: 0.5,
+                borderTop: 1,
+                borderColor: 'divider',
+              }}
+            >
               {/* Gli esercizi della community non sono miei: si votano e si condividono, non si modificano */}
               {!exercise.fromCommunity && (
                 <Button

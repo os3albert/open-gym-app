@@ -12,6 +12,7 @@ import { activePlan, dayForDate, nextScheduledDay, planUsesWeekdays } from '../d
 import type { AppData, Exercise, PlanEntry, WorkoutSet } from '../domain/types'
 import { suggestNextWeight } from '../services/weightSuggestion'
 import { formatDateIt } from '../utils/date'
+import { SelectField } from './SelectField'
 
 interface Props {
   data: AppData
@@ -53,29 +54,21 @@ export function TodayWorkout({ data, today, onComplete }: Props) {
         )}
 
         {!autoDay && (
-          <TextField
-            select
+          <SelectField
             label={
               restDay
                 ? 'Ti alleni lo stesso? Scegli il giorno'
                 : 'Che giorno della scheda fai oggi?'
             }
             value={manualDayName}
-            onChange={(e) => setManualDayName(e.target.value)}
+            onChange={setManualDayName}
+            dataCy="today-day-select"
             sx={{ minWidth: 260 }}
-            slotProps={{
-              select: { native: true },
-              inputLabel: { shrink: true },
-              htmlInput: { 'data-cy': 'today-day-select' },
-            }}
-          >
-            <option value="">Scegli…</option>
-            {plan.days.map((d) => (
-              <option key={d.name} value={d.name}>
-                {d.name}
-              </option>
-            ))}
-          </TextField>
+            options={[
+              { value: '', label: 'Scegli…' },
+              ...plan.days.map((d) => ({ value: d.name, label: d.name })),
+            ]}
+          />
         )}
 
         {day && (

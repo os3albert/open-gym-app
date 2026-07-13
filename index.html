@@ -4,8 +4,18 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/pwa-192x192.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#4d7c0f" />
+    <!--
+      Safari/iOS non legge display:standalone dal manifest come Chrome: senza questi meta,
+      l'app aggiunta alla schermata Home si riaprirebbe dentro Safari, con la barra degli
+      indirizzi. black-translucent + viewport-fit=cover lasciano il contenuto sotto la
+      status bar (le safe-area-inset sono già gestite in TabNav).
+    -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Open Gym" />
     <meta
       name="description"
       content="Piattaforma open source di esercizi da palestra: schede di allenamento, tracking dei pesi e voti della community."
