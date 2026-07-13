@@ -10,6 +10,8 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { lastSession, sessionsByDate } from '../domain/activity'
+import { translateError } from '../i18n'
+import { useT } from '../i18n/context'
 import type { AppData, WorkoutSet } from '../domain/types'
 import { suggestNextWeight } from '../services/weightSuggestion'
 import { formatDateIt } from '../utils/date'
@@ -25,6 +27,7 @@ interface Props {
 
 /** Registrazione della sessione di oggi: pensata per l'uso in palestra (+/- rapidi, valori proposti). */
 export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
+  const t = useT()
   const [exerciseId, setExerciseId] = useState('')
   const [weight, setWeight] = useState('')
   const [reps, setReps] = useState('')
@@ -56,7 +59,7 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
       setError(null)
       // Peso e ripetizioni restano compilati: la prossima serie si aggiunge con un tap
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Serie non valida')
+      setError(translateError(t, err))
     }
   }
 

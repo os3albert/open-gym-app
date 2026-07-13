@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import AddIcon from '@mui/icons-material/Add'
 import CloseIcon from '@mui/icons-material/Close'
 import Alert from '@mui/material/Alert'
@@ -13,6 +13,9 @@ import { ThemeProvider, useColorScheme } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import { theme as muiTheme } from './theme'
+import { makeTranslate, translateError, type Translate } from './i18n'
+import { I18nProvider } from './i18n/provider'
+import { useLanguage } from './hooks/useLanguage'
 import { BackupPanel } from './components/BackupPanel'
 import { ExerciseForm } from './components/ExerciseForm'
 import { ExerciseList } from './components/ExerciseList'
@@ -32,7 +35,7 @@ import { applyFiltersTo, muscleGroups, suitabilityRequiresStature } from './doma
 import type { Exercise } from './domain/types'
 import { useAnalytics } from './hooks/useAnalytics'
 import { useAppData } from './hooks/useAppData'
-import { useCommunity } from './hooks/useCommunity'
+import { useCommunity, type CommunityMessage } from './hooks/useCommunity'
 import { useFilters } from './hooks/useFilters'
 import { useTheme, type ThemePreference } from './hooks/useTheme'
 import { useView } from './hooks/useView'
@@ -88,6 +91,13 @@ function HeroStats({ items }: { items: Array<{ label: string; value: number }> }
   )
 }
 
+/** La frase di un esito della community: l'hook dà un codice, la lingua la sceglie qui. */
+function communityMessageText(t: Translate, message: CommunityMessage): string {
+  if (message.kind === 'proposalSent') return t('community.proposalSent')
+  const reason = translateError(t, message.reason)
+  return message.kind === 'localOnly' ? t('community.localOnly', { reason }) : reason
+}
+
 /** Legge (e consuma) il codice condiviso dal fragment #dati=…, per l'apertura da link. */
 function consumeShareCodeFromUrl(): string | null {
   const code = shareCodeFromHash(window.location.hash)
@@ -129,6 +139,11 @@ export default function App() {
   const [view, setView] = useView(initialShareCode ? 'schede' : 'esercizi')
   const [filters, setFilters] = useFilters()
   const [theme, setTheme, resolvedTheme] = useTheme()
+  // Il selettore della lingua arriva con la vista Impostazioni (M12/2): qui serve solo leggerla
+  const [language] = useLanguage()
+  // App traduce da sé (è la radice: sopra di lei non c'è provider) e passa la stessa
+  // funzione ai discendenti tramite I18nProvider
+  const t = useMemo(() => makeTranslate(language), [language])
   const community = useCommunity()
   const analytics = useAnalytics(view)
   const [editing, setEditing] = useState<Exercise | null>(null)
@@ -158,7 +173,7 @@ export default function App() {
       setFormError(null)
       return true
     } catch (error) {
-      setFormError(error instanceof Error ? error.message : 'Dati non validi')
+      setFormError(error instanceof Error ? error.message : 'INVALID_DATA')
       return false
     }
   }
@@ -168,7 +183,7 @@ export default function App() {
       saveStature(statureCm)
       setStatureError(null)
     } catch (error) {
-      setStatureError(error instanceof Error ? error.message : 'Statura non valida')
+      setStatureError(error instanceof Error ? error.message : 'INVALID_STATURE')
     }
   }
 
@@ -178,212 +193,214 @@ export default function App() {
   const communityIds = new Set(community.exercises.map((e) => e.id))
 
   return (
-    <ThemeProvider theme={muiTheme}>
-      <CssBaseline />
-      <SyncMuiColorScheme resolved={resolvedTheme} />
-      <AppBar
-        position="sticky"
-        color="transparent"
-        elevation={0}
-        sx={{
-          // Vetro smerigliato: il contenuto scorre sotto la barra restando leggibile.
-          // Col tema a CSS variables il colore va preso dai *Channel: theme.palette.*
-          // sarebbe congelato sullo schema chiaro e non seguirebbe data-theme.
-          bgcolor: 'rgba(var(--mui-palette-background-defaultChannel) / 0.8)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: 1,
-          borderColor: 'divider',
-        }}
-      >
-        <Toolbar sx={{ justifyContent: 'space-between', gap: 2 }}>
-          <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center' }}>
-            <Logo size={36} />
-            <Typography variant="h1">Open Gym</Typography>
-          </Stack>
-          <SelectField
-            label="Tema"
-            value={theme}
-            onChange={(value) => setTheme(value as ThemePreference)}
-            dataCy="theme-select"
-            sx={{ minWidth: 120 }}
-            options={[
-              { value: 'auto', label: 'Auto' },
-              { value: 'chiaro', label: 'Chiaro' },
-              { value: 'scuro', label: 'Scuro' },
-            ]}
-          />
-        </Toolbar>
-      </AppBar>
-      <Container
-        component="main"
-        maxWidth="md"
-        sx={{ py: 3, pb: 16, display: 'flex', flexDirection: 'column', gap: 3 }}
-      >
-        <UpdateBanner />
-        <Box
-          component="section"
-          aria-label="Presentazione"
+    <I18nProvider language={language}>
+      <ThemeProvider theme={muiTheme}>
+        <CssBaseline />
+        <SyncMuiColorScheme resolved={resolvedTheme} />
+        <AppBar
+          position="sticky"
+          color="transparent"
+          elevation={0}
           sx={{
-            p: { xs: 2.5, sm: 3 },
-            borderRadius: '24px',
-            border: 1,
+            // Vetro smerigliato: il contenuto scorre sotto la barra restando leggibile.
+            // Col tema a CSS variables il colore va preso dai *Channel: theme.palette.*
+            // sarebbe congelato sullo schema chiaro e non seguirebbe data-theme.
+            bgcolor: 'rgba(var(--mui-palette-background-defaultChannel) / 0.8)',
+            backdropFilter: 'blur(12px)',
+            borderBottom: 1,
             borderColor: 'divider',
-            // Alone dell'accento dietro al testo: dà profondità senza sporcare la leggibilità
-            background:
-              'radial-gradient(120% 140% at 0% 0%, rgba(var(--mui-palette-primary-mainChannel) / 0.16) 0%, rgba(var(--mui-palette-primary-mainChannel) / 0) 55%), var(--mui-palette-background-paper)',
           }}
         >
-          <Typography variant="overline" color="primary" component="p">
-            Open source · Nessuna registrazione
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, maxWidth: '46ch' }}>
-            Esercizi proposti dalla community, votati come su Reddit. Nessuna registrazione: i dati
-            restano sul tuo dispositivo.
-          </Typography>
-          <HeroStats
-            items={[
-              { label: 'Proposte', value: allExercises.length },
-              { label: 'Voti dati', value: votedIds.size },
-              { label: 'Sessioni', value: data.activity.length },
-            ]}
-          />
-          <InstallPanel />
-        </Box>
-        {corruptedAtStartup && (
-          <Alert severity="warning" role="alert" data-cy="corrupted-banner">
-            I dati salvati su questo dispositivo non erano leggibili: si riparte da zero. Se hai un
-            backup JSON puoi ripristinarlo dalla sezione «Backup dei dati».
-          </Alert>
-        )}
-        {saveError && (
-          <Alert severity="error" role="alert" data-cy="storage-error">
-            {saveError}
-          </Alert>
-        )}
-        {/* La key rimonta il blocco a ogni cambio vista: è ciò che fa ripartire l'animazione */}
-        <Box
-          key={view}
-          className="view-enter"
-          sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
+          <Toolbar sx={{ justifyContent: 'space-between', gap: 2 }}>
+            <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center' }}>
+              <Logo size={36} />
+              <Typography variant="h1">Open Gym</Typography>
+            </Stack>
+            <SelectField
+              label="Tema"
+              value={theme}
+              onChange={(value) => setTheme(value as ThemePreference)}
+              dataCy="theme-select"
+              sx={{ minWidth: 120 }}
+              options={[
+                { value: 'auto', label: 'Auto' },
+                { value: 'chiaro', label: 'Chiaro' },
+                { value: 'scuro', label: 'Scuro' },
+              ]}
+            />
+          </Toolbar>
+        </AppBar>
+        <Container
+          component="main"
+          maxWidth="md"
+          sx={{ py: 3, pb: 16, display: 'flex', flexDirection: 'column', gap: 3 }}
         >
-          {view === 'esercizi' && (
-            <section>
-              <Stack
-                direction="row"
-                spacing={2}
-                useFlexGap
-                sx={{
-                  flexWrap: 'wrap',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  mb: 2,
-                }}
-              >
-                <Typography variant="h2">Esercizi della community</Typography>
-                <Button
-                  variant="contained"
-                  startIcon={formOpen ? <CloseIcon /> : <AddIcon />}
-                  data-cy="propose-toggle"
-                  aria-expanded={formOpen}
-                  onClick={() => (formOpen ? closeForm() : setFormOpen(true))}
-                >
-                  {/* Non «Proponi esercizio»: è il nome del submit del form, le query per ruolo collidono */}
-                  {formOpen ? 'Chiudi il form' : 'Nuova proposta'}
-                </Button>
-              </Stack>
-              <Collapse in={formOpen} unmountOnExit sx={{ mb: 3 }}>
-                <ExerciseForm
-                  key={editing?.id ?? 'new'}
-                  initial={editing}
-                  onSubmit={handleSubmitExercise}
-                  onCancel={closeForm}
-                  error={formError}
-                />
-              </Collapse>
-              {community.message && (
-                <Alert
-                  severity="info"
-                  role="status"
-                  data-cy="community-message"
-                  onClose={community.dismissMessage}
-                  sx={{ mb: 2 }}
-                >
-                  {community.message}
-                </Alert>
-              )}
-              <FilterBar
-                filters={filters}
-                onFiltersChange={setFilters}
-                muscleGroups={muscleGroups(allExercises)}
-                statureCm={data.profile.statureCm}
-                onSaveStature={handleSaveStature}
-                statureError={statureError}
-                requiresStature={suitabilityRequiresStature(filters, data)}
-              />
-              <ExerciseList
-                exercises={visibleExercises}
-                totalCount={allExercises.length}
-                votedIds={votedIds}
-                // Il voto di un esercizio della community passa dal worker, quello locale dal dominio
-                onToggleVote={(id) =>
-                  communityIds.has(id) ? void community.toggleVote(id) : vote(id)
-                }
-                onEdit={(exercise) => {
-                  setFormError(null)
-                  setEditing(exercise)
-                  setFormOpen(true)
-                }}
-                onDelete={removeExercise}
-              />
-            </section>
+          <UpdateBanner />
+          <Box
+            component="section"
+            aria-label="Presentazione"
+            sx={{
+              p: { xs: 2.5, sm: 3 },
+              borderRadius: '24px',
+              border: 1,
+              borderColor: 'divider',
+              // Alone dell'accento dietro al testo: dà profondità senza sporcare la leggibilità
+              background:
+                'radial-gradient(120% 140% at 0% 0%, rgba(var(--mui-palette-primary-mainChannel) / 0.16) 0%, rgba(var(--mui-palette-primary-mainChannel) / 0) 55%), var(--mui-palette-background-paper)',
+            }}
+          >
+            <Typography variant="overline" color="primary" component="p">
+              Open source · Nessuna registrazione
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, maxWidth: '46ch' }}>
+              Esercizi proposti dalla community, votati come su Reddit. Nessuna registrazione: i
+              dati restano sul tuo dispositivo.
+            </Typography>
+            <HeroStats
+              items={[
+                { label: 'Proposte', value: allExercises.length },
+                { label: 'Voti dati', value: votedIds.size },
+                { label: 'Sessioni', value: data.activity.length },
+              ]}
+            />
+            <InstallPanel />
+          </Box>
+          {corruptedAtStartup && (
+            <Alert severity="warning" role="alert" data-cy="corrupted-banner">
+              I dati salvati su questo dispositivo non erano leggibili: si riparte da zero. Se hai
+              un backup JSON puoi ripristinarlo dalla sezione «Backup dei dati».
+            </Alert>
           )}
-          {view === 'schede' && (
-            <PlansView
-              data={data}
-              initialShareCode={initialShareCode}
-              actions={{
-                createPlan,
-                renamePlan,
-                removePlan,
-                activatePlan,
-                addPlanDay,
-                removePlanDay,
-                addPlanEntry,
-                removePlanEntry,
-                movePlanEntry,
-                importShared,
-              }}
+          {saveError && (
+            <Alert severity="error" role="alert" data-cy="storage-error">
+              {translateError(t, saveError)}
+            </Alert>
+          )}
+          {/* La key rimonta il blocco a ogni cambio vista: è ciò che fa ripartire l'animazione */}
+          <Box
+            key={view}
+            className="view-enter"
+            sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
+          >
+            {view === 'esercizi' && (
+              <section>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  useFlexGap
+                  sx={{
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    mb: 2,
+                  }}
+                >
+                  <Typography variant="h2">Esercizi della community</Typography>
+                  <Button
+                    variant="contained"
+                    startIcon={formOpen ? <CloseIcon /> : <AddIcon />}
+                    data-cy="propose-toggle"
+                    aria-expanded={formOpen}
+                    onClick={() => (formOpen ? closeForm() : setFormOpen(true))}
+                  >
+                    {/* Non «Proponi esercizio»: è il nome del submit del form, le query per ruolo collidono */}
+                    {formOpen ? 'Chiudi il form' : 'Nuova proposta'}
+                  </Button>
+                </Stack>
+                <Collapse in={formOpen} unmountOnExit sx={{ mb: 3 }}>
+                  <ExerciseForm
+                    key={editing?.id ?? 'new'}
+                    initial={editing}
+                    onSubmit={handleSubmitExercise}
+                    onCancel={closeForm}
+                    error={formError && translateError(t, formError)}
+                  />
+                </Collapse>
+                {community.message && (
+                  <Alert
+                    severity="info"
+                    role="status"
+                    data-cy="community-message"
+                    onClose={community.dismissMessage}
+                    sx={{ mb: 2 }}
+                  >
+                    {communityMessageText(t, community.message)}
+                  </Alert>
+                )}
+                <FilterBar
+                  filters={filters}
+                  onFiltersChange={setFilters}
+                  muscleGroups={muscleGroups(allExercises)}
+                  statureCm={data.profile.statureCm}
+                  onSaveStature={handleSaveStature}
+                  statureError={statureError && translateError(t, statureError)}
+                  requiresStature={suitabilityRequiresStature(filters, data)}
+                />
+                <ExerciseList
+                  exercises={visibleExercises}
+                  totalCount={allExercises.length}
+                  votedIds={votedIds}
+                  // Il voto di un esercizio della community passa dal worker, quello locale dal dominio
+                  onToggleVote={(id) =>
+                    communityIds.has(id) ? void community.toggleVote(id) : vote(id)
+                  }
+                  onEdit={(exercise) => {
+                    setFormError(null)
+                    setEditing(exercise)
+                    setFormOpen(true)
+                  }}
+                  onDelete={removeExercise}
+                />
+              </section>
+            )}
+            {view === 'schede' && (
+              <PlansView
+                data={data}
+                initialShareCode={initialShareCode}
+                actions={{
+                  createPlan,
+                  renamePlan,
+                  removePlan,
+                  activatePlan,
+                  addPlanDay,
+                  removePlanDay,
+                  addPlanEntry,
+                  removePlanEntry,
+                  movePlanEntry,
+                  importShared,
+                }}
+              />
+            )}
+            {view === 'allenamento' && (
+              <>
+                <TodayWorkout
+                  data={data}
+                  today={todayIso()}
+                  onComplete={(exerciseId, sets, set) =>
+                    completeEntry(exerciseId, todayIso(), sets, set)
+                  }
+                />
+                <WorkoutSession
+                  data={data}
+                  today={todayIso()}
+                  onAddSet={(exerciseId, set) => addSet(exerciseId, todayIso(), set)}
+                  onRemoveSet={deleteSet}
+                />
+              </>
+            )}
+            {view === 'storico' && <HistoryView data={data} />}
+          </Box>
+          <BackupPanel onExport={exportJson} onReplace={importJson} onMerge={mergeJson} />
+          {analytics.available && (
+            <PrivacyPanel
+              enabled={analytics.enabled}
+              doNotTrack={analytics.doNotTrack}
+              onChange={analytics.setAnalyticsEnabled}
             />
           )}
-          {view === 'allenamento' && (
-            <>
-              <TodayWorkout
-                data={data}
-                today={todayIso()}
-                onComplete={(exerciseId, sets, set) =>
-                  completeEntry(exerciseId, todayIso(), sets, set)
-                }
-              />
-              <WorkoutSession
-                data={data}
-                today={todayIso()}
-                onAddSet={(exerciseId, set) => addSet(exerciseId, todayIso(), set)}
-                onRemoveSet={deleteSet}
-              />
-            </>
-          )}
-          {view === 'storico' && <HistoryView data={data} />}
-        </Box>
-        <BackupPanel onExport={exportJson} onReplace={importJson} onMerge={mergeJson} />
-        {analytics.available && (
-          <PrivacyPanel
-            enabled={analytics.enabled}
-            doNotTrack={analytics.doNotTrack}
-            onChange={analytics.setAnalyticsEnabled}
-          />
-        )}
-      </Container>
-      <TabNav view={view} onChange={setView} />
-    </ThemeProvider>
+        </Container>
+        <TabNav view={view} onChange={setView} />
+      </ThemeProvider>
+    </I18nProvider>
   )
 }

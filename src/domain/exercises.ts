@@ -2,10 +2,10 @@ import { isValidYouTubeUrl } from '../services/youtube'
 import { generateId } from '../utils/id'
 import type { AppData, Exercise, StatureRange } from './types'
 
-export const INVALID_YOUTUBE_LINK_ERROR = 'Inserisci un link YouTube valido'
-export const EMPTY_NAME_ERROR = "Il nome dell'esercizio è obbligatorio"
-export const FACE_BLUR_REQUIRED_ERROR = 'Conferma che il volto nel video è offuscato'
-export const INVALID_STATURE_RANGE_ERROR = 'La fascia di statura non è valida (100–250 cm)'
+export const INVALID_YOUTUBE_LINK_ERROR = 'INVALID_YOUTUBE_LINK'
+export const EMPTY_NAME_ERROR = 'EMPTY_NAME'
+export const FACE_BLUR_REQUIRED_ERROR = 'FACE_BLUR_REQUIRED'
+export const INVALID_STATURE_RANGE_ERROR = 'INVALID_STATURE_RANGE'
 
 export const MIN_STATURE_CM = 100
 export const MAX_STATURE_CM = 250

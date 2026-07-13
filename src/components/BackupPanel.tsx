@@ -7,6 +7,8 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { translateError } from '../i18n'
+import { useT } from '../i18n/context'
 import { backupFileName, importFromJson } from '../services/importExport'
 import { todayIso } from '../utils/date'
 
@@ -19,6 +21,7 @@ interface Props {
 }
 
 export function BackupPanel({ onExport, onReplace, onMerge }: Props) {
+  const t = useT()
   const [message, setMessage] = useState<string | null>(null)
   const [isError, setIsError] = useState(false)
   /** Backup letto e validato, in attesa della scelta Sostituisci/Unisci. */
@@ -50,7 +53,7 @@ export function BackupPanel({ onExport, onReplace, onMerge }: Props) {
     } catch (error) {
       setPendingJson(null)
       setIsError(true)
-      setMessage(error instanceof Error ? error.message : 'Import non riuscito')
+      setMessage(translateError(t, error))
     }
   }
 
@@ -62,7 +65,7 @@ export function BackupPanel({ onExport, onReplace, onMerge }: Props) {
       setMessage(successMessage)
     } catch (error) {
       setIsError(true)
-      setMessage(error instanceof Error ? error.message : 'Import non riuscito')
+      setMessage(translateError(t, error))
     } finally {
       setPendingJson(null)
     }

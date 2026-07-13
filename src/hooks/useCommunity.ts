@@ -15,6 +15,16 @@ const VOTED_KEY = 'open-gym-app/voti-community'
 
 const EMPTY: CommunitySnapshot = { exercises: [], counts: {} }
 
+/**
+ * L'esito di un'operazione sulla community, NON la sua frase: l'hook non sa in che lingua
+ * sta l'interfaccia. `reason` è il codice d'errore (o il testo grezzo che il worker ha
+ * risposto, se non è un codice noto); la frase la compone chi rende, con `t`.
+ */
+export type CommunityMessage =
+  | { kind: 'proposalSent' }
+  | { kind: 'localOnly'; reason: string }
+  | { kind: 'error'; reason: string }
+
 function readCache(): CommunitySnapshot {
   try {
     const raw = localStorage.getItem(CACHE_KEY)
@@ -42,7 +52,7 @@ function readVoted(): Set<string> {
 export function useCommunity() {
   const [snapshot, setSnapshot] = useState<CommunitySnapshot>(readCache)
   const [votedIds, setVotedIds] = useState<Set<string>>(readVoted)
-  const [message, setMessage] = useState<string | null>(null)
+  const [message, setMessage] = useState<CommunityMessage | null>(null)
   const enabled = communityApiUrl() !== null
 
   useEffect(() => {
@@ -109,7 +119,10 @@ export function useCommunity() {
       } catch (error) {
         setSnapshot(before)
         persistVoted(beforeVoted)
-        setMessage(error instanceof Error ? error.message : COMMUNITY_UNREACHABLE_ERROR)
+        setMessage({
+          kind: 'error',
+          reason: error instanceof Error ? error.message : COMMUNITY_UNREACHABLE_ERROR,
+        })
       }
     },
     [persistVoted, snapshot, votedIds],
@@ -119,13 +132,14 @@ export function useCommunity() {
   const propose = useCallback(async (input: ProposalInput) => {
     try {
       await proposeToCommunity(input)
-      setMessage('Proposta inviata alla community!')
+      setMessage({ kind: 'proposalSent' })
       const fresh = await fetchCommunity().catch(() => null)
       if (fresh) setSnapshot(fresh)
     } catch (error) {
-      setMessage(
-        `Salvato solo sul dispositivo: ${error instanceof Error ? error.message : COMMUNITY_UNREACHABLE_ERROR}`,
-      )
+      setMessage({
+        kind: 'localOnly',
+        reason: error instanceof Error ? error.message : COMMUNITY_UNREACHABLE_ERROR,
+      })
     }
   }, [])
 

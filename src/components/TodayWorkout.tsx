@@ -9,6 +9,8 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { activePlan, dayForDate, nextScheduledDay, planUsesWeekdays } from '../domain/plans'
+import { translateError } from '../i18n'
+import { useT } from '../i18n/context'
 import type { AppData, Exercise, PlanEntry, WorkoutSet } from '../domain/types'
 import { suggestNextWeight } from '../services/weightSuggestion'
 import { formatDateIt } from '../utils/date'
@@ -122,6 +124,7 @@ interface EntryProps {
 }
 
 function TodayEntry({ exercise, entry, done, suggestedWeight, onComplete }: EntryProps) {
+  const t = useT()
   const [weight, setWeight] = useState(suggestedWeight === null ? '' : String(suggestedWeight))
   const [reps, setReps] = useState(String(entry.reps))
   const [skipped, setSkipped] = useState(false)
@@ -132,7 +135,7 @@ function TodayEntry({ exercise, entry, done, suggestedWeight, onComplete }: Entr
       onComplete(exercise.id, entry.sets, { weightKg: Number(weight), reps: Number(reps) })
       setError(null)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Serie non valida')
+      setError(translateError(t, err))
     }
   }
 

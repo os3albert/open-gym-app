@@ -3,6 +3,7 @@ import '@testing-library/jest-dom/vitest'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '../../src/App'
+import { it as itDict } from '../../src/i18n/it'
 import { FACE_BLUR_REQUIRED_ERROR, INVALID_YOUTUBE_LINK_ERROR } from '../../src/domain/exercises'
 
 beforeEach(() => {
@@ -56,7 +57,9 @@ describe('proposta di un esercizio', () => {
     render(<App />)
     await proposeExercise('Squat', 'https://vimeo.com/12345')
 
-    expect(screen.getByRole('alert')).toHaveTextContent(INVALID_YOUTUBE_LINK_ERROR)
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      itDict[`errors.${INVALID_YOUTUBE_LINK_ERROR}`],
+    )
     expect(screen.queryByRole('heading', { name: 'Squat' })).not.toBeInTheDocument()
   })
 

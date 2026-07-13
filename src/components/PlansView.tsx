@@ -8,6 +8,8 @@ import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import { translateError } from '../i18n'
+import { useT } from '../i18n/context'
 import type { AppData } from '../domain/types'
 import { encodePlanShare, type SharePayload } from '../services/share'
 import { ImportSharePanel } from './ImportSharePanel'
@@ -30,6 +32,7 @@ interface Props {
 
 /** Le mie schede: elenco con scheda attiva, creazione, editor, condivisione e importazione. */
 export function PlansView({ data, actions, initialShareCode }: Props) {
+  const t = useT()
   const [newName, setNewName] = useState('')
   const [createError, setCreateError] = useState<string | null>(null)
   const [editingPlanId, setEditingPlanId] = useState<string | null>(null)
@@ -44,7 +47,7 @@ export function PlansView({ data, actions, initialShareCode }: Props) {
       setCreateError(null)
       setNewName('')
     } catch (err) {
-      setCreateError(err instanceof Error ? err.message : 'Nome non valido')
+      setCreateError(translateError(t, err))
     }
   }
 

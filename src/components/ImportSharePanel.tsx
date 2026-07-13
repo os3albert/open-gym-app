@@ -8,6 +8,8 @@ import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import { translateError } from '../i18n'
+import { useT } from '../i18n/context'
 import { decodeShare, type SharePayload } from '../services/share'
 
 interface Props {
@@ -20,6 +22,7 @@ interface Props {
 
 /** Importazione di un codice condiviso: anteprima, conferma, «Prova questa scheda». */
 export function ImportSharePanel({ initialCode, onImport, onActivatePlan }: Props) {
+  const t = useT()
   const [code, setCode] = useState(initialCode ?? '')
   const [preview, setPreview] = useState<SharePayload | null>(() => {
     if (!initialCode) return null
@@ -41,7 +44,7 @@ export function ImportSharePanel({ initialCode, onImport, onActivatePlan }: Prop
       setImportedPlanId(null)
     } catch (err) {
       setPreview(null)
-      setError(err instanceof Error ? err.message : 'Codice non valido')
+      setError(translateError(t, err))
     }
   }
 

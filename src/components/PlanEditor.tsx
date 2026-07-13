@@ -11,6 +11,8 @@ import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import { translateError } from '../i18n'
+import { useT } from '../i18n/context'
 import type { Exercise, PlanEntry, WorkoutDay, WorkoutPlan } from '../domain/types'
 import { WEEKDAYS_IT } from '../utils/date'
 import { SelectField } from './SelectField'
@@ -35,6 +37,7 @@ const DAY_SUGGESTIONS = [...WEEKDAYS_IT, 'Giorno A', 'Giorno B', 'Giorno C']
 
 /** Editor di una scheda: giorni (della settimana o generici) ed esercizi con target serie×reps. */
 export function PlanEditor({ plan, exercises, actions, onClose }: Props) {
+  const t = useT()
   const [name, setName] = useState(plan.name)
   const [dayName, setDayName] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -45,7 +48,7 @@ export function PlanEditor({ plan, exercises, actions, onClose }: Props) {
       setError(null)
       return true
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Operazione non valida')
+      setError(translateError(t, err))
       return false
     }
   }

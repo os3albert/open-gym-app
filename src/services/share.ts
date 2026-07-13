@@ -5,7 +5,7 @@ import { generateId } from '../utils/id'
 import { isValidYouTubeUrl, parseYouTubeVideoId } from './youtube'
 
 export const SHARE_VERSION = 1
-export const INVALID_SHARE_CODE_ERROR = 'Codice di condivisione non valido'
+export const INVALID_SHARE_CODE_ERROR = 'INVALID_SHARE_CODE'
 /** Prefisso del fragment per aprire una condivisione da link (#dati=…). */
 export const SHARE_HASH_PREFIX = '#dati='
 

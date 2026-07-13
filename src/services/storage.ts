@@ -3,8 +3,7 @@ import { CURRENT_SCHEMA_VERSION } from '../domain/types'
 import { exportToJson, importFromJson } from './importExport'
 
 export const STORAGE_KEY = 'open-gym-app/data'
-export const STORAGE_FULL_ERROR =
-  'Spazio di archiviazione esaurito: esporta un backup e libera spazio'
+export const STORAGE_FULL_ERROR = 'STORAGE_FULL'
 
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
 

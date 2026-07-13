@@ -2,8 +2,8 @@ import { addDaysIso } from '../utils/date'
 import { generateId } from '../utils/id'
 import type { ActivityRecord, AppData, WorkoutSet } from './types'
 
-export const INVALID_SET_ERROR = 'Serie non valida: servono almeno 1 ripetizione e un peso ≥ 0'
-export const EXERCISE_NOT_FOUND_ERROR = 'Esercizio non trovato'
+export const INVALID_SET_ERROR = 'INVALID_SET'
+export const EXERCISE_NOT_FOUND_ERROR = 'EXERCISE_NOT_FOUND'
 
 function isValidSet(set: WorkoutSet): boolean {
   return (

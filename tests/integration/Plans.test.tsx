@@ -3,6 +3,7 @@ import '@testing-library/jest-dom/vitest'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '../../src/App'
+import { it as itDict } from '../../src/i18n/it'
 import { recordSet } from '../../src/domain/activity'
 import { addExercise } from '../../src/domain/exercises'
 import { addDay, addEntry, createPlan, setActivePlan } from '../../src/domain/plans'
@@ -204,7 +205,9 @@ describe('condivisione e importazione (issue #20, #21)', () => {
     await user.paste('questo-non-e-un-codice')
     await user.click(screen.getByRole('button', { name: 'Anteprima' }))
 
-    expect(screen.getByRole('alert')).toHaveTextContent(INVALID_SHARE_CODE_ERROR)
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      itDict[`errors.${INVALID_SHARE_CODE_ERROR}`],
+    )
     expect(screen.getByText(/Nessuna scheda/)).toBeInTheDocument()
   })
 

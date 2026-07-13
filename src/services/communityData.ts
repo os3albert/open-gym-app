@@ -7,9 +7,9 @@ import {
 import type { StatureRange } from '../domain/types'
 import { parseYouTubeVideoId } from './youtube'
 
-export const DUPLICATE_EXERCISE_ERROR = 'Questo video è già nel catalogo della community'
-export const UNKNOWN_EXERCISE_ERROR = 'Esercizio non presente nel catalogo della community'
-export const TOO_LONG_ERROR = 'Il testo inserito è troppo lungo'
+export const DUPLICATE_EXERCISE_ERROR = 'DUPLICATE_EXERCISE'
+export const UNKNOWN_EXERCISE_ERROR = 'UNKNOWN_EXERCISE'
+export const TOO_LONG_ERROR = 'TOO_LONG'
 
 /**
  * Limiti di lunghezza: il catalogo è un file pubblico del repo, e senza un tetto una

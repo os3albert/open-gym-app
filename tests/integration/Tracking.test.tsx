@@ -4,6 +4,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '../../src/App'
 import { INVALID_SET_ERROR, recordSet } from '../../src/domain/activity'
+import { it as itDict } from '../../src/i18n/it'
 import { addExercise } from '../../src/domain/exercises'
 import type { AppData } from '../../src/domain/types'
 import { emptyData, saveData } from '../../src/services/storage'
@@ -122,7 +123,8 @@ describe('registrazione della sessione (issue #14)', () => {
     await user.type(screen.getByLabelText('Peso (kg)'), '60')
     await user.click(screen.getByRole('button', { name: 'Aggiungi serie' }))
 
-    expect(screen.getByRole('alert')).toHaveTextContent(INVALID_SET_ERROR)
+    // Il dominio lancia il CODICE, l'interfaccia mostra la frase: qui si asserisce ciò che l'utente legge
+    expect(screen.getByRole('alert')).toHaveTextContent(itDict[`errors.${INVALID_SET_ERROR}`])
   })
 
   it('una serie si può rimuovere', async () => {
