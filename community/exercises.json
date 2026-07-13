@@ -1,32 +1,5 @@
 [
   {
-    "id": "04ad9705-c324-4e82-a724-2ca09dbcfc35",
-    "name": "sddsdsd",
-    "description": "",
-    "youtubeUrl": "https://youtube.com/watch?v=Sxxw3qtb3_g",
-    "muscleGroup": "https://youtube.com/watch?v=Sxxw3qtb3_g",
-    "faceBlurConfirmed": true,
-    "createdAt": "2026-07-13T18:21:41.895Z"
-  },
-  {
-    "id": "d4637678-1240-4684-9730-aa05240ae8fb",
-    "name": "PIEGAMENTI a terra",
-    "description": "",
-    "youtubeUrl": "https://www.youtube.com/watch?v=uxCFtaBv9YM",
-    "muscleGroup": "braccia",
-    "faceBlurConfirmed": true,
-    "createdAt": "2026-07-13T18:29:05.115Z"
-  },
-  {
-    "id": "ff9454ea-e1f7-43fe-8ee6-37c2c16a9525",
-    "name": "Spalle",
-    "description": "",
-    "youtubeUrl": "https://youtu.be/MDgVoKMCAcg?si=wYPGnxjD1A8O08qq",
-    "muscleGroup": "Spalle",
-    "faceBlurConfirmed": true,
-    "createdAt": "2026-07-13T18:34:01.575Z"
-  },
-  {
     "id": "70eba042-0f62-4fdd-8889-ab621e837598",
     "name": "affondi",
     "description": "",
