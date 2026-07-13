@@ -20,7 +20,7 @@ import {
   type CommunityExercise,
   type CommunityVotes,
 } from '../../src/services/communityData'
-import { updateJsonFile, type RepoConfig } from './github'
+import { readJsonFile, updateJsonFile, type RepoConfig } from './github'
 
 export interface Env {
   GITHUB_TOKEN: string
@@ -137,7 +137,7 @@ async function handleVote(
   }
 
   const config = repoConfig(env)
-  const catalog = await fetchCatalog(config)
+  const catalog = await readJsonFile<CommunityExercise[]>(config, EXERCISES_PATH)
   let count = 0
 
   await updateJsonFile<CommunityVotes>(config, VOTES_PATH, (votes) => {
@@ -150,14 +150,6 @@ async function handleVote(
   })
 
   return json({ exerciseId, votes: count }, 200, cors)
-}
-
-/** Il catalogo serve solo per validare l'id votato: si legge dal raw, senza consumare rate limit dell'API. */
-async function fetchCatalog(config: RepoConfig): Promise<CommunityExercise[]> {
-  const url = `https://raw.githubusercontent.com/${config.owner}/${config.repo}/${config.branch}/${EXERCISES_PATH}`
-  const response = await fetch(url, { headers: { 'User-Agent': 'open-gym-community-worker' } })
-  if (!response.ok) throw new Error('Catalogo della community non raggiungibile')
-  return (await response.json()) as CommunityExercise[]
 }
 
 export default {

@@ -26,17 +26,24 @@ function stubNetwork(
     workerFails?: boolean
     /** Conteggio autorevole restituito dal worker su /votes. */
     voteResponse?: number
+    /** Voce che il worker aggiunge al catalogo quando accetta la proposta (id suo, non mio). */
+    accepted?: CommunityExercise
   } = {},
 ) {
   const calls: Array<{ url: string; body: unknown }> = []
+  let accepted = false
   const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = String(input)
-    if (url.endsWith('/exercises.json')) return Response.json(catalog)
+    if (url.endsWith('/exercises.json')) {
+      const accettati = accepted && options.accepted ? [options.accepted] : []
+      return Response.json([...catalog, ...accettati])
+    }
     if (url.endsWith('/votes.json')) return Response.json(options.votes ?? {})
     if (url.startsWith(WORKER)) {
       calls.push({ url, body: JSON.parse(String(init?.body)) })
       if (options.workerFails) return Response.json({ error: 'Community offline' }, { status: 503 })
       if (url.endsWith('/votes')) return Response.json({ votes: options.voteResponse ?? 1 })
+      accepted = true
       return Response.json({ ok: true }, { status: 201 })
     }
     throw new Error(`URL non previsto nel test: ${url}`)
@@ -131,5 +138,41 @@ describe('proposta alla community', () => {
 
     expect(await screen.findByText(/Salvato solo sul dispositivo/)).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Squat frontale' })).toBeInTheDocument()
+  })
+
+  /**
+   * Il caso che teneva votes.json vuoto: chi propone vede la PROPRIA copia locale (id locale),
+   * quindi il suo voto finiva nel reducer locale e non partiva alcuna richiesta. Accettata la
+   * proposta, la card deve diventare quella della community e il voto deve andare al worker.
+   */
+  it('votando ciò che ho proposto, il voto va al worker con l’id della community', async () => {
+    const calls = stubNetwork({
+      // Stesso video della proposta, id diverso: è il worker a generarlo
+      accepted: {
+        id: 'ex-accettato',
+        name: 'Squat frontale',
+        description: '',
+        youtubeUrl: 'https://youtu.be/AAAAAAAAAAA',
+        muscleGroup: 'Gambe',
+        faceBlurConfirmed: true,
+        createdAt: '2026-07-13T10:00:00.000Z',
+      },
+      voteResponse: 3,
+    })
+    const user = userEvent.setup()
+    render(<App />)
+    await proponi(user)
+
+    // Una sola card, e ora è della community (non c'è più il doppione locale)
+    const heading = await screen.findByRole('heading', { name: 'Squat frontale' })
+    const item = heading.closest('li')!
+    await waitFor(() => expect(within(item).getByText('community')).toBeInTheDocument())
+    expect(screen.getAllByRole('heading', { name: 'Squat frontale' })).toHaveLength(1)
+
+    await user.click(within(item).getByRole('button', { name: 'Vota Squat frontale' }))
+
+    const vote = await waitFor(() => calls.find((c) => c.url.endsWith('/votes'))!)
+    expect(vote.body).toEqual({ exerciseId: 'ex-accettato', action: 'add' })
+    await waitFor(() => expect(within(item).getByText('3')).toBeInTheDocument())
   })
 })

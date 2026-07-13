@@ -27,6 +27,15 @@ function headers(token: string): HeadersInit {
   }
 }
 
+/**
+ * Contenuto di un file JSON del repo, letto dall'API autenticata: è SEMPRE aggiornato.
+ * (`raw.githubusercontent` è una CDN con qualche minuto di cache: per validare un voto su un
+ * esercizio appena proposto mostrerebbe un catalogo vecchio e lo rifiuterebbe come inesistente.)
+ */
+export async function readJsonFile<T>(config: RepoConfig, path: string): Promise<T> {
+  return (await readFile<T>(config, path)).content
+}
+
 async function readFile<T>(config: RepoConfig, path: string): Promise<FileState<T>> {
   const url = `${API}/repos/${config.owner}/${config.repo}/contents/${path}?ref=${config.branch}`
   const response = await fetch(url, { headers: headers(config.token) })
