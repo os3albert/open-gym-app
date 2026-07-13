@@ -12,9 +12,10 @@ sul tuo dispositivo.
 
 ## Funzionalità
 
-- **Esercizi della community** — proposte con video **YouTube** (volto offuscato con
-  l'AI: si valuta l'esercizio, non la persona), fascia di statura consigliata,
-  upvote per dispositivo, filtri per statura e gruppo muscolare.
+- **Esercizi della community** — proposte con video **YouTube** (il volto non conta: si valuta
+  l'esercizio, non la persona — offuscarlo è consigliato, non obbligatorio), fascia di statura
+  consigliata, upvote per dispositivo, filtri per statura e gruppo muscolare.
+- **Italiano e inglese** — la lingua si sceglie in **Impostazioni**, insieme a tema e backup.
 - **Catalogo condiviso su GitHub** — le proposte e i voti della community vivono nel
   repository (`community/exercises.json`, `community/votes.json`), scritti da un piccolo
   Cloudflare Worker: vedi **[docs/COMMUNITY.md](docs/COMMUNITY.md)**. Senza configurazione

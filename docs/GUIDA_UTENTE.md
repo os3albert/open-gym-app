@@ -20,11 +20,12 @@ App: **https://os3albert.github.io/open-gym-app/**
 
 ## Proporre un esercizio
 
-1. Apri la scheda **Esercizi**: atterri sulla lista della community. Premi **Nuova proposta**
-   per aprire il modulo e compila nome, descrizione, gruppo muscolare.
+1. Apri la scheda **Esercizi**: atterri sulla lista della community. Premi il pulsante
+   flottante **Nuova proposta**: il modulo si apre in una finestra. Compila nome, descrizione,
+   gruppo muscolare.
 2. Incolla il **link YouTube** del video (l'app non ospita video: solo link).
-   Il volto nel video deve essere **offuscato con l'AI**: si valuta l'esercizio, non la persona.
-   Spunta la casella di conferma, altrimenti l'invio è bloccato.
+   Il volto **non è importante**: si guarda il movimento, non la persona. Se preferisci,
+   offuscalo con l'AI — trovi le linee guida nel modulo — ma non è obbligatorio.
 3. (Facoltativo) Indica la **fascia di statura** (es. 170–190 cm) per cui l'esercizio è tarato.
 
 L'esercizio è subito tuo, sul dispositivo. Se l'istanza ha la community attiva, la proposta
@@ -124,3 +125,20 @@ quando vuoi**: la scelta resta salvata sul dispositivo. Se il tuo browser invia 
 restano spente da sole.
 
 Dettagli completi: [docs/PRIVACY.md](PRIVACY.md).
+
+## Impostazioni
+
+L'ultima scheda in basso raccoglie le preferenze di **questo dispositivo**:
+
+- **Lingua** — italiano o inglese. La scelta resta salvata: l'app non la indovina dal browser.
+- **Tema** — automatico (segue il sistema), chiaro o scuro.
+- **Backup dei dati** — esporta il JSON, importalo sostituendo tutto o **unendolo** ai dati
+  presenti (senza duplicati).
+
+Lingua e tema NON finiscono nel backup: sono preferenze del dispositivo, non dati tuoi.
+
+## Nei campi numerici
+
+Peso, ripetizioni e statura hanno una **rotella di valori** già pronti: si apre dal pulsante
+del campo e si sceglie con un tocco. Accanto restano i pulsanti **+/−**, e il campo resta
+scrivibile a mano per i valori fuori scala.
