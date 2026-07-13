@@ -16,5 +16,14 @@
     "muscleGroup": "braccia",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-13T18:29:05.115Z"
+  },
+  {
+    "id": "ff9454ea-e1f7-43fe-8ee6-37c2c16a9525",
+    "name": "Spalle",
+    "description": "",
+    "youtubeUrl": "https://youtu.be/MDgVoKMCAcg?si=wYPGnxjD1A8O08qq",
+    "muscleGroup": "Spalle",
+    "faceBlurConfirmed": true,
+    "createdAt": "2026-07-13T18:34:01.575Z"
   }
 ]
