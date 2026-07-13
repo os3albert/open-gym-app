@@ -15,6 +15,7 @@ import { translateError } from '../i18n'
 import { useT } from '../i18n/context'
 import type { Exercise, PlanEntry, WorkoutDay, WorkoutPlan } from '../domain/types'
 import { WEEKDAYS_IT } from '../utils/date'
+import { NumberField, range } from './NumberField'
 import { SelectField } from './SelectField'
 
 export interface PlanEditorActions {
@@ -34,6 +35,9 @@ interface Props {
 }
 
 const DAY_SUGGESTIONS = [...WEEKDAYS_IT, 'Giorno A', 'Giorno B', 'Giorno C']
+
+const SETS = range(1, 10)
+const REPS = range(1, 30)
 
 /** Editor di una scheda: giorni (della settimana o generici) ed esercizi con target serie×reps. */
 export function PlanEditor({ plan, exercises, actions, onClose }: Props) {
@@ -280,21 +284,21 @@ function DayEditor({
             ...exercisesByName.map((e) => ({ value: e.id, label: e.name })),
           ]}
         />
-        <TextField
+        <NumberField
           label={t('planEditor.sets')}
-          type="number"
           value={sets}
-          onChange={(e) => setSets(e.target.value)}
-          sx={{ width: 90 }}
-          slotProps={{ htmlInput: { 'data-cy': 'entry-sets' } }}
-        />
-        <TextField
-          label={t('session.reps')}
-          type="number"
-          value={reps}
-          onChange={(e) => setReps(e.target.value)}
+          onChange={setSets}
+          dataCy="entry-sets"
+          options={SETS}
           sx={{ width: 110 }}
-          slotProps={{ htmlInput: { 'data-cy': 'entry-reps' } }}
+        />
+        <NumberField
+          label={t('session.reps')}
+          value={reps}
+          onChange={setReps}
+          dataCy="entry-reps"
+          options={REPS}
+          sx={{ width: 130 }}
         />
         <Button
           variant="contained"

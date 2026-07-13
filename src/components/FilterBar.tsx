@@ -6,9 +6,9 @@ import Checkbox from '@mui/material/Checkbox'
 import Divider from '@mui/material/Divider'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
 import type { ExerciseFilters, SortOrder } from '../domain/filters'
 import { useT } from '../i18n/context'
+import { NumberField, range } from './NumberField'
 import { SelectField } from './SelectField'
 
 interface Props {
@@ -22,6 +22,8 @@ interface Props {
   /** Il filtro "Adatti a me" è attivo ma il profilo non ha una statura. */
   requiresStature: boolean
 }
+
+const STATURES = range(100, 250)
 
 export function FilterBar({
   filters,
@@ -57,13 +59,13 @@ export function FilterBar({
         onSubmit={handleStatureSubmit}
         sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap' }}
       >
-        <TextField
+        <NumberField
           label={t('filters.myStature')}
-          type="number"
           placeholder={t('filters.staturePlaceholder')}
           value={statureInput}
-          onChange={(e) => setStatureInput(e.target.value)}
-          slotProps={{ htmlInput: { 'data-cy': 'stature-input' } }}
+          onChange={setStatureInput}
+          dataCy="stature-input"
+          options={STATURES}
         />
         <Button type="submit" variant="outlined" size="small" data-cy="stature-save">
           {t('filters.save')}

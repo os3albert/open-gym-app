@@ -7,7 +7,6 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { lastSession, sessionsByDate } from '../domain/activity'
 import { translateError } from '../i18n'
@@ -15,6 +14,7 @@ import { useT } from '../i18n/context'
 import type { AppData, WorkoutSet } from '../domain/types'
 import { suggestNextWeight } from '../services/weightSuggestion'
 import { formatDateIt } from '../utils/date'
+import { NumberField, range } from './NumberField'
 import { SelectField } from './SelectField'
 
 interface Props {
@@ -26,6 +26,10 @@ interface Props {
 }
 
 /** Registrazione della sessione di oggi: pensata per l'uso in palestra (+/- rapidi, valori proposti). */
+/** Le scale della palestra: carichi a passi di 2,5 kg, ripetizioni fino a 30. */
+const WEIGHTS = range(0, 300, 2.5)
+const REPS = range(1, 30)
+
 export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
   const t = useT()
   const [exerciseId, setExerciseId] = useState('')
@@ -46,11 +50,6 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
     setWeight(suggested === null ? '' : String(suggested))
     const last = lastSession(data.activity, id)
     setReps(last === null ? '' : String(last.sets[last.sets.length - 1].reps))
-  }
-
-  function step(value: string, delta: number, min: number): string {
-    const next = Math.max(min, (Number(value) || 0) + delta)
-    return String(Math.round(next * 10) / 10)
   }
 
   function handleAddSet() {
@@ -88,80 +87,38 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
               ]}
             />
             <Stack direction="row" spacing={3} useFlexGap sx={{ flexWrap: 'wrap' }}>
-              <Stack
-                direction="row"
-                spacing={1}
-                useFlexGap
-                sx={{ flexWrap: 'wrap', alignItems: 'center' }}
-              >
-                <TextField
-                  label={t('session.weight')}
-                  type="number"
-                  value={weight}
-                  onChange={(e) => setWeight(e.target.value)}
-                  sx={{ width: 110 }}
-                  slotProps={{ htmlInput: { 'data-cy': 'set-weight', step: '0.5' } }}
-                />
-                <Button
-                  size="small"
-                  variant="outlined"
-                  color="inherit"
-                  data-cy="weight-minus"
-                  aria-label={t('session.weightMinus')}
-                  onClick={() => setWeight((w) => step(w, -2.5, 0))}
-                  sx={{ minWidth: 0 }}
-                >
-                  −2,5
-                </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  color="inherit"
-                  data-cy="weight-plus"
-                  aria-label={t('session.weightPlus')}
-                  onClick={() => setWeight((w) => step(w, +2.5, 0))}
-                  sx={{ minWidth: 0 }}
-                >
-                  +2,5
-                </Button>
-              </Stack>
-              <Stack
-                direction="row"
-                spacing={1}
-                useFlexGap
-                sx={{ flexWrap: 'wrap', alignItems: 'center' }}
-              >
-                <TextField
-                  label={t('session.reps')}
-                  type="number"
-                  value={reps}
-                  onChange={(e) => setReps(e.target.value)}
-                  sx={{ width: 110 }}
-                  slotProps={{ htmlInput: { 'data-cy': 'set-reps' } }}
-                />
-                <Button
-                  size="small"
-                  variant="outlined"
-                  color="inherit"
-                  data-cy="reps-minus"
-                  aria-label={t('session.repsMinus')}
-                  onClick={() => setReps((r) => step(r, -1, 1))}
-                  sx={{ minWidth: 0 }}
-                >
-                  −1
-                </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  color="inherit"
-                  data-cy="reps-plus"
-                  aria-label={t('session.repsPlus')}
-                  onClick={() => setReps((r) => step(r, +1, 1))}
-                  sx={{ minWidth: 0 }}
-                >
-                  +1
-                </Button>
-              </Stack>
+              <NumberField
+                label={t('session.weight')}
+                value={weight}
+                onChange={setWeight}
+                dataCy="set-weight"
+                options={WEIGHTS}
+                sx={{ width: 130 }}
+                stepper={{
+                  step: 2.5,
+                  min: 0,
+                  decreaseCy: 'weight-minus',
+                  increaseCy: 'weight-plus',
+                  decreaseLabel: t('session.weightMinus'),
+                  increaseLabel: t('session.weightPlus'),
+                }}
+              />
+              <NumberField
+                label={t('session.reps')}
+                value={reps}
+                onChange={setReps}
+                dataCy="set-reps"
+                options={REPS}
+                sx={{ width: 130 }}
+                stepper={{
+                  step: 1,
+                  min: 1,
+                  decreaseCy: 'reps-minus',
+                  increaseCy: 'reps-plus',
+                  decreaseLabel: t('session.repsMinus'),
+                  increaseLabel: t('session.repsPlus'),
+                }}
+              />
             </Stack>
             {error && (
               <Alert severity="error" role="alert" data-cy="session-error">

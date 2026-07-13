@@ -17,6 +17,8 @@ declare global {
        * cy.select() qui non funziona). Apre il menu e clicca l'opzione per etichetta.
        */
       scegliOpzione(dataCy: string, etichetta: string): Chainable<void>
+      /** Sceglie un valore dalla rotella di un NumberField (si apre dal bottone del campo). */
+      scegliNumero(dataCy: string, valore: string): Chainable<void>
     }
   }
 }
@@ -26,6 +28,15 @@ Cypress.Commands.add('scegliOpzione', (dataCy: string, etichetta: string) => {
   // Il menu è in un portale fuori dal campo: si cerca nel listbox, non nel DOM del select
   cy.get('[role=listbox]').contains('[role=option]', etichetta).click()
   // Il menu si chiude in dissolvenza: senza attendere, il click successivo può finire sul backdrop
+  cy.get('[role=listbox]').should('not.exist')
+})
+
+Cypress.Commands.add('scegliNumero', (dataCy: string, valore: string) => {
+  cy.get(`[data-cy=${dataCy}-wheel]`).click()
+  cy.get('[role=listbox] [role=option]')
+    .filter((_, el) => el.textContent === valore)
+    .first()
+    .click()
   cy.get('[role=listbox]').should('not.exist')
 })
 

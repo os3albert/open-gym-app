@@ -125,6 +125,9 @@ export const it = {
   'list.confirmDelete': 'Conferma eliminazione',
   'list.cancel': 'Annulla',
 
+  // Campi numerici
+  'number.chooseValue': (p: { label: string }) => `Scegli un valore per ${p.label}`,
+
   // Filtri
   'filters.myStature': 'La mia statura (cm)',
   'filters.staturePlaceholder': 'es. 180',

@@ -9,7 +9,7 @@ import { addExercise } from '../../src/domain/exercises'
 import type { AppData } from '../../src/domain/types'
 import { emptyData, saveData } from '../../src/services/storage'
 import { addDaysIso, formatDateIt, todayIso } from '../../src/utils/date'
-import { scegliOpzione } from './helpers'
+import { scegliNumero, scegliOpzione } from './helpers'
 
 beforeEach(() => {
   localStorage.clear()
@@ -96,6 +96,23 @@ describe('registrazione della sessione (issue #14)', () => {
     render(<App />)
     await openTraining(user)
     expect(screen.getByText('60 kg × 8')).toBeInTheDocument()
+  })
+
+  it('la rotella propone i valori plausibili senza togliere la tastiera (M12)', async () => {
+    const user = userEvent.setup()
+    seed()
+    render(<App />)
+    await openTraining(user)
+    await scegliOpzione(user, 'Esercizio', 'Squat')
+
+    // Si sceglie dalla rotella…
+    await scegliNumero(user, 'Peso (kg)', '82.5')
+    expect(screen.getByLabelText('Peso (kg)')).toHaveValue(82.5)
+
+    // …ma il campo resta un input vero: un valore fuori scala si digita
+    await user.clear(screen.getByLabelText('Peso (kg)'))
+    await user.type(screen.getByLabelText('Peso (kg)'), '317')
+    expect(screen.getByLabelText('Peso (kg)')).toHaveValue(317)
   })
 
   it('i pulsanti rapidi incrementano peso e ripetizioni', async () => {

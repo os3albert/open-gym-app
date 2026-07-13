@@ -111,6 +111,8 @@ export const en: Dictionary = {
   'list.confirmDelete': 'Confirm deletion',
   'list.cancel': 'Cancel',
 
+  'number.chooseValue': (p) => `Choose a value for ${p.label}`,
+
   'filters.myStature': 'My height (cm)',
   'filters.staturePlaceholder': 'e.g. 180',
   'filters.save': 'Save',

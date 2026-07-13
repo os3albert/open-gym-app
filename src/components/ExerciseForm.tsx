@@ -9,6 +9,7 @@ import type { NewExercise } from '../domain/exercises'
 import { useT } from '../i18n/context'
 import type { Exercise } from '../domain/types'
 import { parseYouTubeVideoId, youtubeThumbnailUrl } from '../services/youtube'
+import { NumberField, range } from './NumberField'
 
 interface Props {
   /** Esercizio in modifica; null = nuova proposta. Rimontare il form (key) quando cambia. */
@@ -18,6 +19,9 @@ interface Props {
   onCancel?: () => void
   error: string | null
 }
+
+/** Le stature plausibili: le stesse che il dominio accetta (100–250 cm). */
+const STATURES = range(100, 250)
 
 export function ExerciseForm({ initial = null, onSubmit, onCancel, error }: Props) {
   const t = useT()
@@ -76,21 +80,21 @@ export function ExerciseForm({ initial = null, onSubmit, onCancel, error }: Prop
           slotProps={{ htmlInput: { 'data-cy': 'exercise-muscle' } }}
         />
         <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: 'wrap' }}>
-          <TextField
+          <NumberField
             label={t('form.statureFrom')}
-            type="number"
             placeholder={t('form.statureFromExample')}
             value={statureMin}
-            onChange={(e) => setStatureMin(e.target.value)}
-            slotProps={{ htmlInput: { 'data-cy': 'exercise-stature-min' } }}
+            onChange={setStatureMin}
+            dataCy="exercise-stature-min"
+            options={STATURES}
           />
-          <TextField
+          <NumberField
             label={t('form.statureTo')}
-            type="number"
             placeholder={t('form.statureToExample')}
             value={statureMax}
-            onChange={(e) => setStatureMax(e.target.value)}
-            slotProps={{ htmlInput: { 'data-cy': 'exercise-stature-max' } }}
+            onChange={setStatureMax}
+            dataCy="exercise-stature-max"
+            options={STATURES}
           />
         </Stack>
         <Typography variant="caption" color="text.secondary">

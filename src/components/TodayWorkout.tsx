@@ -6,7 +6,6 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { activePlan, dayForDate, nextScheduledDay, planUsesWeekdays } from '../domain/plans'
 import { translateError } from '../i18n'
@@ -14,6 +13,7 @@ import { useT } from '../i18n/context'
 import type { AppData, Exercise, PlanEntry, WorkoutSet } from '../domain/types'
 import { suggestNextWeight } from '../services/weightSuggestion'
 import { formatDateIt } from '../utils/date'
+import { NumberField, range } from './NumberField'
 import { SelectField } from './SelectField'
 
 interface Props {
@@ -27,6 +27,9 @@ interface Props {
  * L'allenamento del giorno dalla scheda attiva (issue #19): esercizi previsti oggi,
  * peso proposto dallo storico, «Fatto ✓» che registra la sessione nello storico.
  */
+const WEIGHTS = range(0, 300, 2.5)
+const REPS = range(1, 30)
+
 export function TodayWorkout({ data, today, onComplete }: Props) {
   const t = useT()
   const [manualDayName, setManualDayName] = useState('')
@@ -189,21 +192,21 @@ function TodayEntry({ exercise, entry, done, suggestedWeight, onComplete }: Entr
             useFlexGap
             sx={{ flexWrap: 'wrap', alignItems: 'center' }}
           >
-            <TextField
+            <NumberField
               label={t('session.weight')}
-              type="number"
               value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              sx={{ width: 110 }}
-              slotProps={{ htmlInput: { 'data-cy': 'today-weight', step: '0.5' } }}
+              onChange={setWeight}
+              dataCy="today-weight"
+              options={WEIGHTS}
+              sx={{ width: 130 }}
             />
-            <TextField
+            <NumberField
               label={t('session.reps')}
-              type="number"
               value={reps}
-              onChange={(e) => setReps(e.target.value)}
-              sx={{ width: 110 }}
-              slotProps={{ htmlInput: { 'data-cy': 'today-reps' } }}
+              onChange={setReps}
+              dataCy="today-reps"
+              options={REPS}
+              sx={{ width: 130 }}
             />
             <Button variant="contained" data-cy="today-entry-complete" onClick={handleComplete}>
               {t('today.complete')}
