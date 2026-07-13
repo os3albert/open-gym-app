@@ -16,7 +16,6 @@ import { theme as muiTheme } from './theme'
 import { makeTranslate, translateError, type Translate } from './i18n'
 import { I18nProvider } from './i18n/provider'
 import { useLanguage } from './hooks/useLanguage'
-import { BackupPanel } from './components/BackupPanel'
 import { ExerciseForm } from './components/ExerciseForm'
 import { ExerciseList } from './components/ExerciseList'
 import { FilterBar } from './components/FilterBar'
@@ -25,7 +24,7 @@ import { InstallPanel } from './components/InstallPanel'
 import { Logo } from './components/Logo'
 import { PlansView } from './components/PlansView'
 import { PrivacyPanel } from './components/PrivacyPanel'
-import { SelectField } from './components/SelectField'
+import { SettingsView } from './components/SettingsView'
 import { TabNav } from './components/TabNav'
 import { TodayWorkout } from './components/TodayWorkout'
 import { UpdateBanner } from './components/UpdateBanner'
@@ -37,7 +36,7 @@ import { useAnalytics } from './hooks/useAnalytics'
 import { useAppData } from './hooks/useAppData'
 import { useCommunity, type CommunityMessage } from './hooks/useCommunity'
 import { useFilters } from './hooks/useFilters'
-import { useTheme, type ThemePreference } from './hooks/useTheme'
+import { useTheme } from './hooks/useTheme'
 import { useView } from './hooks/useView'
 import { mergeForDisplay } from './services/community'
 import { shareCodeFromHash } from './services/share'
@@ -139,8 +138,7 @@ export default function App() {
   const [view, setView] = useView(initialShareCode ? 'schede' : 'esercizi')
   const [filters, setFilters] = useFilters()
   const [theme, setTheme, resolvedTheme] = useTheme()
-  // Il selettore della lingua arriva con la vista Impostazioni (M12/2): qui serve solo leggerla
-  const [language] = useLanguage()
+  const [language, setLanguage] = useLanguage()
   // App traduce da sé (è la radice: sopra di lei non c'è provider) e passa la stessa
   // funzione ai discendenti tramite I18nProvider
   const t = useMemo(() => makeTranslate(language), [language])
@@ -211,23 +209,11 @@ export default function App() {
             borderColor: 'divider',
           }}
         >
-          <Toolbar sx={{ justifyContent: 'space-between', gap: 2 }}>
+          <Toolbar sx={{ gap: 2 }}>
             <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center' }}>
               <Logo size={36} />
               <Typography variant="h1">Open Gym</Typography>
             </Stack>
-            <SelectField
-              label={t('settings.theme')}
-              value={theme}
-              onChange={(value) => setTheme(value as ThemePreference)}
-              dataCy="theme-select"
-              sx={{ minWidth: 120 }}
-              options={[
-                { value: 'auto', label: t('settings.themeAuto') },
-                { value: 'chiaro', label: t('settings.themeLight') },
-                { value: 'scuro', label: t('settings.themeDark') },
-              ]}
-            />
           </Toolbar>
         </AppBar>
         <Container
@@ -387,8 +373,18 @@ export default function App() {
               </>
             )}
             {view === 'storico' && <HistoryView data={data} />}
+            {view === 'impostazioni' && (
+              <SettingsView
+                language={language}
+                onLanguageChange={setLanguage}
+                theme={theme}
+                onThemeChange={setTheme}
+                onExport={exportJson}
+                onReplace={importJson}
+                onMerge={mergeJson}
+              />
+            )}
           </Box>
-          <BackupPanel onExport={exportJson} onReplace={importJson} onMerge={mergeJson} />
           {analytics.available && (
             <PrivacyPanel
               enabled={analytics.enabled}

@@ -33,7 +33,6 @@ describe('Percorso completo esercizi (M2)', () => {
     cy.get('[data-cy=exercise-stature-max]').type('195')
     cy.get('[data-cy=exercise-youtube]').type('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
     cy.get('[data-cy=video-preview]').should('be.visible')
-    cy.get('[data-cy=face-blur-checkbox]').check()
     cy.get('[data-cy=exercise-submit]').click()
 
     cy.get('[data-cy=exercise-item]').should('have.length', 2)

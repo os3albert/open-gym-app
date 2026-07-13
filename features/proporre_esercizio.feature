@@ -2,7 +2,7 @@
 Funzionalità: Proporre un esercizio
   Per condividere esercizi utili con la community
   Come utente della piattaforma
-  Voglio proporre un esercizio con un video YouTube dal volto offuscato
+  Voglio proporre un esercizio con un video YouTube
 
   Scenario: Proposta di un esercizio con link YouTube valido
     Dato che non ci sono esercizi salvati
@@ -16,11 +16,10 @@ Funzionalità: Proporre un esercizio
     Allora la proposta viene rifiutata con l'errore "Inserisci un link YouTube valido"
     E l'elenco degli esercizi è vuoto
 
-  Scenario: Rifiuto della proposta senza conferma del volto offuscato
+  Scenario: Il volto offuscato è un consiglio, non un obbligo
     Dato che non ci sono esercizi salvati
-    Quando provo a proporre l'esercizio "Squat" senza confermare il volto offuscato
-    Allora la proposta viene rifiutata con l'errore "Conferma che il volto nel video è offuscato"
-    E l'elenco degli esercizi è vuoto
+    Quando propongo l'esercizio "Squat" senza confermare il volto offuscato
+    Allora l'esercizio "Squat" compare nell'elenco degli esercizi
 
   Scenario: Proposta con fascia di statura consigliata
     Dato che non ci sono esercizi salvati

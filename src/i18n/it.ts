@@ -10,7 +10,6 @@ export const it = {
   // Errori di dominio (i codici lanciati da src/domain e src/services, worker compreso)
   'errors.EMPTY_NAME': "Il nome dell'esercizio è obbligatorio",
   'errors.INVALID_YOUTUBE_LINK': 'Inserisci un link YouTube valido',
-  'errors.FACE_BLUR_REQUIRED': 'Conferma che il volto nel video è offuscato',
   'errors.INVALID_STATURE_RANGE': 'La fascia di statura non è valida (100–250 cm)',
   'errors.INVALID_STATURE': 'Inserisci una statura tra 100 e 250 cm',
   'errors.INVALID_SET': 'Serie non valida: servono almeno 1 ripetizione e un peso ≥ 0',
@@ -109,7 +108,8 @@ export const it = {
     'In alternativa: app di editing con blur AI (es. CapCut) prima del caricamento.',
   'form.guidelineFullRep': "Il video deve mostrare l'esecuzione completa dell'esercizio.",
   'form.guidelineUnlisted': 'Carica come «Non in elenco» se non vuoi che appaia nel tuo canale.',
-  'form.faceBlurCheckbox': 'Confermo che il volto nel video è offuscato',
+  'form.faceBlurNote':
+    'Il volto non è importante: si guarda il movimento, non la persona. Se preferisci, offuscalo — non è obbligatorio.',
   'form.submitNew': 'Proponi esercizio',
   'form.submitEdit': 'Salva modifiche',
   'form.cancelEdit': 'Annulla modifica',
@@ -119,7 +119,6 @@ export const it = {
   'list.noResults': 'Nessun esercizio corrisponde ai filtri scelti.',
   'list.vote': (p: { name: string }) => `Vota ${p.name}`,
   'list.removeVote': (p: { name: string }) => `Rimuovi il voto a ${p.name}`,
-  'list.faceBlurBadge': '✓ volto offuscato',
   'list.edit': 'Modifica',
   'list.share': 'Condividi',
   'list.delete': 'Elimina',

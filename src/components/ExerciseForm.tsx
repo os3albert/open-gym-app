@@ -3,8 +3,6 @@ import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import Checkbox from '@mui/material/Checkbox'
-import FormControlLabel from '@mui/material/FormControlLabel'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
@@ -34,7 +32,6 @@ export function ExerciseForm({ initial = null, onSubmit, onCancel, error }: Prop
   const [statureMax, setStatureMax] = useState(
     initial?.stature ? String(initial.stature.maxCm) : '',
   )
-  const [faceBlurConfirmed, setFaceBlurConfirmed] = useState(initial?.faceBlurConfirmed ?? false)
 
   const previewVideoId = parseYouTubeVideoId(youtubeUrl)
 
@@ -46,7 +43,6 @@ export function ExerciseForm({ initial = null, onSubmit, onCancel, error }: Prop
       muscleGroup,
       youtubeUrl,
       description,
-      faceBlurConfirmed,
       ...(hasStature ? { stature: { minCm: Number(statureMin), maxCm: Number(statureMax) } } : {}),
     })
     if (accepted && !initial) {
@@ -56,7 +52,6 @@ export function ExerciseForm({ initial = null, onSubmit, onCancel, error }: Prop
       setDescription('')
       setStatureMin('')
       setStatureMax('')
-      setFaceBlurConfirmed(false)
     }
   }
 
@@ -135,33 +130,18 @@ export function ExerciseForm({ initial = null, onSubmit, onCancel, error }: Prop
               <li>{t('form.guidelineUnlisted')}</li>
             </ul>
           </details>
-          <FormControlLabel
-            label={t('form.faceBlurCheckbox')}
-            control={
-              <Checkbox
-                checked={faceBlurConfirmed}
-                onChange={(e) => setFaceBlurConfirmed(e.target.checked)}
-                // Lo slot input di Checkbox non tipizza i data-*: cast al tipo HTML nativo
-                slotProps={{
-                  input: {
-                    'data-cy': 'face-blur-checkbox',
-                  } as React.InputHTMLAttributes<HTMLInputElement>,
-                }}
-              />
-            }
-          />
+          {/* Il volto offuscato è un consiglio, non un obbligo (M12): niente più spunta che blocca
+              la proposta. Resta la dicitura, perché la ragione per cui lo consigliamo non cambia. */}
+          <Typography variant="caption" color="text.secondary" data-cy="face-blur-note">
+            {t('form.faceBlurNote')}
+          </Typography>
           {error && (
             <Alert severity="error" role="alert" data-cy="form-error">
               {error}
             </Alert>
           )}
           <Stack direction="row" spacing={1.5} useFlexGap sx={{ flexWrap: 'wrap' }}>
-            <Button
-              type="submit"
-              variant="contained"
-              data-cy="exercise-submit"
-              disabled={!faceBlurConfirmed}
-            >
+            <Button type="submit" variant="contained" data-cy="exercise-submit">
               {initial ? t('form.submitEdit') : t('form.submitNew')}
             </Button>
             {initial && onCancel && (

@@ -145,15 +145,6 @@ export function ExerciseList({
                     label={`${exercise.stature.minCm}–${exercise.stature.maxCm} cm`}
                   />
                 )}
-                {exercise.faceBlurConfirmed && (
-                  <Chip
-                    size="small"
-                    color="success"
-                    variant="outlined"
-                    data-cy="face-blur-badge"
-                    label={t('list.faceBlurBadge')}
-                  />
-                )}
               </Stack>
               {exercise.description && (
                 <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>

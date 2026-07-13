@@ -1,10 +1,6 @@
 // Impianto delle traduzioni: dizionari allineati, codici d'errore che diventano frasi.
 import { expect } from 'chai'
-import {
-  EMPTY_NAME_ERROR,
-  FACE_BLUR_REQUIRED_ERROR,
-  INVALID_YOUTUBE_LINK_ERROR,
-} from '../../src/domain/exercises'
+import { EMPTY_NAME_ERROR, INVALID_YOUTUBE_LINK_ERROR } from '../../src/domain/exercises'
 import { LANGUAGES, isLanguage, makeTranslate, translateError } from '../../src/i18n'
 import { en } from '../../src/i18n/en'
 import { it as itDict } from '../../src/i18n/it'
@@ -60,7 +56,7 @@ describe('errori di dominio', () => {
 
   it('ogni codice di dominio ha la sua frase', () => {
     const t = makeTranslate('it')
-    for (const code of [INVALID_YOUTUBE_LINK_ERROR, FACE_BLUR_REQUIRED_ERROR]) {
+    for (const code of [EMPTY_NAME_ERROR, INVALID_YOUTUBE_LINK_ERROR]) {
       expect(translateError(t, new Error(code))).to.not.equal(code)
     }
   })

@@ -7,7 +7,6 @@ import type { Dictionary } from './index'
 export const en: Dictionary = {
   'errors.EMPTY_NAME': 'The exercise name is required',
   'errors.INVALID_YOUTUBE_LINK': 'Enter a valid YouTube link',
-  'errors.FACE_BLUR_REQUIRED': 'Confirm that the face in the video is blurred',
   'errors.INVALID_STATURE_RANGE': 'The height range is not valid (100–250 cm)',
   'errors.INVALID_STATURE': 'Enter a height between 100 and 250 cm',
   'errors.INVALID_SET': 'Invalid set: at least 1 rep and a weight ≥ 0 are required',
@@ -96,7 +95,8 @@ export const en: Dictionary = {
     'Alternatively: an editing app with AI blur (e.g. CapCut) before uploading.',
   'form.guidelineFullRep': 'The video must show the full execution of the exercise.',
   'form.guidelineUnlisted': 'Upload it as “Unlisted” if you do not want it on your channel.',
-  'form.faceBlurCheckbox': 'I confirm the face in the video is blurred',
+  'form.faceBlurNote':
+    'The face does not matter: we look at the movement, not the person. Blur it if you prefer — it is not required.',
   'form.submitNew': 'Propose exercise',
   'form.submitEdit': 'Save changes',
   'form.cancelEdit': 'Cancel edit',
@@ -105,7 +105,6 @@ export const en: Dictionary = {
   'list.noResults': 'No exercise matches the chosen filters.',
   'list.vote': (p) => `Upvote ${p.name}`,
   'list.removeVote': (p) => `Remove your vote from ${p.name}`,
-  'list.faceBlurBadge': '✓ face blurred',
   'list.edit': 'Edit',
   'list.share': 'Share',
   'list.delete': 'Delete',

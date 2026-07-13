@@ -4,7 +4,7 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '../../src/App'
 import { it as itDict } from '../../src/i18n/it'
-import { FACE_BLUR_REQUIRED_ERROR, INVALID_YOUTUBE_LINK_ERROR } from '../../src/domain/exercises'
+import { INVALID_YOUTUBE_LINK_ERROR } from '../../src/domain/exercises'
 
 beforeEach(() => {
   localStorage.clear()
@@ -35,7 +35,6 @@ async function proposeExercise(
     await user.type(screen.getByLabelText('a (cm)'), String(stature.max))
   }
   await user.type(screen.getByLabelText('Link YouTube (volto offuscato)'), youtubeUrl)
-  await user.click(screen.getByLabelText('Confermo che il volto nel video è offuscato'))
   await user.click(screen.getByRole('button', { name: /Proponi esercizio|Salva modifiche/ }))
 }
 
@@ -49,7 +48,6 @@ describe('proposta di un esercizio', () => {
 
     expect(screen.getByRole('heading', { name: 'Panca piana' })).toBeInTheDocument()
     expect(screen.getByText('170–190 cm')).toBeInTheDocument()
-    expect(screen.getByText('✓ volto offuscato')).toBeInTheDocument()
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
 
@@ -63,12 +61,6 @@ describe('proposta di un esercizio', () => {
     expect(screen.queryByRole('heading', { name: 'Squat' })).not.toBeInTheDocument()
   })
 
-  it('senza conferma del volto offuscato il pulsante di invio è disabilitato', async () => {
-    render(<App />)
-    await openProposeForm()
-    expect(screen.getByRole('button', { name: 'Proponi esercizio' })).toBeDisabled()
-  })
-
   it('il form di proposta è chiuso di partenza: si atterra sulla lista della community', () => {
     render(<App />)
     expect(screen.queryByLabelText('Nome esercizio')).not.toBeInTheDocument()
@@ -79,18 +71,14 @@ describe('proposta di un esercizio', () => {
     )
   })
 
-  it(`il dominio rifiuta comunque la proposta senza conferma (messaggio: ${FACE_BLUR_REQUIRED_ERROR})`, async () => {
-    // La checkbox disabilita il submit: qui si verifica solo che la difesa esista anche nel dominio
-    const { createExercise } = await import('../../src/domain/exercises')
-    expect(() =>
-      createExercise({
-        name: 'X',
-        description: '',
-        youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
-        muscleGroup: '',
-        faceBlurConfirmed: false,
-      }),
-    ).toThrow(FACE_BLUR_REQUIRED_ERROR)
+  it('il volto offuscato non è più obbligatorio: resta solo la dicitura (M12)', async () => {
+    render(<App />)
+    await openProposeForm()
+
+    expect(screen.queryByLabelText(/volto nel video è offuscato/)).not.toBeInTheDocument()
+    expect(screen.getByText(/Il volto non è importante/)).toBeInTheDocument()
+    // Il submit non è più bloccato da una spunta
+    expect(screen.getByRole('button', { name: 'Proponi esercizio' })).toBeEnabled()
   })
 })
 

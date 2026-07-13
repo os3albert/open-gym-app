@@ -5,6 +5,7 @@ import Paper from '@mui/material/Paper'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
 import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined'
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter'
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
 import ShowChartIcon from '@mui/icons-material/ShowChart'
 import type { AppView } from '../hooks/useView'
 import { useT } from '../i18n/context'
@@ -15,6 +16,7 @@ const TABS: Array<{ view: AppView; label: TextKey; icon: React.ReactNode }> = [
   { view: 'schede', label: 'nav.plans', icon: <CalendarMonthOutlinedIcon /> },
   { view: 'allenamento', label: 'nav.workout', icon: <FitnessCenterIcon /> },
   { view: 'storico', label: 'nav.history', icon: <ShowChartIcon /> },
+  { view: 'impostazioni', label: 'nav.settings', icon: <SettingsOutlinedIcon /> },
 ]
 
 interface Props {

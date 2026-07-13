@@ -6,7 +6,6 @@ function proponiEsercizio(nome: string, link: string) {
   cy.get('[data-cy=exercise-muscle]').type('Petto')
   cy.get('[data-cy=exercise-youtube]').type(link)
   cy.get('[data-cy=exercise-description]').type('Descrizione di prova')
-  cy.get('[data-cy=face-blur-checkbox]').check()
   cy.get('[data-cy=exercise-submit]').click()
 }
 
@@ -19,14 +18,12 @@ describe('Gestione esercizi', () => {
     proponiEsercizio('Panca piana', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
 
     cy.get('[data-cy=exercise-item]').should('have.length', 1).and('contain.text', 'Panca piana')
-    cy.get('[data-cy=face-blur-badge]').should('be.visible')
     cy.get('[data-cy=form-error]').should('not.exist')
   })
 
-  it('senza la conferma del volto offuscato il pulsante di invio resta disabilitato', () => {
+  it('il volto offuscato è un consiglio, non un obbligo: si propone senza spuntare nulla (M12)', () => {
     cy.apriFormProposta()
-    cy.get('[data-cy=exercise-submit]').should('be.disabled')
-    cy.get('[data-cy=face-blur-checkbox]').check()
+    cy.get('[data-cy=face-blur-note]').should('be.visible')
     cy.get('[data-cy=exercise-submit]').should('be.enabled')
   })
 

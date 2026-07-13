@@ -98,7 +98,7 @@ When(
 )
 
 When(
-  "provo a proporre l'esercizio {string} senza confermare il volto offuscato",
+  "propongo l'esercizio {string} senza confermare il volto offuscato",
   function (this: GymWorld, name: string) {
     try {
       this.data = addExercise(this.data, {

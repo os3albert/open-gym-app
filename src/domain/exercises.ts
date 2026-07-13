@@ -4,7 +4,6 @@ import type { AppData, Exercise, StatureRange } from './types'
 
 export const INVALID_YOUTUBE_LINK_ERROR = 'INVALID_YOUTUBE_LINK'
 export const EMPTY_NAME_ERROR = 'EMPTY_NAME'
-export const FACE_BLUR_REQUIRED_ERROR = 'FACE_BLUR_REQUIRED'
 export const INVALID_STATURE_RANGE_ERROR = 'INVALID_STATURE_RANGE'
 
 export const MIN_STATURE_CM = 100
@@ -16,7 +15,11 @@ export interface NewExercise {
   youtubeUrl: string
   muscleGroup: string
   stature?: StatureRange
-  faceBlurConfirmed: boolean
+  /**
+   * LEGACY (M12): l'offuscamento del volto è un consiglio, non un obbligo — non si valida più.
+   * Il campo resta nello schema perché i backup esistenti e il catalogo pubblico lo contengono.
+   */
+  faceBlurConfirmed?: boolean
 }
 
 function isValidStatureRange(range: StatureRange): boolean {
@@ -28,7 +31,6 @@ function isValidStatureRange(range: StatureRange): boolean {
 function validate(input: NewExercise): void {
   if (!input.name.trim()) throw new Error(EMPTY_NAME_ERROR)
   if (!isValidYouTubeUrl(input.youtubeUrl)) throw new Error(INVALID_YOUTUBE_LINK_ERROR)
-  if (!input.faceBlurConfirmed) throw new Error(FACE_BLUR_REQUIRED_ERROR)
   if (input.stature && !isValidStatureRange(input.stature)) {
     throw new Error(INVALID_STATURE_RANGE_ERROR)
   }
@@ -44,7 +46,7 @@ export function createExercise(input: NewExercise, now: Date = new Date()): Exer
     youtubeUrl: input.youtubeUrl.trim(),
     muscleGroup: input.muscleGroup.trim(),
     ...(input.stature ? { stature: input.stature } : {}),
-    faceBlurConfirmed: true,
+    faceBlurConfirmed: input.faceBlurConfirmed ?? false,
     votes: 0,
     createdAt: now.toISOString(),
   }

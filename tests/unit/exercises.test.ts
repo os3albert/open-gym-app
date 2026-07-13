@@ -4,7 +4,6 @@ import {
   createExercise,
   deleteExercise,
   EMPTY_NAME_ERROR,
-  FACE_BLUR_REQUIRED_ERROR,
   hasVoted,
   INVALID_STATURE_RANGE_ERROR,
   INVALID_YOUTUBE_LINK_ERROR,
@@ -48,10 +47,10 @@ describe('createExercise', () => {
     expect(() => createExercise({ ...validInput, name: '   ' })).to.throw(EMPTY_NAME_ERROR)
   })
 
-  it('rifiuta la proposta senza conferma del volto offuscato', () => {
-    expect(() => createExercise({ ...validInput, faceBlurConfirmed: false })).to.throw(
-      FACE_BLUR_REQUIRED_ERROR,
-    )
+  it("il volto offuscato è un consiglio, non un obbligo: l'esercizio si crea comunque (M12)", () => {
+    const exercise = createExercise({ ...validInput, faceBlurConfirmed: false })
+    expect(exercise.name).to.equal(validInput.name)
+    expect(exercise.faceBlurConfirmed).to.equal(false)
   })
 })
 
