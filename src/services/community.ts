@@ -9,10 +9,23 @@ const REPO = 'os3albert/open-gym-app'
 const BRANCH = 'main'
 const RAW_BASE = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/community`
 
-/** URL del worker; assente = community disattivata (l'app resta puramente locale). */
+/**
+ * URL del worker; assente = community disattivata (l'app resta puramente locale).
+ *
+ * Deve essere un URL ASSOLUTO http(s): un valore senza schema (`open-gym-community…dev`)
+ * finirebbe in `fetch` come percorso relativo, cioè su una rotta inesistente del sito.
+ * Meglio community spenta che richieste che sembrano partire e invece prendono un 404.
+ */
 export function communityApiUrl(): string | null {
   const url = import.meta.env.VITE_COMMUNITY_API_URL
-  return typeof url === 'string' && url !== '' ? url.replace(/\/$/, '') : null
+  if (typeof url !== 'string' || url === '') return null
+  try {
+    const { protocol } = new URL(url)
+    if (protocol !== 'https:' && protocol !== 'http:') return null
+  } catch {
+    return null
+  }
+  return url.replace(/\/$/, '')
 }
 
 export interface CommunitySnapshot {

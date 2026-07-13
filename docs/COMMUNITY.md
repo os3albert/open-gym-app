@@ -95,7 +95,15 @@ Da qui in poi il workflow `worker.yml` ridistribuisce il worker a ogni push che 
 
 Sempre in `Settings → Secrets and variables → Actions`, scheda **Variables**, aggiungi:
 
-- `COMMUNITY_API_URL` — l'URL del worker del punto 2
+- `COMMUNITY_API_URL` — l'URL del worker del punto 2, **con lo schema**: `https://…`
+
+Due trappole viste sul campo:
+
+- **Senza `https://`** l'app tratterebbe l'URL come percorso *relativo* e la CSP perderebbe
+  l'origine del worker. Oggi non può più succedere in silenzio: la build fallisce.
+- Le variabili definite sull'**environment** `github-pages` **vincono** su quelle del repository
+  (il job `deploy-pages` dichiara quell'environment). Se una build usa un valore che non ti spieghi,
+  guarda lì: `gh api repos/<owner>/<repo>/environments/github-pages/variables`.
 
 Il deploy su GitHub Pages lo passa alla build come `VITE_COMMUNITY_API_URL`. Per provare in
 locale, crea un file `.env.local`:
