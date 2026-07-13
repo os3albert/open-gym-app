@@ -1,6 +1,10 @@
-name = "open-gym-app"
+# NON chiamarlo "open-gym-app": è il nome del Worker che serve l'app (wrangler.jsonc, nella
+# root). Due Worker con lo stesso nome sono lo stesso Worker: il secondo deploy sovrascrive
+# il primo, ed è esattamente ciò che è successo finché la community non ha ripreso il suo nome.
+name = "open-gym-community"
 main = "src/index.ts"
 compatibility_date = "2026-01-01"
+workers_dev = true
 
 # I segreti NON stanno qui (finirebbero nel repo): si impostano con
 #   wrangler secret put GITHUB_TOKEN
@@ -9,7 +13,10 @@ compatibility_date = "2026-01-01"
 REPO_OWNER = "os3albert"
 REPO_NAME = "open-gym-app"
 REPO_BRANCH = "main"
-ALLOWED_ORIGINS = "https://os3albert.github.io,http://localhost:5173,http://localhost:4173"
+# Il worker rifiuta con 403 le origini che non sono in questa lista (il CORS non ferma curl):
+# ogni luogo da cui l'app è servita va elencato qui, o le proposte e i voti non partono.
+# Nell'ordine: GitHub Pages, l'app su Cloudflare, il dev server Vite, la preview (wrangler dev).
+ALLOWED_ORIGINS = "https://os3albert.github.io,https://open-gym-app.www-albertbici.workers.dev,http://localhost:5173,http://localhost:8787"
 
 # Rate limiting per IP: facoltativo. Crea il namespace con
 #   wrangler kv namespace create RATE_LIMIT

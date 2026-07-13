@@ -40,18 +40,25 @@ Crea un **fine-grained personal access token** su
 Dalla cartella del progetto:
 
 ```bash
-cd worker
+cd worker                              # SEMPRE da qui: i segreti sono per-worker, e la root
+                                       # è un altro Worker (quello che serve l'app)
 npx wrangler login                     # apre il browser: autorizza Cloudflare
 npx wrangler secret put GITHUB_TOKEN   # incolla il token del punto 1
 npx wrangler secret put VOTE_SALT      # una stringa casuale lunga, es. da `openssl rand -hex 32`
 npx wrangler deploy                    # primo deploy: stampa l'URL del worker
+npx wrangler secret list               # controllo: deve elencare GITHUB_TOKEN e VOTE_SALT
 ```
+
+Il worker della community si chiama `open-gym-community`; l'app è **anch'essa** un Worker
+(`wrangler.jsonc` nella root) e si chiama `open-gym-app`. **I due nomi non devono coincidere**:
+su Cloudflare il nome è l'identità del Worker, quindi due deploy con lo stesso nome sono lo stesso
+Worker e il secondo cancella il primo.
 
 `VOTE_SALT` serve a derivare l'identità del votante (hash di salt + IP): senza salt, l'hash
 sarebbe ricostruibile a partire da un IP noto. **Non cambiarlo dopo il primo voto**, o i voti
 già espressi non verranno più riconosciuti come dello stesso votante.
 
-L'URL stampato (es. `https://open-gym-app.<tuo-account>.workers.dev`) serve al punto 4.
+L'URL stampato (es. `https://open-gym-community.<tuo-account>.workers.dev`) serve al punto 4.
 
 **Rate limiting (consigliato).** Per limitare le scritture a 20/ora per IP:
 
@@ -81,8 +88,11 @@ Il deploy su GitHub Pages lo passa alla build come `VITE_COMMUNITY_API_URL`. Per
 locale, crea un file `.env.local`:
 
 ```
-VITE_COMMUNITY_API_URL=https://open-gym-app.<tuo-account>.workers.dev
+VITE_COMMUNITY_API_URL=https://open-gym-community.<tuo-account>.workers.dev
 ```
+
+La stessa variabile serve anche a `npm run deploy` (l'app servita da Cloudflare si builda in
+locale): senza, quella copia esce con la community spenta.
 
 ## Sviluppo locale del worker
 
@@ -91,4 +101,7 @@ cd worker
 npx wrangler dev        # worker su http://localhost:8787
 ```
 
-Le origini ammesse (CORS) sono in `worker/wrangler.toml`: GitHub Pages e i due server locali.
+Le origini ammesse sono in `ALLOWED_ORIGINS` (`worker/wrangler.toml`): GitHub Pages, l'app su
+Cloudflare e i server locali. Non è solo una questione di CORS — il worker **rifiuta con 403** le
+richieste che arrivano da un'origine fuori da quella lista (il CORS è una difesa del browser: una
+richiesta con `curl` lo ignorerebbe). Se pubblichi l'app da un altro dominio, aggiungilo qui.

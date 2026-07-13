@@ -155,7 +155,7 @@ async function handleVote(
 /** Il catalogo serve solo per validare l'id votato: si legge dal raw, senza consumare rate limit dell'API. */
 async function fetchCatalog(config: RepoConfig): Promise<CommunityExercise[]> {
   const url = `https://raw.githubusercontent.com/${config.owner}/${config.repo}/${config.branch}/${EXERCISES_PATH}`
-  const response = await fetch(url, { headers: { 'User-Agent': 'open-gym-app-worker' } })
+  const response = await fetch(url, { headers: { 'User-Agent': 'open-gym-community-worker' } })
   if (!response.ok) throw new Error('Catalogo della community non raggiungibile')
   return (await response.json()) as CommunityExercise[]
 }
