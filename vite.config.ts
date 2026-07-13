@@ -5,13 +5,28 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 import { cloudflare } from '@cloudflare/vite-plugin'
 
-/** Origine di un URL configurato (per la CSP): stringa vuota se non c'è. */
-function origin(url: string | undefined): string {
+/**
+ * Origine di un URL configurato (per la CSP): stringa vuota se la variabile non c'è.
+ *
+ * Se invece c'è ma è malformata, la build si FERMA. Non è pignoleria: un `catch` che
+ * restituiva '' ha già mandato in produzione un sito rotto in silenzio — l'URL del worker
+ * era senza `https://`, quindi l'app lo trattava come percorso relativo e la CSP perdeva
+ * l'origine senza dirlo a nessuno. Meglio una build rossa che un deploy muto.
+ */
+function origin(name: string, url: string | undefined): string {
+  if (!url) return ''
+  let parsed: URL
   try {
-    return url ? new URL(url).origin : ''
+    parsed = new URL(url)
   } catch {
-    return ''
+    throw new Error(
+      `${name} non è un URL valido: «${url}». Serve un URL assoluto, es. https://esempio.dev`,
+    )
   }
+  if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
+    throw new Error(`${name} deve usare http o https, non «${parsed.protocol}»`)
+  }
+  return parsed.origin
 }
 
 /**
@@ -28,8 +43,8 @@ function cspPlugin(): Plugin {
     // build di produzione, quindi la policy resta comunque coperta dai test.
     apply: 'build',
     transformIndexHtml() {
-      const worker = origin(process.env.VITE_COMMUNITY_API_URL)
-      const umami = origin(process.env.VITE_UMAMI_SRC)
+      const worker = origin('VITE_COMMUNITY_API_URL', process.env.VITE_COMMUNITY_API_URL)
+      const umami = origin('VITE_UMAMI_SRC', process.env.VITE_UMAMI_SRC)
       const csp = [
         "default-src 'self'",
         `script-src 'self'${umami ? ` ${umami}` : ''}`,
