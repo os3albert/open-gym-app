@@ -1,12 +1,25 @@
 name: SonarCloud
 
-# Analisi statica di qualità e sicurezza. Gira su push e PR; sulle PR da fork il token
-# non è disponibile e il job viene saltato invece di fallire.
+# IN PAUSA: SonarCloud non è ancora configurato (manca il secret SONAR_TOKEN), quindi il passo di
+# analisi veniva saltato — ma il job girava lo stesso `npm ci` + coverage a ogni push e a ogni PR,
+# bruciando minuti per nulla. Resta solo l'avvio manuale.
+#
+# PER RIACCENDERLO: imposta il secret SONAR_TOKEN (SonarCloud → My Account → Security) e togli il
+# commento ai due trigger qui sotto.
+#
+# ATTENZIONE, i file di configurazione sono DUE e non si parlano:
+#   - `sonar-project.properties` vale per l'analisi lanciata dalla CI (questo workflow) ed esclude ui/**;
+#   - `.sonarcloud.properties` vale per l'Automatic Analysis dell'app SonarCloud, che il primo file
+#     NON lo legge: è per questo che analizzava i mockup di ui/ e bocciava il Quality Gate.
+# L'Automatic Analysis si spegne solo dalla UI di SonarCloud (Administration → Analysis Method).
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
+  # push:
+  #   branches: [main]
+  #   paths-ignore:
+  #     - 'community/**'
+  # pull_request:
+  #   branches: [main]
 
 jobs:
   analisi:
