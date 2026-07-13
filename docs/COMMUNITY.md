@@ -39,20 +39,33 @@ Crea un **fine-grained personal access token** su
 
 Dalla cartella del progetto:
 
+Dalla **root** del progetto, sempre con gli script `worker:*` (mai `wrangler` a mano: vedi il
+riquadro qui sotto):
+
 ```bash
-cd worker                              # SEMPRE da qui: i segreti sono per-worker, e la root
-                                       # è un altro Worker (quello che serve l'app)
-npx wrangler login                     # apre il browser: autorizza Cloudflare
-npx wrangler secret put GITHUB_TOKEN   # incolla il token del punto 1
-npx wrangler secret put VOTE_SALT      # una stringa casuale lunga, es. da `openssl rand -hex 32`
-npx wrangler deploy                    # primo deploy: stampa l'URL del worker
-npx wrangler secret list               # controllo: deve elencare GITHUB_TOKEN e VOTE_SALT
+npx wrangler login                             # apre il browser: autorizza Cloudflare
+npm run worker:deploy                          # primo deploy: crea il worker e stampa l'URL
+npm run worker:secret -- put GITHUB_TOKEN      # incolla il token del punto 1
+openssl rand -hex 32 | npm run worker:secret -- put VOTE_SALT
+npm run worker:secret -- list                  # controllo: deve elencare GITHUB_TOKEN e VOTE_SALT
 ```
 
-Il worker della community si chiama `open-gym-community`; l'app è **anch'essa** un Worker
-(`wrangler.jsonc` nella root) e si chiama `open-gym-app`. **I due nomi non devono coincidere**:
-su Cloudflare il nome è l'identità del Worker, quindi due deploy con lo stesso nome sono lo stesso
-Worker e il secondo cancella il primo.
+### ⚠️ Perché non si lancia `wrangler` a mano
+
+In questo repo ci sono **due** Worker: `open-gym-app` (l'app, `wrangler.jsonc` nella root) e
+`open-gym-community` (questo, `worker/wrangler.toml`). Due insidie, entrambe già costate un
+debug lungo:
+
+1. **I nomi non devono coincidere.** Su Cloudflare il nome *è* l'identità del Worker: due deploy
+   con lo stesso nome sono lo stesso Worker, e il secondo cancella il primo.
+2. **`cd worker && npx wrangler deploy` NON deploya questo worker.** A ogni build,
+   `@cloudflare/vite-plugin` scrive nella root `.wrangler/deploy/config.json`, un file di
+   *redirect* verso `dist/wrangler.json` (l'app compilata). Wrangler lo trova risalendo le cartelle
+   e lo preferisce al `wrangler.toml` che ha nella directory corrente: il comando finisce sul Worker
+   dell'**app**. Vale per tutto, `secret put` compreso — i segreti finirebbero sul Worker sbagliato.
+
+L'unico modo di aggirare il redirect è `--config` esplicito, che è esattamente ciò che fanno gli
+script `worker:deploy`, `worker:secret` e `worker:tail` in `package.json`. Usa quelli.
 
 `VOTE_SALT` serve a derivare l'identità del votante (hash di salt + IP): senza salt, l'hash
 sarebbe ricostruibile a partire da un IP noto. **Non cambiarlo dopo il primo voto**, o i voti
@@ -97,9 +110,10 @@ locale): senza, quella copia esce con la community spenta.
 ## Sviluppo locale del worker
 
 ```bash
-cd worker
-npx wrangler dev        # worker su http://localhost:8787
+npx wrangler dev --config worker/wrangler.toml --port 8788   # :8787 è già della preview dell'app
 ```
+
+Anche qui il `--config` non è decorativo: senza, wrangler avvia l'**app**, non il worker.
 
 Le origini ammesse sono in `ALLOWED_ORIGINS` (`worker/wrangler.toml`): GitHub Pages, l'app su
 Cloudflare e i server locali. Non è solo una questione di CORS — il worker **rifiuta con 403** le
