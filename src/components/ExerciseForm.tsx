@@ -1,8 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
+import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
@@ -56,102 +55,100 @@ export function ExerciseForm({ initial = null, onSubmit, onCancel, error }: Prop
   }
 
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h2" gutterBottom>
-          {initial ? t('form.editTitle') : t('form.newTitle')}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          {t('form.intro')}
-        </Typography>
-        <Stack component="form" spacing={2} onSubmit={handleSubmit}>
+    <Box sx={{ p: { xs: 2.5, sm: 3 } }}>
+      <Typography variant="h2" gutterBottom id="titolo-proposta">
+        {initial ? t('form.editTitle') : t('form.newTitle')}
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        {t('form.intro')}
+      </Typography>
+      <Stack component="form" spacing={2} onSubmit={handleSubmit}>
+        <TextField
+          label={t('form.name')}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          slotProps={{ htmlInput: { 'data-cy': 'exercise-name' } }}
+        />
+        <TextField
+          label={t('form.muscleGroup')}
+          value={muscleGroup}
+          onChange={(e) => setMuscleGroup(e.target.value)}
+          slotProps={{ htmlInput: { 'data-cy': 'exercise-muscle' } }}
+        />
+        <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: 'wrap' }}>
           <TextField
-            label={t('form.name')}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            slotProps={{ htmlInput: { 'data-cy': 'exercise-name' } }}
+            label={t('form.statureFrom')}
+            type="number"
+            placeholder={t('form.statureFromExample')}
+            value={statureMin}
+            onChange={(e) => setStatureMin(e.target.value)}
+            slotProps={{ htmlInput: { 'data-cy': 'exercise-stature-min' } }}
           />
           <TextField
-            label={t('form.muscleGroup')}
-            value={muscleGroup}
-            onChange={(e) => setMuscleGroup(e.target.value)}
-            slotProps={{ htmlInput: { 'data-cy': 'exercise-muscle' } }}
+            label={t('form.statureTo')}
+            type="number"
+            placeholder={t('form.statureToExample')}
+            value={statureMax}
+            onChange={(e) => setStatureMax(e.target.value)}
+            slotProps={{ htmlInput: { 'data-cy': 'exercise-stature-max' } }}
           />
-          <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: 'wrap' }}>
-            <TextField
-              label={t('form.statureFrom')}
-              type="number"
-              placeholder={t('form.statureFromExample')}
-              value={statureMin}
-              onChange={(e) => setStatureMin(e.target.value)}
-              slotProps={{ htmlInput: { 'data-cy': 'exercise-stature-min' } }}
-            />
-            <TextField
-              label={t('form.statureTo')}
-              type="number"
-              placeholder={t('form.statureToExample')}
-              value={statureMax}
-              onChange={(e) => setStatureMax(e.target.value)}
-              slotProps={{ htmlInput: { 'data-cy': 'exercise-stature-max' } }}
-            />
-          </Stack>
-          <Typography variant="caption" color="text.secondary">
-            {t('form.statureHint')}
-          </Typography>
-          <TextField
-            label={t('form.youtube')}
-            placeholder="https://www.youtube.com/watch?v=..."
-            value={youtubeUrl}
-            onChange={(e) => setYoutubeUrl(e.target.value)}
-            slotProps={{ htmlInput: { 'data-cy': 'exercise-youtube' } }}
-          />
-          {previewVideoId && (
-            <img
-              className="video-preview"
-              data-cy="video-preview"
-              src={youtubeThumbnailUrl(previewVideoId)}
-              alt={t('form.videoPreviewAlt')}
-            />
-          )}
-          <TextField
-            label={t('form.description')}
-            multiline
-            rows={3}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            slotProps={{ htmlInput: { 'data-cy': 'exercise-description' } }}
-          />
-          <details className="guidelines" data-cy="video-guidelines">
-            <summary>{t('form.guidelinesSummary')}</summary>
-            <ul>
-              <li>{t('form.guidelineStudio')}</li>
-              <li>{t('form.guidelineApps')}</li>
-              <li>{t('form.guidelineFullRep')}</li>
-              <li>{t('form.guidelineUnlisted')}</li>
-            </ul>
-          </details>
-          {/* Il volto offuscato è un consiglio, non un obbligo (M12): niente più spunta che blocca
-              la proposta. Resta la dicitura, perché la ragione per cui lo consigliamo non cambia. */}
-          <Typography variant="caption" color="text.secondary" data-cy="face-blur-note">
-            {t('form.faceBlurNote')}
-          </Typography>
-          {error && (
-            <Alert severity="error" role="alert" data-cy="form-error">
-              {error}
-            </Alert>
-          )}
-          <Stack direction="row" spacing={1.5} useFlexGap sx={{ flexWrap: 'wrap' }}>
-            <Button type="submit" variant="contained" data-cy="exercise-submit">
-              {initial ? t('form.submitEdit') : t('form.submitNew')}
-            </Button>
-            {initial && onCancel && (
-              <Button variant="text" color="inherit" data-cy="edit-cancel" onClick={onCancel}>
-                {t('form.cancelEdit')}
-              </Button>
-            )}
-          </Stack>
         </Stack>
-      </CardContent>
-    </Card>
+        <Typography variant="caption" color="text.secondary">
+          {t('form.statureHint')}
+        </Typography>
+        <TextField
+          label={t('form.youtube')}
+          placeholder="https://www.youtube.com/watch?v=..."
+          value={youtubeUrl}
+          onChange={(e) => setYoutubeUrl(e.target.value)}
+          slotProps={{ htmlInput: { 'data-cy': 'exercise-youtube' } }}
+        />
+        {previewVideoId && (
+          <img
+            className="video-preview"
+            data-cy="video-preview"
+            src={youtubeThumbnailUrl(previewVideoId)}
+            alt={t('form.videoPreviewAlt')}
+          />
+        )}
+        <TextField
+          label={t('form.description')}
+          multiline
+          rows={3}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          slotProps={{ htmlInput: { 'data-cy': 'exercise-description' } }}
+        />
+        <details className="guidelines" data-cy="video-guidelines">
+          <summary>{t('form.guidelinesSummary')}</summary>
+          <ul>
+            <li>{t('form.guidelineStudio')}</li>
+            <li>{t('form.guidelineApps')}</li>
+            <li>{t('form.guidelineFullRep')}</li>
+            <li>{t('form.guidelineUnlisted')}</li>
+          </ul>
+        </details>
+        {/* Il volto offuscato è un consiglio, non un obbligo (M12): niente più spunta che blocca
+              la proposta. Resta la dicitura, perché la ragione per cui lo consigliamo non cambia. */}
+        <Typography variant="caption" color="text.secondary" data-cy="face-blur-note">
+          {t('form.faceBlurNote')}
+        </Typography>
+        {error && (
+          <Alert severity="error" role="alert" data-cy="form-error">
+            {error}
+          </Alert>
+        )}
+        <Stack direction="row" spacing={1.5} useFlexGap sx={{ flexWrap: 'wrap' }}>
+          <Button type="submit" variant="contained" data-cy="exercise-submit">
+            {initial ? t('form.submitEdit') : t('form.submitNew')}
+          </Button>
+          {initial && onCancel && (
+            <Button variant="text" color="inherit" data-cy="edit-cancel" onClick={onCancel}>
+              {t('form.cancelEdit')}
+            </Button>
+          )}
+        </Stack>
+      </Stack>
+    </Box>
   )
 }

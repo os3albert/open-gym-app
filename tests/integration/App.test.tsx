@@ -12,7 +12,7 @@ beforeEach(() => {
   window.history.replaceState(null, '', '/')
 })
 
-/** Il form di proposta è collassato: si apre dal bottone «Nuova proposta» (issue #37). No-op se è già aperto. */
+/** Il form di proposta vive in un modale (M12): si apre dal FAB «Nuova proposta». No-op se è già aperto. */
 async function openProposeForm() {
   if (screen.queryByLabelText('Nome esercizio')) return
   const user = userEvent.setup()
@@ -69,6 +69,38 @@ describe('proposta di un esercizio', () => {
       'aria-expanded',
       'false',
     )
+  })
+
+  it('il FAB apre il form in un modale, e a salvataggio riuscito si richiude (M12)', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Nuova proposta' }))
+    expect(await screen.findByRole('dialog')).toBeInTheDocument()
+
+    await user.type(screen.getByLabelText('Nome esercizio'), 'Rematore')
+    await user.type(
+      screen.getByLabelText('Link YouTube (volto offuscato)'),
+      'https://youtu.be/dQw4w9WgXcQ',
+    )
+    await user.click(screen.getByRole('button', { name: 'Proponi esercizio' }))
+
+    // Il modale non deve restare davanti al risultato
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Rematore' })).toBeInTheDocument()
+  })
+
+  it('anche «Modifica» apre lo stesso modale, con i campi precaricati (M12)', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await proposeExercise('Squat', 'https://youtu.be/dQw4w9WgXcQ')
+
+    await user.click(screen.getByRole('button', { name: 'Modifica' }))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByLabelText('Nome esercizio')).toHaveValue('Squat')
+    expect(within(dialog).getByRole('button', { name: 'Salva modifiche' })).toBeInTheDocument()
   })
 
   it('il volto offuscato non è più obbligatorio: resta solo la dicitura (M12)', async () => {

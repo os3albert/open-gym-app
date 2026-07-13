@@ -4,8 +4,9 @@ import CloseIcon from '@mui/icons-material/Close'
 import Alert from '@mui/material/Alert'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Collapse from '@mui/material/Collapse'
+import Dialog from '@mui/material/Dialog'
+import Fab from '@mui/material/Fab'
+import IconButton from '@mui/material/IconButton'
 import Container from '@mui/material/Container'
 import CssBaseline from '@mui/material/CssBaseline'
 import Stack from '@mui/material/Stack'
@@ -159,18 +160,20 @@ export default function App() {
   function handleSubmitExercise(input: NewExercise): boolean {
     try {
       if (editing) {
-        // Salvata la modifica il pannello si richiude; proponendo si resta pronti al prossimo
         editExercise(editing.id, input)
-        setEditing(null)
-        setFormOpen(false)
       } else {
         addExercise(input)
         // La proposta è già salvata in locale: l'invio alla community è un extra, mai un blocco
         if (community.enabled) void community.propose(input)
       }
+      // Da M12 il form è un MODALE: a salvataggio riuscito si chiude sempre, altrimenti
+      // resterebbe davanti al risultato — e finché è aperto il resto della pagina è aria-hidden.
+      setEditing(null)
+      setFormOpen(false)
       setFormError(null)
       return true
     } catch (error) {
+      // Un errore di validazione tiene il modale aperto: l'utente deve poter correggere
       setFormError(error instanceof Error ? error.message : 'INVALID_DATA')
       return false
     }
@@ -268,38 +271,9 @@ export default function App() {
           >
             {view === 'esercizi' && (
               <section>
-                <Stack
-                  direction="row"
-                  spacing={2}
-                  useFlexGap
-                  sx={{
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    mb: 2,
-                  }}
-                >
-                  <Typography variant="h2">{t('app.communityExercises')}</Typography>
-                  <Button
-                    variant="contained"
-                    startIcon={formOpen ? <CloseIcon /> : <AddIcon />}
-                    data-cy="propose-toggle"
-                    aria-expanded={formOpen}
-                    onClick={() => (formOpen ? closeForm() : setFormOpen(true))}
-                  >
-                    {/* Non «Proponi esercizio»: è il nome del submit del form, le query per ruolo collidono */}
-                    {formOpen ? t('app.closeForm') : t('app.newProposal')}
-                  </Button>
-                </Stack>
-                <Collapse in={formOpen} unmountOnExit sx={{ mb: 3 }}>
-                  <ExerciseForm
-                    key={editing?.id ?? 'new'}
-                    initial={editing}
-                    onSubmit={handleSubmitExercise}
-                    onCancel={closeForm}
-                    error={formError && translateError(t, formError)}
-                  />
-                </Collapse>
+                <Typography variant="h2" sx={{ mb: 2 }}>
+                  {t('app.communityExercises')}
+                </Typography>
                 {community.message && (
                   <Alert
                     severity="info"
@@ -373,6 +347,31 @@ export default function App() {
               </>
             )}
             {view === 'storico' && <HistoryView data={data} />}
+            {/* Proposta e modifica passano dallo STESSO modale: un solo form, due modi di aprirlo */}
+            <Dialog
+              open={formOpen}
+              onClose={closeForm}
+              fullWidth
+              maxWidth="sm"
+              aria-labelledby="titolo-proposta"
+              slotProps={{ paper: { sx: { m: { xs: 1.5, sm: 4 }, borderRadius: '24px' } } }}
+            >
+              <IconButton
+                data-cy="form-close"
+                aria-label={t('app.closeForm')}
+                onClick={closeForm}
+                sx={{ position: 'absolute', top: 8, right: 8, zIndex: 1 }}
+              >
+                <CloseIcon />
+              </IconButton>
+              <ExerciseForm
+                key={editing?.id ?? 'new'}
+                initial={editing}
+                onSubmit={handleSubmitExercise}
+                onCancel={closeForm}
+                error={formError && translateError(t, formError)}
+              />
+            </Dialog>
             {view === 'impostazioni' && (
               <SettingsView
                 language={language}
@@ -393,6 +392,26 @@ export default function App() {
             />
           )}
         </Container>
+        {view === 'esercizi' && (
+          <Fab
+            color="primary"
+            variant="extended"
+            data-cy="propose-toggle"
+            aria-expanded={formOpen}
+            onClick={() => setFormOpen(true)}
+            sx={{
+              position: 'fixed',
+              right: 16,
+              // Sopra la TabNav flottante (62px + il suo margine e il notch dei telefoni)
+              bottom: 'calc(88px + env(safe-area-inset-bottom))',
+              zIndex: (t) => t.zIndex.appBar - 1,
+            }}
+          >
+            <AddIcon sx={{ mr: 1 }} />
+            {/* Non «Proponi esercizio»: è il nome del submit del form, le query per ruolo collidono */}
+            {t('app.newProposal')}
+          </Fab>
+        )}
         <TabNav view={view} onChange={setView} />
       </ThemeProvider>
     </I18nProvider>

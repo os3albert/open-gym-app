@@ -46,13 +46,17 @@ describe('Gestione esercizi', () => {
     cy.get('[data-cy=exercise-upvote]').should('have.attr', 'aria-pressed', 'false')
   })
 
-  it('atterra sulla lista della community, con il form di proposta chiuso e apribile', () => {
+  it('atterra sulla lista della community; la proposta si apre dal FAB in un modale (M12)', () => {
     cy.get('[data-cy=exercise-name]').should('not.exist')
     cy.get('[data-cy=propose-toggle]').should('have.attr', 'aria-expanded', 'false').click()
 
+    // Il form vive in un modale: si chiude dalla sua X, non ri-cliccando il FAB (che ci sta sotto)
+    cy.get('[role=dialog]').should('be.visible')
     cy.get('[data-cy=exercise-name]').should('be.visible')
-    cy.get('[data-cy=propose-toggle]').should('have.attr', 'aria-expanded', 'true').click()
+    cy.get('[data-cy=form-close]').click()
+
     cy.get('[data-cy=exercise-name]').should('not.exist')
+    cy.get('[data-cy=propose-toggle]').should('have.attr', 'aria-expanded', 'false')
   })
 
   it('modifica un esercizio esistente', () => {
