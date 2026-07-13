@@ -99,23 +99,35 @@ export type DisplayExercise = Exercise & { fromCommunity?: boolean }
 
 /**
  * Unisce catalogo community ed esercizi locali per la visualizzazione.
- * Dedup sul video id (stessa regola della condivisione): se ho già l'esercizio in locale
- * vince la mia copia, così restano modificabili le cose che ho proposto io.
+ *
+ * Dedup sul video id (stessa regola della condivisione), e sullo stesso video **vince la voce
+ * della community**: un esercizio che ho proposto io è pubblico, e sul mio dispositivo va
+ * mostrato con l'id del catalogo. Se vincesse la mia copia locale (che ha un id diverso, generato
+ * qui) il voto finirebbe nel reducer locale e non arriverebbe mai al worker — è esattamente il bug
+ * per cui `votes.json` restava vuoto. Il conteggio mostrato è quello autorevole del repo.
+ *
+ * La copia locale NON viene cancellata: resta in AppData come riserva, così se la community è
+ * irraggiungibile o disattivata l'esercizio riappare come mio e i backup restano completi.
  */
 export function mergeForDisplay(
   local: Exercise[],
   community: CommunityExercise[],
   counts: Record<string, number>,
 ): DisplayExercise[] {
-  const localVideoIds = new Set(
-    local.map((e) => parseYouTubeVideoId(e.youtubeUrl)).filter((id): id is string => id !== null),
+  const communityVideoIds = new Set(
+    community
+      .map((e) => parseYouTubeVideoId(e.youtubeUrl))
+      .filter((id): id is string => id !== null),
   )
-  const fromCommunity: DisplayExercise[] = community
-    .filter((e) => {
-      const videoId = parseYouTubeVideoId(e.youtubeUrl)
-      return videoId === null || !localVideoIds.has(videoId)
-    })
-    .map((e) => ({ ...e, votes: counts[e.id] ?? 0, fromCommunity: true }))
+  const onlyLocal = local.filter((e) => {
+    const videoId = parseYouTubeVideoId(e.youtubeUrl)
+    return videoId === null || !communityVideoIds.has(videoId)
+  })
+  const fromCommunity: DisplayExercise[] = community.map((e) => ({
+    ...e,
+    votes: counts[e.id] ?? 0,
+    fromCommunity: true,
+  }))
 
-  return [...local, ...fromCommunity]
+  return [...onlyLocal, ...fromCommunity]
 }

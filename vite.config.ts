@@ -121,6 +121,12 @@ export default defineConfig({
   ],
   test: {
     environment: 'jsdom',
+    // I test NON devono dipendere dall'ambiente di chi li lancia. Vitest carica i file .env
+    // come Vite: un .env con le variabili di produzione accenderebbe community e statistiche
+    // dentro i test, che così partirebbero a fare richieste di rete vere (e i test che
+    // asseriscono «senza configurazione non succede nulla» fallirebbero solo in locale).
+    // Chi ha bisogno di una variabile se la mette da sé con vi.stubEnv.
+    env: { VITE_COMMUNITY_API_URL: '', VITE_UMAMI_SRC: '', VITE_UMAMI_WEBSITE_ID: '' },
     // Il modulo virtuale del service worker non esiste sotto Vitest: stub esplicito
     alias: {
       'virtual:pwa-register/react': new URL('./tests/stubs/pwa-register.ts', import.meta.url)
