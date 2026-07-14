@@ -25,7 +25,9 @@ describe('Gestione esercizi', () => {
 
   it('il volto offuscato è un consiglio, non un obbligo: si propone senza spuntare nulla (M12)', () => {
     cy.apriFormProposta()
-    cy.get('[data-cy=face-blur-note]').should('be.visible')
+    // Il modale è più alto di prima (c'è anche la difficoltà): la dicitura sta sotto la piega,
+    // e «visibile» per Cypress vuol dire dentro al viewport. La si porta in vista.
+    cy.get('[data-cy=face-blur-note]').scrollIntoView().should('be.visible')
     cy.get('[data-cy=exercise-submit]').should('be.enabled')
   })
 
