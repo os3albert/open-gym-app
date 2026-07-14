@@ -16,7 +16,7 @@ const seed = {
       name: 'Stacco da terra',
       description: 'Stacco convenzionale',
       youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
-      muscleGroup: 'Schiena',
+      muscleGroup: 'back',
       faceBlurConfirmed: true,
       votes: 0,
       createdAt: '2026-07-01T10:00:00.000Z',

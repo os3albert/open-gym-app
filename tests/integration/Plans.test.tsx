@@ -25,7 +25,7 @@ function withExercises(...names: string[]): AppData {
       name,
       description: '',
       youtubeUrl: `https://youtu.be/AAAAAAAAAA${i}`,
-      muscleGroup: 'Gambe',
+      muscleGroup: 'legs',
       difficulty: 'medium',
       faceBlurConfirmed: true,
     })

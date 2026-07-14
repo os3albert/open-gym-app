@@ -23,7 +23,7 @@ function withExercise(data: AppData, name: string, youtubeUrl: string): AppData 
     name,
     description: '',
     youtubeUrl,
-    muscleGroup: '',
+    muscleGroup: 'chest',
     difficulty: 'medium',
     faceBlurConfirmed: true,
   })

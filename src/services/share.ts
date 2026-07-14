@@ -1,5 +1,6 @@
 import LZString from 'lz-string'
 import { PLAN_NOT_FOUND_ERROR } from '../domain/plans'
+import { normalizeMuscleGroup } from '../domain/muscleGroups'
 import { isDifficulty } from '../domain/types'
 import type {
   Difficulty,
@@ -185,7 +186,9 @@ function mergeSharedExercise(
     name: shared.name.trim(),
     description: shared.description.trim(),
     youtubeUrl: shared.youtubeUrl.trim(),
-    muscleGroup: shared.muscleGroup.trim(),
+    // I codici generati prima di M14 portano il gruppo come testo libero: si normalizza
+    // invece di rifiutare un codice che qualcuno si è già scambiato.
+    muscleGroup: normalizeMuscleGroup(shared.muscleGroup),
     difficulty: shared.difficulty ?? 'medium',
     ...(shared.stature ? { stature: shared.stature } : {}),
     faceBlurConfirmed: shared.faceBlurConfirmed,

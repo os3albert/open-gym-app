@@ -1,3 +1,4 @@
+import { normalizeMuscleGroup } from '../domain/muscleGroups'
 import { isDifficulty } from '../domain/types'
 
 /**
@@ -10,7 +11,23 @@ export function migrateToCurrentSchema(parsed: Record<string, unknown>): Record<
   if (data.schemaVersion === 1) data = migrateV1toV2(data)
   if (data.schemaVersion === 2) data = migrateV2toV3(data)
   if (data.schemaVersion === 3) data = migrateV3toV4(data)
+  if (data.schemaVersion === 4) data = migrateV4toV5(data)
   return data
+}
+
+/**
+ * v4 → v5: il gruppo muscolare passa da testo libero a codice. «Petto», «petto» e «PETTO» erano
+ * tre gruppi diversi nei filtri: ora sono lo stesso. Ciò che non si riconosce va su «other»,
+ * perché un backup vecchio deve continuare a importarsi — mai perdere i dati di qualcuno.
+ */
+function migrateV4toV5(v4: Record<string, unknown>): Record<string, unknown> {
+  const exercises = Array.isArray(v4.exercises)
+    ? v4.exercises.map((exercise) => {
+        const e = exercise as Record<string, unknown>
+        return { ...e, muscleGroup: normalizeMuscleGroup(e.muscleGroup) }
+      })
+    : []
+  return { ...v4, schemaVersion: 5, exercises }
 }
 
 /**

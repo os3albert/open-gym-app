@@ -16,7 +16,7 @@ function input(name: string, extra: Partial<NewExercise> = {}): NewExercise {
     name,
     description: '',
     youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
-    muscleGroup: 'Petto',
+    muscleGroup: 'chest',
     difficulty: 'medium',
     faceBlurConfirmed: true,
     ...extra,
@@ -52,7 +52,7 @@ describe('applyFilters', () => {
     let data = emptyData()
     data = addExercise(data, input('Adatto', { stature: { minCm: 170, maxCm: 190 } }))
     data = addExercise(data, input('Basso', { stature: { minCm: 150, maxCm: 165 } }))
-    data = addExercise(data, input('PerTutti', { muscleGroup: 'Dorso' }))
+    data = addExercise(data, input('PerTutti', { muscleGroup: 'back' }))
     return setStature(data, 185)
   }
 
@@ -69,7 +69,7 @@ describe('applyFilters', () => {
   })
 
   it('filtra per gruppo muscolare', () => {
-    const visible = names(sampleData(), { ...defaultFilters, muscleGroup: 'Dorso' })
+    const visible = names(sampleData(), { ...defaultFilters, muscleGroup: 'back' })
     expect(visible).to.deep.equal(['PerTutti'])
   })
 
@@ -92,7 +92,7 @@ describe('applyFilters', () => {
   it('combina statura, gruppo muscolare e ordinamento', () => {
     const visible = names(sampleData(), {
       suitableOnly: true,
-      muscleGroup: 'Petto',
+      muscleGroup: 'chest',
       difficulty: null,
       sort: 'votes',
     })
@@ -119,10 +119,10 @@ describe('suitabilityRequiresStature', () => {
 describe('muscleGroups', () => {
   it('elenca i gruppi unici ordinati', () => {
     let data = emptyData()
-    data = addExercise(data, input('A', { muscleGroup: 'Petto' }))
-    data = addExercise(data, input('B', { muscleGroup: 'Dorso' }))
-    data = addExercise(data, input('C', { muscleGroup: 'Petto' }))
-    expect(muscleGroups(data.exercises)).to.deep.equal(['Dorso', 'Petto'])
+    data = addExercise(data, input('A', { muscleGroup: 'chest' }))
+    data = addExercise(data, input('B', { muscleGroup: 'back' }))
+    data = addExercise(data, input('C', { muscleGroup: 'chest' }))
+    expect(muscleGroups(data.exercises)).to.deep.equal(['chest', 'back'])
   })
 })
 

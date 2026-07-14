@@ -16,13 +16,46 @@ export function isDifficulty(value: unknown): value is Difficulty {
   return DIFFICULTIES.includes(value as Difficulty)
 }
 
+/**
+ * Gruppo muscolare. Anche qui codici, non parole: «Petto», «petto» e «PETTO» erano tre gruppi
+ * diversi, e in inglese l'app avrebbe continuato a dire «Petto». La parola la sceglie la lingua.
+ */
+export type MuscleGroup =
+  | 'chest'
+  | 'back'
+  | 'legs'
+  | 'shoulders'
+  | 'arms'
+  | 'core'
+  | 'glutes'
+  | 'calves'
+  | 'fullBody'
+  | 'other'
+
+export const MUSCLE_GROUPS: MuscleGroup[] = [
+  'chest',
+  'back',
+  'legs',
+  'shoulders',
+  'arms',
+  'core',
+  'glutes',
+  'calves',
+  'fullBody',
+  'other',
+]
+
+export function isMuscleGroup(value: unknown): value is MuscleGroup {
+  return MUSCLE_GROUPS.includes(value as MuscleGroup)
+}
+
 /** Esercizio proposto da un utente. Il video è solo un link YouTube (nessun hosting). */
 export interface Exercise {
   id: string
   name: string
   description: string
   youtubeUrl: string
-  muscleGroup: string
+  muscleGroup: MuscleGroup
   difficulty: Difficulty
   stature?: StatureRange
   /** LEGACY (M12): l'offuscamento del volto è un consiglio, non un obbligo. Non si valida più. */
@@ -72,7 +105,7 @@ export interface UserProfile {
   statureCm: number | null
 }
 
-export const CURRENT_SCHEMA_VERSION = 4
+export const CURRENT_SCHEMA_VERSION = 5
 
 /** Tutti i dati dell'app: è l'unità di persistenza (localStorage) e di export/import JSON. */
 export interface AppData {

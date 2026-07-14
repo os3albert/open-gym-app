@@ -26,7 +26,7 @@ function proposal(overrides: Partial<Parameters<typeof validateProposal>[0]> = {
     name: 'Panca piana',
     description: 'Presa media',
     youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    muscleGroup: 'Petto',
+    muscleGroup: 'chest',
     difficulty: 'medium' as const,
     faceBlurConfirmed: true,
     ...overrides,
@@ -39,7 +39,7 @@ const catalog: CommunityExercise[] = [
     name: 'Stacco da terra',
     description: '',
     youtubeUrl: 'https://youtu.be/AAAAAAAAAAA',
-    muscleGroup: 'Schiena',
+    muscleGroup: 'back',
     faceBlurConfirmed: true,
     createdAt: '2026-07-01T10:00:00.000Z',
   },
@@ -58,7 +58,7 @@ describe('validateProposal', () => {
       name: 'Panca piana',
       description: 'Presa media',
       youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-      muscleGroup: 'Petto',
+      muscleGroup: 'chest',
       difficulty: 'medium',
       faceBlurConfirmed: true,
       createdAt: '2026-07-12T10:00:00.000Z',
@@ -101,7 +101,7 @@ describe('validateProposal', () => {
     ).to.throw(TOO_LONG_ERROR)
     expect(() =>
       validateProposal(
-        proposal({ muscleGroup: 'x'.repeat(FIELD_LIMITS.muscleGroup + 1) }),
+        proposal({ muscleGroup: 'other'.repeat(FIELD_LIMITS.muscleGroup + 1) }),
         catalog,
         now,
         newId,

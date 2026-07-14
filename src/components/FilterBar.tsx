@@ -7,7 +7,7 @@ import Divider from '@mui/material/Divider'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Stack from '@mui/material/Stack'
 import type { ExerciseFilters, SortOrder } from '../domain/filters'
-import { DIFFICULTIES, type Difficulty } from '../domain/types'
+import { DIFFICULTIES, type Difficulty, type MuscleGroup } from '../domain/types'
 import { useT } from '../i18n/context'
 import { range } from '../utils/number'
 import { NumberField } from './NumberField'
@@ -16,7 +16,7 @@ import { SelectField } from './SelectField'
 interface Props {
   filters: ExerciseFilters
   onFiltersChange: (filters: ExerciseFilters) => void
-  muscleGroups: string[]
+  muscleGroups: MuscleGroup[]
   statureCm: number | null
   /** Lancia un errore se la statura non è plausibile. */
   onSaveStature: (statureCm: number) => void
@@ -98,12 +98,14 @@ export function FilterBar({
         <SelectField
           label={t('filters.muscleGroup')}
           value={filters.muscleGroup ?? ''}
-          onChange={(value) => onFiltersChange({ ...filters, muscleGroup: value || null })}
+          onChange={(value) =>
+            onFiltersChange({ ...filters, muscleGroup: (value || null) as MuscleGroup | null })
+          }
           dataCy="filter-muscle"
           sx={{ minWidth: 220 }}
           options={[
             { value: '', label: t('filters.all') },
-            ...muscleGroups.map((group) => ({ value: group, label: group })),
+            ...muscleGroups.map((group) => ({ value: group, label: t(`muscle.${group}`) })),
           ]}
         />
         <SelectField

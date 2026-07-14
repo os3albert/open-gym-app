@@ -17,7 +17,7 @@ function withExercise(name: string, youtubeUrl: string, base: AppData = emptyDat
     name,
     description: '',
     youtubeUrl,
-    muscleGroup: 'Dorso',
+    muscleGroup: 'back',
     difficulty: 'medium',
     faceBlurConfirmed: true,
   })
@@ -28,7 +28,7 @@ describe('export del backup (issue #23)', () => {
     const data = withExercise('Trazioni', 'https://youtu.be/dQw4w9WgXcQ')
     const parsed = JSON.parse(exportBackupJson(data, new Date('2026-07-11T10:30:00Z')))
 
-    expect(parsed.schemaVersion).to.equal(4)
+    expect(parsed.schemaVersion).to.equal(5)
     expect(parsed.exportedAt).to.equal('2026-07-11T10:30:00.000Z')
     expect(parsed.exercises).to.have.lengthOf(1)
   })

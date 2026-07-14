@@ -19,7 +19,7 @@ function newExercise(name: string, youtubeUrl: string, stature?: StatureRange): 
     name,
     youtubeUrl,
     description: '',
-    muscleGroup: '',
+    muscleGroup: 'chest',
     difficulty: 'medium',
     faceBlurConfirmed: true,
     ...(stature ? { stature } : {}),

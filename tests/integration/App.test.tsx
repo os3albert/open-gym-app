@@ -4,7 +4,7 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '../../src/App'
 import { it as itDict } from '../../src/i18n/it'
-import { scegliOpzione } from './helpers'
+import { scegliGruppo, scegliOpzione } from './helpers'
 import { INVALID_YOUTUBE_LINK_ERROR } from '../../src/domain/exercises'
 
 beforeEach(() => {
@@ -30,7 +30,7 @@ async function proposeExercise(
   const user = userEvent.setup()
   await openProposeForm()
   await user.type(screen.getByLabelText('Nome esercizio'), name)
-  await user.type(screen.getByLabelText('Gruppo muscolare'), 'Petto')
+  await scegliGruppo(user, 'Petto')
   if (stature) {
     await user.type(screen.getByLabelText('Statura consigliata da (cm)'), String(stature.min))
     await user.type(screen.getByLabelText('a (cm)'), String(stature.max))
@@ -86,6 +86,7 @@ describe('proposta di un esercizio', () => {
       screen.getByLabelText('Link YouTube (volto offuscato)'),
       'https://youtu.be/dQw4w9WgXcQ',
     )
+    await scegliGruppo(user, 'Gambe')
     await scegliOpzione(user, 'Difficoltà', 'Facile')
     await user.click(screen.getByRole('button', { name: 'Proponi esercizio' }))
 

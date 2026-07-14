@@ -157,7 +157,7 @@ export function ExerciseList({
                     color: DIFFICULTY_COLORS[exercise.difficulty],
                   }}
                 />
-                {exercise.muscleGroup && <Chip size="small" label={exercise.muscleGroup} />}
+                <Chip size="small" label={t(`muscle.${exercise.muscleGroup}`)} />
                 {exercise.stature && (
                   <Chip
                     size="small"

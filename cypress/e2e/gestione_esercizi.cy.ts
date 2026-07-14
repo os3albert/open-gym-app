@@ -3,7 +3,7 @@
 function proponiEsercizio(nome: string, link: string, difficolta = 'Media') {
   cy.apriFormProposta()
   cy.get('[data-cy=exercise-name]').type(nome)
-  cy.get('[data-cy=exercise-muscle]').type('Petto')
+  cy.scegliGruppo('chest')
   cy.get('[data-cy=exercise-youtube]').type(link)
   cy.get('[data-cy=exercise-description]').type('Descrizione di prova')
   // Obbligatoria da M13: senza, il dominio rifiuta la proposta
@@ -71,7 +71,12 @@ describe('Gestione esercizi', () => {
     cy.get('[data-cy=exercise-submit]').click()
     cy.get('[data-cy=form-error]').should('contain.text', 'Scegli il grado di difficoltà')
 
+    // Anche il gruppo muscolare è obbligatorio (M14), e si sceglie da un modale
     cy.scegliOpzione('exercise-difficulty', 'Difficile')
+    cy.get('[data-cy=exercise-submit]').click()
+    cy.get('[data-cy=form-error]').should('contain.text', 'Scegli il gruppo muscolare')
+
+    cy.scegliGruppo('back')
     cy.get('[data-cy=exercise-submit]').click()
     // Il modale esce in dissolvenza: finché non è sparito, i suoi campi sono ancora nel DOM
     cy.get('[role=dialog]').should('not.exist')

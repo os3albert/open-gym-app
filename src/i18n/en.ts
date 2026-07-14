@@ -113,6 +113,19 @@ export const en: Dictionary = {
 
   'number.chooseValue': (p) => `Choose a value for ${p.label}`,
 
+  'muscle.chest': 'Chest',
+  'muscle.back': 'Back',
+  'muscle.legs': 'Legs',
+  'muscle.shoulders': 'Shoulders',
+  'muscle.arms': 'Arms',
+  'muscle.core': 'Core',
+  'muscle.glutes': 'Glutes',
+  'muscle.calves': 'Calves',
+  'muscle.fullBody': 'Full body',
+  'muscle.other': 'Other',
+  'form.muscleGroupChoose': 'Choose the muscle group',
+  'errors.MISSING_MUSCLE_GROUP': 'Choose the muscle group',
+
   'difficulty.easy': 'Easy',
   'difficulty.medium': 'Medium',
   'difficulty.hard': 'Hard',

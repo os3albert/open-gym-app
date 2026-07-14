@@ -1,5 +1,6 @@
 import { rankExercises } from './exercises'
-import type { AppData, Difficulty, Exercise } from './types'
+import { MUSCLE_GROUPS } from './types'
+import type { AppData, Difficulty, Exercise, MuscleGroup } from './types'
 
 export type SortOrder = 'votes' | 'recent'
 
@@ -7,7 +8,7 @@ export interface ExerciseFilters {
   /** Mostra solo gli esercizi adatti alla statura del profilo ("Adatti a me"). */
   suitableOnly: boolean
   /** Gruppo muscolare esatto, null = tutti. */
-  muscleGroup: string | null
+  muscleGroup: MuscleGroup | null
   /** Grado di difficoltà, null = tutti. */
   difficulty: Difficulty | null
   sort: SortOrder
@@ -31,10 +32,10 @@ export function suitabilityRequiresStature(filters: ExerciseFilters, data: AppDa
   return filters.suitableOnly && data.profile.statureCm === null
 }
 
-export function muscleGroups(exercises: Exercise[]): string[] {
-  return [...new Set(exercises.map((e) => e.muscleGroup).filter(Boolean))].sort((a, b) =>
-    a.localeCompare(b),
-  )
+/** I gruppi davvero presenti nella lista: il filtro non offre voci che non filtrerebbero nulla. */
+export function muscleGroups(exercises: Exercise[]): MuscleGroup[] {
+  const presenti = new Set(exercises.map((e) => e.muscleGroup))
+  return MUSCLE_GROUPS.filter((group) => presenti.has(group))
 }
 
 /**

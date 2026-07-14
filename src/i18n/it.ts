@@ -128,6 +128,20 @@ export const it = {
   // Campi numerici
   'number.chooseValue': (p: { label: string }) => `Scegli un valore per ${p.label}`,
 
+  // Gruppi muscolari (codici nei dati, parole qui)
+  'muscle.chest': 'Petto',
+  'muscle.back': 'Schiena',
+  'muscle.legs': 'Gambe',
+  'muscle.shoulders': 'Spalle',
+  'muscle.arms': 'Braccia',
+  'muscle.core': 'Core',
+  'muscle.glutes': 'Glutei',
+  'muscle.calves': 'Polpacci',
+  'muscle.fullBody': 'Full body',
+  'muscle.other': 'Altro',
+  'form.muscleGroupChoose': 'Scegli il gruppo muscolare',
+  'errors.MISSING_MUSCLE_GROUP': 'Scegli il gruppo muscolare',
+
   // Difficoltà
   'difficulty.easy': 'Facile',
   'difficulty.medium': 'Media',

@@ -15,7 +15,7 @@ const locale: Exercise = {
   name: 'Panca piana',
   description: '',
   youtubeUrl: VIDEO,
-  muscleGroup: 'Petto',
+  muscleGroup: 'chest',
   difficulty: 'medium',
   faceBlurConfirmed: true,
   votes: 0,
@@ -28,7 +28,7 @@ const condiviso: CommunityExercise = {
   description: '',
   // Stesso video, scritto in un'altra forma: il dedup guarda il video id, non la stringa
   youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-  muscleGroup: 'Petto',
+  muscleGroup: 'chest',
   difficulty: 'medium',
   faceBlurConfirmed: true,
   createdAt: '2026-07-13T11:00:00.000Z',

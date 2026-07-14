@@ -18,7 +18,7 @@ function withExercise(name = 'Panca piana'): { data: AppData; id: string } {
     name,
     description: '',
     youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
-    muscleGroup: 'Petto',
+    muscleGroup: 'chest',
     difficulty: 'medium',
     faceBlurConfirmed: true,
   })
@@ -170,7 +170,7 @@ describe('exerciseHistory', () => {
       name: 'Squat',
       description: '',
       youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
-      muscleGroup: 'Gambe',
+      muscleGroup: 'legs',
       difficulty: 'medium',
       faceBlurConfirmed: true,
     })

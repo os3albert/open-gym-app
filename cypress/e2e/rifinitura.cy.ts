@@ -8,7 +8,7 @@ const seed = {
       name: 'Panca piana con fermo al petto',
       description: 'Descrizione lunga per stressare il layout su schermi stretti.',
       youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
-      muscleGroup: 'Petto',
+      muscleGroup: 'chest',
       stature: { minCm: 165, maxCm: 195 },
       faceBlurConfirmed: true,
       votes: 12,

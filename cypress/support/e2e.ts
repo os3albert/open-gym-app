@@ -19,6 +19,8 @@ declare global {
       scegliOpzione(dataCy: string, etichetta: string): Chainable<void>
       /** Sceglie un valore dalla rotella di un NumberField (si apre dal bottone del campo). */
       scegliNumero(dataCy: string, valore: string): Chainable<void>
+      /** Sceglie il gruppo muscolare dal modale (M14): il campo non si digita più. */
+      scegliGruppo(codice: string): Chainable<void>
     }
   }
 }
@@ -38,6 +40,12 @@ Cypress.Commands.add('scegliNumero', (dataCy: string, valore: string) => {
     .first()
     .click()
   cy.get('[role=listbox]').should('not.exist')
+})
+
+Cypress.Commands.add('scegliGruppo', (codice: string) => {
+  cy.get('[data-cy=exercise-muscle]').click()
+  cy.get(`[data-cy=muscle-option-${codice}]`).click()
+  cy.get('[data-cy=exercise-muscle-options]').should('not.exist')
 })
 
 Cypress.Commands.add('apriImpostazioni', () => {

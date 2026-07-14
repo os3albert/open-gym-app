@@ -20,7 +20,7 @@ const validInput = {
   name: 'Trazioni',
   description: 'Alla sbarra, presa prona',
   youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
-  muscleGroup: 'Dorso',
+  muscleGroup: 'back' as const,
   difficulty: 'medium' as const,
   faceBlurConfirmed: true,
 }

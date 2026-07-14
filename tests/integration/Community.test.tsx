@@ -4,7 +4,7 @@ import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '../../src/App'
 import type { CommunityExercise } from '../../src/services/communityData'
-import { scegliOpzione } from './helpers'
+import { scegliGruppo, scegliOpzione } from './helpers'
 
 const WORKER = 'https://worker.example'
 
@@ -14,7 +14,7 @@ const catalog: CommunityExercise[] = [
     name: 'Military press',
     description: 'Spinta sopra la testa',
     youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
-    muscleGroup: 'Spalle',
+    muscleGroup: 'shoulders',
     faceBlurConfirmed: true,
     createdAt: '2026-07-01T10:00:00.000Z',
   },
@@ -115,6 +115,7 @@ describe('proposta alla community', () => {
       screen.getByLabelText('Link YouTube (volto offuscato)'),
       'https://youtu.be/AAAAAAAAAAA',
     )
+    await scegliGruppo(user, 'Petto')
     await scegliOpzione(user, 'Difficoltà', 'Media')
     await user.click(screen.getByRole('button', { name: 'Proponi esercizio' }))
   }
@@ -154,7 +155,7 @@ describe('proposta alla community', () => {
         name: 'Squat frontale',
         description: '',
         youtubeUrl: 'https://youtu.be/AAAAAAAAAAA',
-        muscleGroup: 'Gambe',
+        muscleGroup: 'legs',
         faceBlurConfirmed: true,
         createdAt: '2026-07-13T10:00:00.000Z',
       },

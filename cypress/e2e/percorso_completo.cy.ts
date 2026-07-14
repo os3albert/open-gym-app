@@ -8,7 +8,7 @@ const profiloConStatura = {
       name: 'Esercizio per bassi',
       description: 'Fuori fascia per il profilo',
       youtubeUrl: 'https://youtu.be/BBBBBBBBBBB',
-      muscleGroup: 'Gambe',
+      muscleGroup: 'legs',
       stature: { minCm: 150, maxCm: 165 },
       faceBlurConfirmed: true,
       votes: 0,
@@ -28,7 +28,7 @@ describe('Percorso completo esercizi (M2)', () => {
     // Proposta con fascia che comprende la statura del profilo (180 cm)
     cy.apriFormProposta()
     cy.get('[data-cy=exercise-name]').type('Rematore con bilanciere')
-    cy.get('[data-cy=exercise-muscle]').type('Dorso')
+    cy.scegliGruppo('back')
     cy.get('[data-cy=exercise-stature-min]').type('170')
     cy.get('[data-cy=exercise-stature-max]').type('195')
     cy.get('[data-cy=exercise-youtube]').type('https://www.youtube.com/watch?v=dQw4w9WgXcQ')

@@ -9,6 +9,7 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { translateError } from '../i18n'
+import { normalizeMuscleGroup } from '../domain/muscleGroups'
 import { useT } from '../i18n/context'
 import { decodeShare, type SharePayload } from '../services/share'
 
@@ -116,7 +117,10 @@ export function ImportSharePanel({ initialCode, onImport, onActivatePlan }: Prop
                   </Typography>
                   <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
                     {preview.exercise.muscleGroup && (
-                      <Chip size="small" label={preview.exercise.muscleGroup} />
+                      <Chip
+                        size="small"
+                        label={t(`muscle.${normalizeMuscleGroup(preview.exercise.muscleGroup)}`)}
+                      />
                     )}
                     {preview.exercise.stature && (
                       <Chip

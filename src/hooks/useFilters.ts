@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { defaultFilters, type ExerciseFilters, type SortOrder } from '../domain/filters'
-import { isDifficulty, type Difficulty } from '../domain/types'
+import { isDifficulty, isMuscleGroup, type Difficulty, type MuscleGroup } from '../domain/types'
 
 // I filtri vivono nella query string così un set di filtri è condivisibile via URL.
 
@@ -9,7 +9,7 @@ function readFiltersFromUrl(): ExerciseFilters {
   const sort: SortOrder = params.get('ordina') === 'recenti' ? 'recent' : 'votes'
   return {
     suitableOnly: params.get('adatti') === '1',
-    muscleGroup: params.get('gruppo'),
+    muscleGroup: isMuscleGroup(params.get('gruppo')) ? (params.get('gruppo') as MuscleGroup) : null,
     difficulty: isDifficulty(params.get('difficolta'))
       ? (params.get('difficolta') as Difficulty)
       : null,

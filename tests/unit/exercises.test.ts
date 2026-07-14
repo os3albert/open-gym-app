@@ -8,6 +8,7 @@ import {
   INVALID_STATURE_RANGE_ERROR,
   INVALID_YOUTUBE_LINK_ERROR,
   MISSING_DIFFICULTY_ERROR,
+  MISSING_MUSCLE_GROUP_ERROR,
   rankExercises,
   toggleVote,
   updateExercise,
@@ -19,7 +20,7 @@ const validInput: NewExercise = {
   name: 'Panca piana',
   description: 'Spinta su panca orizzontale',
   youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-  muscleGroup: 'Petto',
+  muscleGroup: 'chest',
   difficulty: 'medium',
   faceBlurConfirmed: true,
 }
@@ -55,6 +56,18 @@ describe('createExercise', () => {
   it('rifiuta un grado di difficoltà inventato', () => {
     expect(() => createExercise({ ...validInput, difficulty: 'impossibile' as never })).to.throw(
       MISSING_DIFFICULTY_ERROR,
+    )
+  })
+
+  it('rifiuta la proposta senza gruppo muscolare (M14)', () => {
+    expect(() => createExercise({ ...validInput, muscleGroup: '' as never })).to.throw(
+      MISSING_MUSCLE_GROUP_ERROR,
+    )
+  })
+
+  it('rifiuta un gruppo muscolare inventato', () => {
+    expect(() => createExercise({ ...validInput, muscleGroup: 'pettorone' as never })).to.throw(
+      MISSING_MUSCLE_GROUP_ERROR,
     )
   })
 

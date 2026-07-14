@@ -21,3 +21,13 @@ export async function scegliNumero(user: UserEvent, etichettaCampo: string, valo
   const listbox = await screen.findByRole('listbox')
   await user.click(within(listbox).getByRole('option', { name: valore }))
 }
+
+/**
+ * Sceglie il gruppo muscolare (M14): il campo è di sola lettura e apre un modale con i gruppi.
+ * `etichetta` è la parola mostrata all'utente («Petto»), non il codice che finisce nei dati.
+ */
+export async function scegliGruppo(user: UserEvent, etichetta: string) {
+  await user.click(screen.getByLabelText('Gruppo muscolare'))
+  const dialog = await screen.findByRole('dialog', { name: 'Scegli il gruppo muscolare' })
+  await user.click(within(dialog).getByRole('button', { name: etichetta }))
+}

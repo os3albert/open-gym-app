@@ -22,7 +22,7 @@ function seed(options: { history?: { weightKg: number; reps: number } } = {}): A
     name: 'Squat',
     description: '',
     youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
-    muscleGroup: 'Gambe',
+    muscleGroup: 'legs',
     difficulty: 'medium',
     faceBlurConfirmed: true,
   })
