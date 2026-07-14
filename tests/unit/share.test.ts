@@ -20,6 +20,7 @@ function dataWithExercise(youtubeUrl = 'https://youtu.be/dQw4w9WgXcQ'): AppData 
     youtubeUrl,
     muscleGroup: 'Dorso',
     stature: { minCm: 170, maxCm: 190 },
+    difficulty: 'medium',
     faceBlurConfirmed: true,
   })
 }
@@ -32,6 +33,7 @@ function dataWithSharablePlan(): AppData {
     description: '',
     youtubeUrl: 'https://youtu.be/BBBBBBBBBBB',
     muscleGroup: 'Gambe',
+    difficulty: 'medium',
     faceBlurConfirmed: true,
   })
   data = createPlan(data, 'Push Pull Legs')
@@ -56,6 +58,7 @@ describe('condivisione di un esercizio (issue #20)', () => {
       youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
       muscleGroup: 'Dorso',
       stature: { minCm: 170, maxCm: 190 },
+      difficulty: 'medium',
       faceBlurConfirmed: true,
     })
   })

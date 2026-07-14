@@ -50,6 +50,9 @@ Cypress.Commands.add('apriFormProposta', () => {
       cy.get('[data-cy=propose-toggle]').click()
     }
   })
+  // Il form deve essere davvero in pagina prima di scriverci: il Dialog ha una transizione,
+  // e durante l'uscita i suoi campi sono ancora nel DOM (per un istante sembra già aperto).
+  cy.get('[data-cy=exercise-name]').should('be.visible')
 })
 
 Cypress.Commands.add('visitWithData', (data: unknown) => {

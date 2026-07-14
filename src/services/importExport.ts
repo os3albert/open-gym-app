@@ -1,3 +1,4 @@
+import { isDifficulty } from '../domain/types'
 import type { ActivityRecord, AppData, Exercise, UserProfile, WorkoutPlan } from '../domain/types'
 import { CURRENT_SCHEMA_VERSION } from '../domain/types'
 import { generateId } from '../utils/id'
@@ -38,6 +39,8 @@ function isExercise(value: unknown): value is Exercise {
     typeof value.description === 'string' &&
     typeof value.youtubeUrl === 'string' &&
     typeof value.muscleGroup === 'string' &&
+    // Dopo la migrazione c'è sempre: i backup v3 la ricevono come «media»
+    isDifficulty(value.difficulty) &&
     typeof value.faceBlurConfirmed === 'boolean' &&
     (value.stature === undefined || isStatureRange(value.stature)) &&
     typeof value.votes === 'number' &&

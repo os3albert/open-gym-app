@@ -2,6 +2,7 @@
 import { expect } from 'chai'
 import {
   EMPTY_NAME_ERROR,
+  MISSING_DIFFICULTY_ERROR,
   INVALID_STATURE_RANGE_ERROR,
   INVALID_YOUTUBE_LINK_ERROR,
 } from '../../src/domain/exercises'
@@ -26,6 +27,7 @@ function proposal(overrides: Partial<Parameters<typeof validateProposal>[0]> = {
     description: 'Presa media',
     youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
     muscleGroup: 'Petto',
+    difficulty: 'medium' as const,
     faceBlurConfirmed: true,
     ...overrides,
   }
@@ -44,6 +46,12 @@ const catalog: CommunityExercise[] = [
 ]
 
 describe('validateProposal', () => {
+  it('rifiuta una proposta senza grado di difficoltà (M13)', () => {
+    expect(() => validateProposal(proposal({ difficulty: undefined }), [], now, newId)).to.throw(
+      MISSING_DIFFICULTY_ERROR,
+    )
+  })
+
   it('normalizza una proposta valida in un esercizio del catalogo', () => {
     expect(validateProposal(proposal(), catalog, now, newId)).to.deep.equal({
       id: 'nuovo-id',
@@ -51,6 +59,7 @@ describe('validateProposal', () => {
       description: 'Presa media',
       youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
       muscleGroup: 'Petto',
+      difficulty: 'medium',
       faceBlurConfirmed: true,
       createdAt: '2026-07-12T10:00:00.000Z',
     })

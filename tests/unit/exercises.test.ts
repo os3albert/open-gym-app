@@ -7,6 +7,7 @@ import {
   hasVoted,
   INVALID_STATURE_RANGE_ERROR,
   INVALID_YOUTUBE_LINK_ERROR,
+  MISSING_DIFFICULTY_ERROR,
   rankExercises,
   toggleVote,
   updateExercise,
@@ -19,6 +20,7 @@ const validInput: NewExercise = {
   description: 'Spinta su panca orizzontale',
   youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
   muscleGroup: 'Petto',
+  difficulty: 'medium',
   faceBlurConfirmed: true,
 }
 
@@ -40,6 +42,19 @@ describe('createExercise', () => {
   it('rifiuta un link non YouTube', () => {
     expect(() => createExercise({ ...validInput, youtubeUrl: 'https://vimeo.com/1' })).to.throw(
       INVALID_YOUTUBE_LINK_ERROR,
+    )
+  })
+
+  it('rifiuta la proposta senza grado di difficoltà (M13)', () => {
+    const { difficulty: _senza, ...senzaDifficolta } = validInput
+    expect(() => createExercise(senzaDifficolta as typeof validInput)).to.throw(
+      MISSING_DIFFICULTY_ERROR,
+    )
+  })
+
+  it('rifiuta un grado di difficoltà inventato', () => {
+    expect(() => createExercise({ ...validInput, difficulty: 'impossibile' as never })).to.throw(
+      MISSING_DIFFICULTY_ERROR,
     )
   })
 

@@ -4,6 +4,7 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '../../src/App'
 import { it as itDict } from '../../src/i18n/it'
+import { scegliOpzione } from './helpers'
 import { INVALID_YOUTUBE_LINK_ERROR } from '../../src/domain/exercises'
 
 beforeEach(() => {
@@ -35,6 +36,7 @@ async function proposeExercise(
     await user.type(screen.getByLabelText('a (cm)'), String(stature.max))
   }
   await user.type(screen.getByLabelText('Link YouTube (volto offuscato)'), youtubeUrl)
+  await scegliOpzione(user, 'Difficoltà', 'Media')
   await user.click(screen.getByRole('button', { name: /Proponi esercizio|Salva modifiche/ }))
 }
 
@@ -84,6 +86,7 @@ describe('proposta di un esercizio', () => {
       screen.getByLabelText('Link YouTube (volto offuscato)'),
       'https://youtu.be/dQw4w9WgXcQ',
     )
+    await scegliOpzione(user, 'Difficoltà', 'Facile')
     await user.click(screen.getByRole('button', { name: 'Proponi esercizio' }))
 
     // Il modale non deve restare davanti al risultato

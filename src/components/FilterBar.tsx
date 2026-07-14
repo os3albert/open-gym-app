@@ -7,6 +7,7 @@ import Divider from '@mui/material/Divider'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Stack from '@mui/material/Stack'
 import type { ExerciseFilters, SortOrder } from '../domain/filters'
+import { DIFFICULTIES, type Difficulty } from '../domain/types'
 import { useT } from '../i18n/context'
 import { range } from '../utils/number'
 import { NumberField } from './NumberField'
@@ -103,6 +104,19 @@ export function FilterBar({
           options={[
             { value: '', label: t('filters.all') },
             ...muscleGroups.map((group) => ({ value: group, label: group })),
+          ]}
+        />
+        <SelectField
+          label={t('filters.difficulty')}
+          value={filters.difficulty ?? ''}
+          onChange={(value) =>
+            onFiltersChange({ ...filters, difficulty: (value || null) as Difficulty | null })
+          }
+          dataCy="filter-difficulty"
+          sx={{ minWidth: 160 }}
+          options={[
+            { value: '', label: t('filters.allDifficulties') },
+            ...DIFFICULTIES.map((d) => ({ value: d, label: t(`difficulty.${d}`) })),
           ]}
         />
         <SelectField

@@ -1,5 +1,5 @@
 import { rankExercises } from './exercises'
-import type { AppData, Exercise } from './types'
+import type { AppData, Difficulty, Exercise } from './types'
 
 export type SortOrder = 'votes' | 'recent'
 
@@ -8,12 +8,15 @@ export interface ExerciseFilters {
   suitableOnly: boolean
   /** Gruppo muscolare esatto, null = tutti. */
   muscleGroup: string | null
+  /** Grado di difficoltà, null = tutti. */
+  difficulty: Difficulty | null
   sort: SortOrder
 }
 
 export const defaultFilters: ExerciseFilters = {
   suitableOnly: false,
   muscleGroup: null,
+  difficulty: null,
   sort: 'votes',
 }
 
@@ -49,6 +52,9 @@ export function applyFiltersTo<T extends Exercise>(
   }
   if (filters.muscleGroup !== null) {
     result = result.filter((e) => e.muscleGroup === filters.muscleGroup)
+  }
+  if (filters.difficulty !== null) {
+    result = result.filter((e) => e.difficulty === filters.difficulty)
   }
   return filters.sort === 'votes'
     ? rankExercises(result)

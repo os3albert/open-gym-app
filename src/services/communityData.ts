@@ -2,8 +2,9 @@ import {
   EMPTY_NAME_ERROR,
   INVALID_STATURE_RANGE_ERROR,
   INVALID_YOUTUBE_LINK_ERROR,
+  MISSING_DIFFICULTY_ERROR,
 } from '../domain/exercises'
-import type { StatureRange } from '../domain/types'
+import { isDifficulty, type Difficulty, type StatureRange } from '../domain/types'
 import { parseYouTubeVideoId } from './youtube'
 
 export const DUPLICATE_EXERCISE_ERROR = 'DUPLICATE_EXERCISE'
@@ -32,6 +33,8 @@ export interface CommunityExercise {
   description: string
   youtubeUrl: string
   muscleGroup: string
+  /** Opzionale nel TIPO, non nella validazione: le voci pubblicate prima di M13 non ce l'hanno. */
+  difficulty?: Difficulty
   faceBlurConfirmed: boolean
   stature?: StatureRange
   createdAt: string
@@ -45,6 +48,7 @@ export interface ProposalInput {
   description?: string
   youtubeUrl: string
   muscleGroup?: string
+  difficulty?: Difficulty
   faceBlurConfirmed?: boolean
   stature?: StatureRange
 }
@@ -74,6 +78,7 @@ export function validateProposal(
   const muscleGroup = input.muscleGroup?.trim() ?? ''
   const youtubeUrl = input.youtubeUrl?.trim() ?? ''
   if (name === '') throw new Error(EMPTY_NAME_ERROR)
+  if (!isDifficulty(input.difficulty)) throw new Error(MISSING_DIFFICULTY_ERROR)
 
   if (
     name.length > FIELD_LIMITS.name ||
@@ -99,6 +104,7 @@ export function validateProposal(
     description,
     youtubeUrl,
     muscleGroup,
+    difficulty: input.difficulty,
     faceBlurConfirmed: input.faceBlurConfirmed ?? false,
     ...(input.stature ? { stature: input.stature } : {}),
     createdAt: now(),

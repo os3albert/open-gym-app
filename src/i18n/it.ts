@@ -128,6 +128,16 @@ export const it = {
   // Campi numerici
   'number.chooseValue': (p: { label: string }) => `Scegli un valore per ${p.label}`,
 
+  // Difficoltà
+  'difficulty.easy': 'Facile',
+  'difficulty.medium': 'Media',
+  'difficulty.hard': 'Difficile',
+  'form.difficulty': 'Difficoltà',
+  'form.difficultyChoose': 'Scegli…',
+  'filters.difficulty': 'Filtra per difficoltà',
+  'filters.allDifficulties': 'Tutte',
+  'errors.MISSING_DIFFICULTY': 'Scegli il grado di difficoltà',
+
   // Filtri
   'filters.myStature': 'La mia statura (cm)',
   'filters.staturePlaceholder': 'es. 180',

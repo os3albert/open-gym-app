@@ -21,6 +21,7 @@ const validInput = {
   description: 'Alla sbarra, presa prona',
   youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
   muscleGroup: 'Dorso',
+  difficulty: 'medium' as const,
   faceBlurConfirmed: true,
 }
 

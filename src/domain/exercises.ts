@@ -1,10 +1,17 @@
 import { isValidYouTubeUrl } from '../services/youtube'
 import { generateId } from '../utils/id'
-import type { AppData, Exercise, StatureRange } from './types'
+import {
+  isDifficulty,
+  type AppData,
+  type Difficulty,
+  type Exercise,
+  type StatureRange,
+} from './types'
 
 export const INVALID_YOUTUBE_LINK_ERROR = 'INVALID_YOUTUBE_LINK'
 export const EMPTY_NAME_ERROR = 'EMPTY_NAME'
 export const INVALID_STATURE_RANGE_ERROR = 'INVALID_STATURE_RANGE'
+export const MISSING_DIFFICULTY_ERROR = 'MISSING_DIFFICULTY'
 
 export const MIN_STATURE_CM = 100
 export const MAX_STATURE_CM = 250
@@ -14,6 +21,7 @@ export interface NewExercise {
   description: string
   youtubeUrl: string
   muscleGroup: string
+  difficulty: Difficulty
   stature?: StatureRange
   /**
    * LEGACY (M12): l'offuscamento del volto è un consiglio, non un obbligo — non si valida più.
@@ -31,6 +39,7 @@ function isValidStatureRange(range: StatureRange): boolean {
 function validate(input: NewExercise): void {
   if (!input.name.trim()) throw new Error(EMPTY_NAME_ERROR)
   if (!isValidYouTubeUrl(input.youtubeUrl)) throw new Error(INVALID_YOUTUBE_LINK_ERROR)
+  if (!isDifficulty(input.difficulty)) throw new Error(MISSING_DIFFICULTY_ERROR)
   if (input.stature && !isValidStatureRange(input.stature)) {
     throw new Error(INVALID_STATURE_RANGE_ERROR)
   }
@@ -45,6 +54,7 @@ export function createExercise(input: NewExercise, now: Date = new Date()): Exer
     description: input.description.trim(),
     youtubeUrl: input.youtubeUrl.trim(),
     muscleGroup: input.muscleGroup.trim(),
+    difficulty: input.difficulty,
     ...(input.stature ? { stature: input.stature } : {}),
     faceBlurConfirmed: input.faceBlurConfirmed ?? false,
     votes: 0,
@@ -71,6 +81,7 @@ export function updateExercise(data: AppData, exerciseId: string, input: NewExer
         description: input.description.trim(),
         youtubeUrl: input.youtubeUrl.trim(),
         muscleGroup: input.muscleGroup.trim(),
+        difficulty: input.difficulty,
         ...(input.stature ? { stature: input.stature } : {}),
       }
     }),

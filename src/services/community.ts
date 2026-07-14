@@ -125,6 +125,8 @@ export function mergeForDisplay(
   })
   const fromCommunity: DisplayExercise[] = community.map((e) => ({
     ...e,
+    // Il catalogo pubblico ha voci proposte prima di M13, senza difficoltà: valgono «media»
+    difficulty: e.difficulty ?? 'medium',
     votes: counts[e.id] ?? 0,
     fromCommunity: true,
   }))

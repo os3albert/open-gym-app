@@ -38,6 +38,7 @@ function dataWithExercises(...names: string[]): AppData {
       description: '',
       youtubeUrl: `https://youtu.be/AAAAAAAAAA${i}`,
       muscleGroup: 'Gambe',
+      difficulty: 'medium',
       faceBlurConfirmed: true,
     })
   })

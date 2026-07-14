@@ -16,6 +16,7 @@ const locale: Exercise = {
   description: '',
   youtubeUrl: VIDEO,
   muscleGroup: 'Petto',
+  difficulty: 'medium',
   faceBlurConfirmed: true,
   votes: 0,
   createdAt: '2026-07-13T10:00:00.000Z',
@@ -28,6 +29,7 @@ const condiviso: CommunityExercise = {
   // Stesso video, scritto in un'altra forma: il dedup guarda il video id, non la stringa
   youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
   muscleGroup: 'Petto',
+  difficulty: 'medium',
   faceBlurConfirmed: true,
   createdAt: '2026-07-13T11:00:00.000Z',
 }

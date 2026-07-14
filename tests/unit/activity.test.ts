@@ -19,6 +19,7 @@ function withExercise(name = 'Panca piana'): { data: AppData; id: string } {
     description: '',
     youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
     muscleGroup: 'Petto',
+    difficulty: 'medium',
     faceBlurConfirmed: true,
   })
   return { data, id: data.exercises[data.exercises.length - 1].id }
@@ -170,6 +171,7 @@ describe('exerciseHistory', () => {
       description: '',
       youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
       muscleGroup: 'Gambe',
+      difficulty: 'medium',
       faceBlurConfirmed: true,
     })
     const squatId = dataWithBoth.exercises[1].id

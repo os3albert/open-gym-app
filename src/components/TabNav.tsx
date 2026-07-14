@@ -66,8 +66,10 @@ export function TabNav({ view, onChange }: Props) {
           overflow: 'hidden',
         }}
       >
+        {/* Niente showLabels: MUI mostra l'etichetta SOLO sulla voce selezionata e le allarga la
+            pillola; le altre restano icona. L'aria-label la tiene comunque raggiungibile per nome
+            (i test cercano i tab per nome, non per icona). */}
         <BottomNavigation
-          showLabels
           value={view}
           onChange={(_event, next: AppView) => onChange(next)}
           sx={{ bgcolor: 'transparent', height: 62 }}
@@ -77,6 +79,7 @@ export function TabNav({ view, onChange }: Props) {
               key={tab.view}
               value={tab.view}
               label={t(tab.label)}
+              aria-label={t(tab.label)}
               icon={tab.icon}
               data-cy={`tab-${tab.view}`}
               aria-current={view === tab.view ? 'page' : undefined}

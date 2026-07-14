@@ -6,6 +6,7 @@ import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Dialog from '@mui/material/Dialog'
 import Fab from '@mui/material/Fab'
+import useScrollTrigger from '@mui/material/useScrollTrigger'
 import IconButton from '@mui/material/IconButton'
 import Container from '@mui/material/Container'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -145,6 +146,8 @@ export default function App() {
   const t = useMemo(() => makeTranslate(language), [language])
   const community = useCommunity()
   const analytics = useAnalytics(view)
+  // Sotto Vitest non si scorre: il FAB resta esteso, e i test non devono saperne nulla
+  const scrolled = useScrollTrigger({ disableHysteresis: true, threshold: 40 })
   const [editing, setEditing] = useState<Exercise | null>(null)
   const [formError, setFormError] = useState<string | null>(null)
   const [statureError, setStatureError] = useState<string | null>(null)
@@ -395,9 +398,14 @@ export default function App() {
         {view === 'esercizi' && (
           <Fab
             color="primary"
-            variant="extended"
+            // Esteso all'atterraggio (la scritta serve a farsi capire), sola «+» appena si scorre:
+            // a quel punto l'icona basta, e la lista si riprende lo spazio.
+            variant={scrolled ? 'circular' : 'extended'}
             data-cy="propose-toggle"
             aria-expanded={formOpen}
+            // Il nome accessibile NON dipende dalla scritta: quando il FAB si ritira, i test (e gli
+            // screen reader) devono continuare a trovarlo per nome.
+            aria-label={t('app.newProposal')}
             onClick={() => setFormOpen(true)}
             sx={{
               position: 'fixed',
@@ -407,9 +415,9 @@ export default function App() {
               zIndex: (t) => t.zIndex.appBar - 1,
             }}
           >
-            <AddIcon sx={{ mr: 1 }} />
+            <AddIcon sx={{ mr: scrolled ? 0 : 1 }} />
             {/* Non «Proponi esercizio»: è il nome del submit del form, le query per ruolo collidono */}
-            {t('app.newProposal')}
+            {!scrolled && t('app.newProposal')}
           </Fab>
         )}
         <TabNav view={view} onChange={setView} />

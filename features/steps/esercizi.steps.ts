@@ -20,6 +20,7 @@ function newExercise(name: string, youtubeUrl: string, stature?: StatureRange): 
     youtubeUrl,
     description: '',
     muscleGroup: '',
+    difficulty: 'medium',
     faceBlurConfirmed: true,
     ...(stature ? { stature } : {}),
   }
@@ -103,6 +104,7 @@ When(
     try {
       this.data = addExercise(this.data, {
         ...newExercise(name, VALID_LINK),
+        difficulty: 'medium',
         faceBlurConfirmed: false,
       })
       this.error = null

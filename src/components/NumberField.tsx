@@ -83,7 +83,17 @@ export function NumberField({
           placeholder={placeholder}
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={(e) => e.key === 'Escape' && setOpen(false)}
-          sx={sx}
+          sx={[
+            // Via le frecciette su/giù native: la rotella e i +/− fanno già quel lavoro, e ogni
+            // browser le disegna a modo suo. Si nascondono in CSS invece di passare a type="text",
+            // che toglierebbe la tastiera numerica sul telefono.
+            {
+              '& input[type=number]': { MozAppearance: 'textfield' },
+              '& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button':
+                { WebkitAppearance: 'none', margin: 0 },
+            },
+            ...(Array.isArray(sx) ? sx : [sx]),
+          ]}
           slotProps={{
             htmlInput: { 'data-cy': dataCy, inputMode: 'decimal' },
             input: {
