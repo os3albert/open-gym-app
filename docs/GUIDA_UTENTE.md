@@ -26,7 +26,9 @@ App: **https://os3albert.github.io/open-gym-app/**
 2. Incolla il **link YouTube** del video (l'app non ospita video: solo link).
    Il volto **non è importante**: si guarda il movimento, non la persona. Se preferisci,
    offuscalo con l'AI — trovi le linee guida nel modulo — ma non è obbligatorio.
-3. (Facoltativo) Indica la **fascia di statura** (es. 170–190 cm) per cui l'esercizio è tarato.
+3. Scegli il **grado di difficoltà** (facile, media, difficile): è obbligatorio, e serve a chi
+   cerca esercizi alla propria portata — dalla lista si filtra proprio per quello.
+4. (Facoltativo) Indica la **fascia di statura** (es. 170–190 cm) per cui l'esercizio è tarato.
 
 L'esercizio è subito tuo, sul dispositivo. Se l'istanza ha la community attiva, la proposta
 viene inviata anche al catalogo condiviso: te lo conferma un messaggio. Se la community non

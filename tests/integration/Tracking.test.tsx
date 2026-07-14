@@ -23,6 +23,7 @@ function seed(options: { history?: { weightKg: number; reps: number } } = {}): A
     description: '',
     youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
     muscleGroup: 'Gambe',
+    difficulty: 'medium',
     faceBlurConfirmed: true,
   })
   if (options.history) {

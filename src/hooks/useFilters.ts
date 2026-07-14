@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { defaultFilters, type ExerciseFilters, type SortOrder } from '../domain/filters'
+import { isDifficulty, type Difficulty } from '../domain/types'
 
 // I filtri vivono nella query string così un set di filtri è condivisibile via URL.
 
@@ -9,6 +10,9 @@ function readFiltersFromUrl(): ExerciseFilters {
   return {
     suitableOnly: params.get('adatti') === '1',
     muscleGroup: params.get('gruppo'),
+    difficulty: isDifficulty(params.get('difficolta'))
+      ? (params.get('difficolta') as Difficulty)
+      : null,
     sort,
   }
 }
@@ -21,6 +25,7 @@ function writeFiltersToUrl(filters: ExerciseFilters): void {
   params.delete('ordina')
   if (filters.suitableOnly) params.set('adatti', '1')
   if (filters.muscleGroup) params.set('gruppo', filters.muscleGroup)
+  if (filters.difficulty) params.set('difficolta', filters.difficulty)
   if (filters.sort === 'recent') params.set('ordina', 'recenti')
   const query = params.toString()
   window.history.replaceState(null, '', query ? `?${query}` : window.location.pathname)

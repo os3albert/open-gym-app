@@ -1,11 +1,13 @@
 // E2E del flusso principale: proporre esercizi, votarli, persistenza tra ricaricamenti.
 
-function proponiEsercizio(nome: string, link: string) {
+function proponiEsercizio(nome: string, link: string, difficolta = 'Media') {
   cy.apriFormProposta()
   cy.get('[data-cy=exercise-name]').type(nome)
   cy.get('[data-cy=exercise-muscle]').type('Petto')
   cy.get('[data-cy=exercise-youtube]').type(link)
   cy.get('[data-cy=exercise-description]').type('Descrizione di prova')
+  // Obbligatoria da M13: senza, il dominio rifiuta la proposta
+  cy.scegliOpzione('exercise-difficulty', difficolta)
   cy.get('[data-cy=exercise-submit]').click()
 }
 
@@ -59,12 +61,35 @@ describe('Gestione esercizi', () => {
     cy.get('[data-cy=propose-toggle]').should('have.attr', 'aria-expanded', 'false')
   })
 
+  it('la difficoltà è obbligatoria, compare sulla card e filtra la lista (M13)', () => {
+    // Senza sceglierla, il dominio rifiuta la proposta
+    cy.apriFormProposta()
+    cy.get('[data-cy=exercise-name]').type('Stacco da terra')
+    cy.get('[data-cy=exercise-youtube]').type('https://youtu.be/dQw4w9WgXcQ')
+    cy.get('[data-cy=exercise-submit]').click()
+    cy.get('[data-cy=form-error]').should('contain.text', 'Scegli il grado di difficoltà')
+
+    cy.scegliOpzione('exercise-difficulty', 'Difficile')
+    cy.get('[data-cy=exercise-submit]').click()
+    // Il modale esce in dissolvenza: finché non è sparito, i suoi campi sono ancora nel DOM
+    cy.get('[role=dialog]').should('not.exist')
+    cy.get('[data-cy=difficulty-badge]').should('contain.text', 'Difficile')
+
+    // Un secondo esercizio, facile: il filtro deve separarli
+    proponiEsercizio('Camminata', 'https://youtu.be/BBBBBBBBBBB', 'Facile')
+    cy.get('[data-cy=exercise-item]').should('have.length', 2)
+
+    cy.scegliOpzione('filter-difficulty', 'Facile')
+    cy.get('[data-cy=exercise-item]').should('have.length', 1).and('contain.text', 'Camminata')
+  })
+
   it('modifica un esercizio esistente', () => {
     proponiEsercizio('Panca piana', 'https://youtu.be/dQw4w9WgXcQ')
 
     cy.get('[data-cy=exercise-edit]').click()
     cy.get('[data-cy=exercise-name]').should('have.value', 'Panca piana').clear()
     cy.get('[data-cy=exercise-name]').type('Panca inclinata')
+    cy.scegliOpzione('exercise-difficulty', 'Media')
     cy.get('[data-cy=exercise-submit]').click()
 
     cy.get('[data-cy=exercise-item]').should('contain.text', 'Panca inclinata')

@@ -7,7 +7,8 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import type { NewExercise } from '../domain/exercises'
 import { useT } from '../i18n/context'
-import type { Exercise } from '../domain/types'
+import { DIFFICULTIES, type Difficulty, type Exercise } from '../domain/types'
+import { SelectField } from './SelectField'
 import { parseYouTubeVideoId, youtubeThumbnailUrl } from '../services/youtube'
 import { range } from '../utils/number'
 import { NumberField } from './NumberField'
@@ -30,6 +31,8 @@ export function ExerciseForm({ initial = null, onSubmit, onCancel, error }: Prop
   const [muscleGroup, setMuscleGroup] = useState(initial?.muscleGroup ?? '')
   const [youtubeUrl, setYoutubeUrl] = useState(initial?.youtubeUrl ?? '')
   const [description, setDescription] = useState(initial?.description ?? '')
+  // Nessuna preselezione: la difficoltà è una scelta, e senza il dominio rifiuta la proposta
+  const [difficulty, setDifficulty] = useState<Difficulty | ''>(initial?.difficulty ?? '')
   const [statureMin, setStatureMin] = useState(
     initial?.stature ? String(initial.stature.minCm) : '',
   )
@@ -47,6 +50,7 @@ export function ExerciseForm({ initial = null, onSubmit, onCancel, error }: Prop
       muscleGroup,
       youtubeUrl,
       description,
+      difficulty: difficulty as Difficulty,
       ...(hasStature ? { stature: { minCm: Number(statureMin), maxCm: Number(statureMax) } } : {}),
     })
     if (accepted && !initial) {
@@ -56,6 +60,7 @@ export function ExerciseForm({ initial = null, onSubmit, onCancel, error }: Prop
       setDescription('')
       setStatureMin('')
       setStatureMax('')
+      setDifficulty('')
     }
   }
 
@@ -79,6 +84,17 @@ export function ExerciseForm({ initial = null, onSubmit, onCancel, error }: Prop
           value={muscleGroup}
           onChange={(e) => setMuscleGroup(e.target.value)}
           slotProps={{ htmlInput: { 'data-cy': 'exercise-muscle' } }}
+        />
+        <SelectField
+          label={t('form.difficulty')}
+          value={difficulty}
+          onChange={(value) => setDifficulty(value as Difficulty)}
+          dataCy="exercise-difficulty"
+          sx={{ maxWidth: 240 }}
+          options={[
+            { value: '', label: t('form.difficultyChoose') },
+            ...DIFFICULTIES.map((d) => ({ value: d, label: t(`difficulty.${d}`) })),
+          ]}
         />
         <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: 'wrap' }}>
           <NumberField

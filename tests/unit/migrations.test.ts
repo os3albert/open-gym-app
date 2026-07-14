@@ -38,7 +38,7 @@ describe('migrazione degli schemi precedenti', () => {
   it('migra un backup v1 alla versione corrente senza perdite', () => {
     const data = importFromJson(JSON.stringify(v1Backup))
 
-    expect(data.schemaVersion).to.equal(3)
+    expect(data.schemaVersion).to.equal(4)
     expect(data.exercises).to.have.lengthOf(1)
     expect(data.exercises[0].name).to.equal('Military press')
     expect(data.exercises[0].votes).to.equal(3)
@@ -53,7 +53,7 @@ describe('migrazione degli schemi precedenti', () => {
   it('migra un backup v2: i giorni delle schede passano a entries con target 3×8', () => {
     const data = importFromJson(JSON.stringify(v2Backup))
 
-    expect(data.schemaVersion).to.equal(3)
+    expect(data.schemaVersion).to.equal(4)
     expect(data.activePlanId).to.equal(null)
     expect(data.plans[0].days[0].name).to.equal('Lunedì')
     expect(data.plans[0].days[0].entries).to.deep.equal([
@@ -66,5 +66,63 @@ describe('migrazione degli schemi precedenti', () => {
     expect(() => importFromJson(JSON.stringify({ ...v1Backup, schemaVersion: 99 }))).to.throw(
       INVALID_FORMAT_ERROR,
     )
+  })
+})
+
+describe('v3 → v4: il grado di difficoltà (M13)', () => {
+  it('agli esercizi che non ce l’hanno assegna «media»: i backup vecchi non si rompono', () => {
+    const v3 = {
+      schemaVersion: 3,
+      exercises: [
+        {
+          id: 'e1',
+          name: 'Panca piana',
+          description: '',
+          youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
+          muscleGroup: 'Petto',
+          faceBlurConfirmed: true,
+          votes: 2,
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+      ],
+      plans: [],
+      activePlanId: null,
+      activity: [],
+      profile: { statureCm: null },
+      votedExerciseIds: [],
+    }
+
+    const data = importFromJson(JSON.stringify(v3))
+
+    expect(data.schemaVersion).to.equal(4)
+    expect(data.exercises[0].difficulty).to.equal('medium')
+    // Il resto dell'esercizio non viene toccato
+    expect(data.exercises[0].votes).to.equal(2)
+  })
+
+  it('una difficoltà già presente non viene sovrascritta', () => {
+    const v3 = {
+      schemaVersion: 3,
+      exercises: [
+        {
+          id: 'e1',
+          name: 'Stacco',
+          description: '',
+          youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
+          muscleGroup: 'Schiena',
+          difficulty: 'hard',
+          faceBlurConfirmed: true,
+          votes: 0,
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+      ],
+      plans: [],
+      activePlanId: null,
+      activity: [],
+      profile: { statureCm: null },
+      votedExerciseIds: [],
+    }
+
+    expect(importFromJson(JSON.stringify(v3)).exercises[0].difficulty).to.equal('hard')
   })
 })

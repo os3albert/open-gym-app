@@ -15,6 +15,7 @@ function ensureExercise(world: GymWorld, name: string): string {
       description: '',
       youtubeUrl: 'https://youtu.be/AAAAAAAAAAA',
       muscleGroup: '',
+      difficulty: 'medium',
       faceBlurConfirmed: true,
     })
     exercise = world.data.exercises[world.data.exercises.length - 1]

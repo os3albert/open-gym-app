@@ -2,6 +2,26 @@
 
 Tutte le modifiche rilevanti del progetto, per release.
 
+## 1.5.0 — 2026-07-14
+
+Difficoltà degli esercizi e rifiniture di interazione (milestone M13, issue #70–#73).
+
+### Difficoltà (M13)
+
+- Ogni esercizio ha un **grado di difficoltà** (facile / media / difficile): si sceglie alla
+  proposta — **è obbligatorio** — compare come **badge** colorato sulla card e **filtra** la lista.
+- Schema **v4**: i backup precedenti si importano come sempre, e i loro esercizi ricevono «media»
+  (nessuno può indovinarla per loro).
+
+### Interazione (M13)
+
+- Via le **frecce native** dagli input numerici: restavano lì a fare il lavoro che già fanno la
+  rotella e i pulsanti +/−.
+- Il pulsante **«Nuova proposta»** arriva con la scritta e **si ritira a sola icona** appena si
+  scorre: la lista si riprende lo spazio.
+- Nella barra in basso, la sezione **selezionata si apre mostrando la sua etichetta**; le altre
+  restano solo icona.
+
 ## 1.4.0 — 2026-07-14
 
 Impostazioni, due lingue e input pensati per la palestra (milestone M12, issue #63–#68).

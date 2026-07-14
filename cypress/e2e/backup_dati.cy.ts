@@ -86,6 +86,7 @@ describe('Backup dei dati', () => {
     cy.apriFormProposta()
     cy.get('[data-cy=exercise-name]').type('Panca piana')
     cy.get('[data-cy=exercise-youtube]').type('https://youtu.be/dQw4w9WgXcQ')
+    cy.scegliOpzione('exercise-difficulty', 'Media')
     cy.get('[data-cy=exercise-submit]').click()
 
     cy.apriImpostazioni()
@@ -93,7 +94,7 @@ describe('Backup dei dati', () => {
     cy.get('[data-cy=export-button]').click()
 
     cy.readFile(`cypress/downloads/open-gym-backup-${todayIso()}.json`).then((backup) => {
-      expect(backup.schemaVersion).to.equal(3)
+      expect(backup.schemaVersion).to.equal(4)
       expect(backup.exportedAt).to.be.a('string')
       expect(backup.exercises).to.have.length(1)
       expect(backup.exercises[0].name).to.equal('Panca piana')

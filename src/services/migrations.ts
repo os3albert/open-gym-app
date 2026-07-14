@@ -1,3 +1,5 @@
+import { isDifficulty } from '../domain/types'
+
 /**
  * Porta un backup/store di una versione precedente alla forma della versione corrente.
  * Riceve e restituisce dati grezzi (unknown): la validazione strutturale avviene dopo,
@@ -7,7 +9,23 @@ export function migrateToCurrentSchema(parsed: Record<string, unknown>): Record<
   let data = parsed
   if (data.schemaVersion === 1) data = migrateV1toV2(data)
   if (data.schemaVersion === 2) data = migrateV2toV3(data)
+  if (data.schemaVersion === 3) data = migrateV3toV4(data)
   return data
+}
+
+/**
+ * v3 → v4: il grado di difficoltà. Gli esercizi che già esistono non ce l'hanno e nessuno può
+ * indovinarlo per loro: si assegna «media», il valore che non mente in nessuna direzione.
+ * I backup vecchi devono continuare a importarsi: è la promessa del progetto.
+ */
+function migrateV3toV4(v3: Record<string, unknown>): Record<string, unknown> {
+  const exercises = Array.isArray(v3.exercises)
+    ? v3.exercises.map((exercise) => {
+        const e = exercise as Record<string, unknown>
+        return isDifficulty(e.difficulty) ? e : { ...e, difficulty: 'medium' }
+      })
+    : []
+  return { ...v3, schemaVersion: 4, exercises }
 }
 
 /** v1 → v2: aggiunge profilo locale, voti del dispositivo e flag volto offuscato. */

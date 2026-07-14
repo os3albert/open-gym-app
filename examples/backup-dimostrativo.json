@@ -1,0 +1,1135 @@
+{
+  "schemaVersion": 4,
+  "exercises": [
+    {
+      "id": "demo-ex-1",
+      "name": "Panca piana con bilanciere",
+      "description": "Scapole addotte, piedi piantati. Discesa controllata fino a sfiorare il petto.",
+      "youtubeUrl": "https://youtu.be/dQw4w9WgXcQ",
+      "muscleGroup": "Petto",
+      "faceBlurConfirmed": false,
+      "stature": {
+        "minCm": 165,
+        "maxCm": 185
+      },
+      "votes": 9,
+      "createdAt": "2026-05-15T09:00:00.000Z",
+      "difficulty": "medium"
+    },
+    {
+      "id": "demo-ex-2",
+      "name": "Squat con bilanciere",
+      "description": "Schiena neutra, ginocchia in linea con le punte. Scendi finché le anche vanno sotto il ginocchio.",
+      "youtubeUrl": "https://youtu.be/9bZkp7q19f0",
+      "muscleGroup": "Gambe",
+      "faceBlurConfirmed": false,
+      "votes": 14,
+      "createdAt": "2026-05-18T09:00:00.000Z",
+      "difficulty": "medium"
+    },
+    {
+      "id": "demo-ex-3",
+      "name": "Stacco da terra",
+      "description": "Bilanciere addosso alle tibie. Si spinge il pavimento, non si tira con la schiena.",
+      "youtubeUrl": "https://youtu.be/kJQP7kiw5Fk",
+      "muscleGroup": "Schiena",
+      "faceBlurConfirmed": false,
+      "votes": 17,
+      "createdAt": "2026-05-21T09:00:00.000Z",
+      "difficulty": "hard"
+    },
+    {
+      "id": "demo-ex-4",
+      "name": "Trazioni alla sbarra",
+      "description": "Presa poco più larga delle spalle. Petto verso la sbarra, niente slanci.",
+      "youtubeUrl": "https://youtu.be/JGwWNGJdvx8",
+      "muscleGroup": "Schiena",
+      "faceBlurConfirmed": false,
+      "stature": {
+        "minCm": 160,
+        "maxCm": 180
+      },
+      "votes": 11,
+      "createdAt": "2026-05-24T09:00:00.000Z",
+      "difficulty": "hard"
+    },
+    {
+      "id": "demo-ex-5",
+      "name": "Military press",
+      "description": "Glutei e addome contratti: la spinta parte da terra, non dalla schiena.",
+      "youtubeUrl": "https://youtu.be/OPf0YbXqDm0",
+      "muscleGroup": "Spalle",
+      "faceBlurConfirmed": false,
+      "votes": 6,
+      "createdAt": "2026-05-27T09:00:00.000Z",
+      "difficulty": "medium"
+    },
+    {
+      "id": "demo-ex-6",
+      "name": "Rematore con bilanciere",
+      "description": "Busto a 45°, gomiti stretti. Tira verso l’ombelico.",
+      "youtubeUrl": "https://youtu.be/fJ9rUzIMcZQ",
+      "muscleGroup": "Schiena",
+      "faceBlurConfirmed": false,
+      "stature": {
+        "minCm": 175,
+        "maxCm": 195
+      },
+      "votes": 5,
+      "createdAt": "2026-05-30T09:00:00.000Z",
+      "difficulty": "medium"
+    },
+    {
+      "id": "demo-ex-7",
+      "name": "Affondi con manubri",
+      "description": "Passo lungo, ginocchio posteriore che sfiora terra. Alterna le gambe.",
+      "youtubeUrl": "https://youtu.be/CevxZvSJLk8",
+      "muscleGroup": "Gambe",
+      "faceBlurConfirmed": false,
+      "votes": 3,
+      "createdAt": "2026-06-02T09:00:00.000Z",
+      "difficulty": "easy"
+    },
+    {
+      "id": "demo-ex-8",
+      "name": "Curl con bilanciere",
+      "description": "Gomiti fermi al fianco: se oscillano, il peso è troppo.",
+      "youtubeUrl": "https://youtu.be/60ItHLz5WEA",
+      "muscleGroup": "Braccia",
+      "faceBlurConfirmed": false,
+      "votes": 2,
+      "createdAt": "2026-06-05T09:00:00.000Z",
+      "difficulty": "easy"
+    }
+  ],
+  "plans": [
+    {
+      "id": "demo-plan-1",
+      "name": "Forza 3 giorni",
+      "days": [
+        {
+          "name": "Martedì",
+          "entries": [
+            {
+              "exerciseId": "demo-ex-2",
+              "sets": 5,
+              "reps": 5
+            },
+            {
+              "exerciseId": "demo-ex-1",
+              "sets": 5,
+              "reps": 5
+            },
+            {
+              "exerciseId": "demo-ex-6",
+              "sets": 3,
+              "reps": 8
+            }
+          ]
+        },
+        {
+          "name": "Giovedì",
+          "entries": [
+            {
+              "exerciseId": "demo-ex-3",
+              "sets": 3,
+              "reps": 5
+            },
+            {
+              "exerciseId": "demo-ex-5",
+              "sets": 4,
+              "reps": 6
+            },
+            {
+              "exerciseId": "demo-ex-4",
+              "sets": 3,
+              "reps": 8
+            }
+          ]
+        },
+        {
+          "name": "Sabato",
+          "entries": [
+            {
+              "exerciseId": "demo-ex-2",
+              "sets": 3,
+              "reps": 8
+            },
+            {
+              "exerciseId": "demo-ex-7",
+              "sets": 3,
+              "reps": 10
+            },
+            {
+              "exerciseId": "demo-ex-8",
+              "sets": 3,
+              "reps": 12
+            }
+          ]
+        }
+      ],
+      "votes": 0
+    },
+    {
+      "id": "demo-plan-2",
+      "name": "Full body (giorni liberi)",
+      "days": [
+        {
+          "name": "Giorno A",
+          "entries": [
+            {
+              "exerciseId": "demo-ex-2",
+              "sets": 3,
+              "reps": 10
+            },
+            {
+              "exerciseId": "demo-ex-1",
+              "sets": 3,
+              "reps": 10
+            },
+            {
+              "exerciseId": "demo-ex-4",
+              "sets": 3,
+              "reps": 8
+            }
+          ]
+        },
+        {
+          "name": "Giorno B",
+          "entries": [
+            {
+              "exerciseId": "demo-ex-3",
+              "sets": 3,
+              "reps": 8
+            },
+            {
+              "exerciseId": "demo-ex-5",
+              "sets": 3,
+              "reps": 10
+            },
+            {
+              "exerciseId": "demo-ex-8",
+              "sets": 3,
+              "reps": 12
+            }
+          ]
+        }
+      ],
+      "votes": 0
+    }
+  ],
+  "activePlanId": "demo-plan-1",
+  "activity": [
+    {
+      "id": "demo-act-3",
+      "exerciseId": "demo-ex-3",
+      "date": "2026-05-10",
+      "sets": [
+        {
+          "weightKg": 90,
+          "reps": 5
+        },
+        {
+          "weightKg": 90,
+          "reps": 5
+        },
+        {
+          "weightKg": 90,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-4",
+      "exerciseId": "demo-ex-5",
+      "date": "2026-05-10",
+      "sets": [
+        {
+          "weightKg": 30,
+          "reps": 6
+        },
+        {
+          "weightKg": 30,
+          "reps": 6
+        },
+        {
+          "weightKg": 30,
+          "reps": 6
+        },
+        {
+          "weightKg": 30,
+          "reps": 5
+        }
+      ]
+    },
+    {
+      "id": "demo-act-1",
+      "exerciseId": "demo-ex-2",
+      "date": "2026-05-12",
+      "sets": [
+        {
+          "weightKg": 70,
+          "reps": 5
+        },
+        {
+          "weightKg": 70,
+          "reps": 5
+        },
+        {
+          "weightKg": 70,
+          "reps": 5
+        },
+        {
+          "weightKg": 70,
+          "reps": 5
+        },
+        {
+          "weightKg": 70,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-2",
+      "exerciseId": "demo-ex-1",
+      "date": "2026-05-12",
+      "sets": [
+        {
+          "weightKg": 50,
+          "reps": 5
+        },
+        {
+          "weightKg": 50,
+          "reps": 5
+        },
+        {
+          "weightKg": 50,
+          "reps": 5
+        },
+        {
+          "weightKg": 50,
+          "reps": 5
+        },
+        {
+          "weightKg": 50,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-7",
+      "exerciseId": "demo-ex-3",
+      "date": "2026-05-17",
+      "sets": [
+        {
+          "weightKg": 95,
+          "reps": 5
+        },
+        {
+          "weightKg": 95,
+          "reps": 5
+        },
+        {
+          "weightKg": 95,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-8",
+      "exerciseId": "demo-ex-5",
+      "date": "2026-05-17",
+      "sets": [
+        {
+          "weightKg": 31.5,
+          "reps": 6
+        },
+        {
+          "weightKg": 31.5,
+          "reps": 6
+        },
+        {
+          "weightKg": 31.5,
+          "reps": 6
+        },
+        {
+          "weightKg": 31.5,
+          "reps": 5
+        }
+      ]
+    },
+    {
+      "id": "demo-act-5",
+      "exerciseId": "demo-ex-2",
+      "date": "2026-05-19",
+      "sets": [
+        {
+          "weightKg": 72.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 72.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 72.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 72.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 72.5,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-6",
+      "exerciseId": "demo-ex-1",
+      "date": "2026-05-19",
+      "sets": [
+        {
+          "weightKg": 52.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 52.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 52.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 52.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 52.5,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-11",
+      "exerciseId": "demo-ex-3",
+      "date": "2026-05-24",
+      "sets": [
+        {
+          "weightKg": 100,
+          "reps": 5
+        },
+        {
+          "weightKg": 100,
+          "reps": 5
+        },
+        {
+          "weightKg": 100,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-12",
+      "exerciseId": "demo-ex-5",
+      "date": "2026-05-24",
+      "sets": [
+        {
+          "weightKg": 32.5,
+          "reps": 6
+        },
+        {
+          "weightKg": 32.5,
+          "reps": 6
+        },
+        {
+          "weightKg": 32.5,
+          "reps": 6
+        },
+        {
+          "weightKg": 32.5,
+          "reps": 5
+        }
+      ]
+    },
+    {
+      "id": "demo-act-9",
+      "exerciseId": "demo-ex-2",
+      "date": "2026-05-26",
+      "sets": [
+        {
+          "weightKg": 75,
+          "reps": 5
+        },
+        {
+          "weightKg": 75,
+          "reps": 5
+        },
+        {
+          "weightKg": 75,
+          "reps": 5
+        },
+        {
+          "weightKg": 75,
+          "reps": 5
+        },
+        {
+          "weightKg": 75,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-10",
+      "exerciseId": "demo-ex-1",
+      "date": "2026-05-26",
+      "sets": [
+        {
+          "weightKg": 55,
+          "reps": 5
+        },
+        {
+          "weightKg": 55,
+          "reps": 5
+        },
+        {
+          "weightKg": 55,
+          "reps": 5
+        },
+        {
+          "weightKg": 55,
+          "reps": 5
+        },
+        {
+          "weightKg": 55,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-15",
+      "exerciseId": "demo-ex-3",
+      "date": "2026-05-31",
+      "sets": [
+        {
+          "weightKg": 105,
+          "reps": 5
+        },
+        {
+          "weightKg": 105,
+          "reps": 5
+        },
+        {
+          "weightKg": 105,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-16",
+      "exerciseId": "demo-ex-5",
+      "date": "2026-05-31",
+      "sets": [
+        {
+          "weightKg": 34,
+          "reps": 6
+        },
+        {
+          "weightKg": 34,
+          "reps": 6
+        },
+        {
+          "weightKg": 34,
+          "reps": 6
+        },
+        {
+          "weightKg": 34,
+          "reps": 5
+        }
+      ]
+    },
+    {
+      "id": "demo-act-13",
+      "exerciseId": "demo-ex-2",
+      "date": "2026-06-02",
+      "sets": [
+        {
+          "weightKg": 77.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 77.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 77.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 77.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 77.5,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-14",
+      "exerciseId": "demo-ex-1",
+      "date": "2026-06-02",
+      "sets": [
+        {
+          "weightKg": 57.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 57.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 57.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 57.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 57.5,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-19",
+      "exerciseId": "demo-ex-3",
+      "date": "2026-06-07",
+      "sets": [
+        {
+          "weightKg": 110,
+          "reps": 5
+        },
+        {
+          "weightKg": 110,
+          "reps": 5
+        },
+        {
+          "weightKg": 110,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-20",
+      "exerciseId": "demo-ex-5",
+      "date": "2026-06-07",
+      "sets": [
+        {
+          "weightKg": 35,
+          "reps": 6
+        },
+        {
+          "weightKg": 35,
+          "reps": 6
+        },
+        {
+          "weightKg": 35,
+          "reps": 6
+        },
+        {
+          "weightKg": 35,
+          "reps": 5
+        }
+      ]
+    },
+    {
+      "id": "demo-act-17",
+      "exerciseId": "demo-ex-2",
+      "date": "2026-06-09",
+      "sets": [
+        {
+          "weightKg": 80,
+          "reps": 5
+        },
+        {
+          "weightKg": 80,
+          "reps": 5
+        },
+        {
+          "weightKg": 80,
+          "reps": 5
+        },
+        {
+          "weightKg": 80,
+          "reps": 5
+        },
+        {
+          "weightKg": 80,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-18",
+      "exerciseId": "demo-ex-1",
+      "date": "2026-06-09",
+      "sets": [
+        {
+          "weightKg": 60,
+          "reps": 5
+        },
+        {
+          "weightKg": 60,
+          "reps": 5
+        },
+        {
+          "weightKg": 60,
+          "reps": 5
+        },
+        {
+          "weightKg": 60,
+          "reps": 5
+        },
+        {
+          "weightKg": 60,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-23",
+      "exerciseId": "demo-ex-3",
+      "date": "2026-06-14",
+      "sets": [
+        {
+          "weightKg": 115,
+          "reps": 5
+        },
+        {
+          "weightKg": 115,
+          "reps": 5
+        },
+        {
+          "weightKg": 115,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-24",
+      "exerciseId": "demo-ex-5",
+      "date": "2026-06-14",
+      "sets": [
+        {
+          "weightKg": 36.5,
+          "reps": 6
+        },
+        {
+          "weightKg": 36.5,
+          "reps": 6
+        },
+        {
+          "weightKg": 36.5,
+          "reps": 6
+        },
+        {
+          "weightKg": 36.5,
+          "reps": 5
+        }
+      ]
+    },
+    {
+      "id": "demo-act-21",
+      "exerciseId": "demo-ex-2",
+      "date": "2026-06-16",
+      "sets": [
+        {
+          "weightKg": 82.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 82.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 82.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 82.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 82.5,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-22",
+      "exerciseId": "demo-ex-1",
+      "date": "2026-06-16",
+      "sets": [
+        {
+          "weightKg": 62.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 62.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 62.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 62.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 62.5,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-27",
+      "exerciseId": "demo-ex-3",
+      "date": "2026-06-21",
+      "sets": [
+        {
+          "weightKg": 105,
+          "reps": 5
+        },
+        {
+          "weightKg": 105,
+          "reps": 5
+        },
+        {
+          "weightKg": 105,
+          "reps": 5
+        }
+      ]
+    },
+    {
+      "id": "demo-act-28",
+      "exerciseId": "demo-ex-5",
+      "date": "2026-06-21",
+      "sets": [
+        {
+          "weightKg": 34,
+          "reps": 6
+        },
+        {
+          "weightKg": 34,
+          "reps": 6
+        },
+        {
+          "weightKg": 34,
+          "reps": 6
+        },
+        {
+          "weightKg": 34,
+          "reps": 6
+        }
+      ]
+    },
+    {
+      "id": "demo-act-25",
+      "exerciseId": "demo-ex-2",
+      "date": "2026-06-23",
+      "sets": [
+        {
+          "weightKg": 77.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 77.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 77.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 77.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 77.5,
+          "reps": 5
+        }
+      ]
+    },
+    {
+      "id": "demo-act-26",
+      "exerciseId": "demo-ex-1",
+      "date": "2026-06-23",
+      "sets": [
+        {
+          "weightKg": 57.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 57.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 57.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 57.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 57.5,
+          "reps": 5
+        }
+      ]
+    },
+    {
+      "id": "demo-act-31",
+      "exerciseId": "demo-ex-3",
+      "date": "2026-06-28",
+      "sets": [
+        {
+          "weightKg": 125,
+          "reps": 5
+        },
+        {
+          "weightKg": 125,
+          "reps": 5
+        },
+        {
+          "weightKg": 125,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-32",
+      "exerciseId": "demo-ex-5",
+      "date": "2026-06-28",
+      "sets": [
+        {
+          "weightKg": 39,
+          "reps": 6
+        },
+        {
+          "weightKg": 39,
+          "reps": 6
+        },
+        {
+          "weightKg": 39,
+          "reps": 6
+        },
+        {
+          "weightKg": 39,
+          "reps": 5
+        }
+      ]
+    },
+    {
+      "id": "demo-act-29",
+      "exerciseId": "demo-ex-2",
+      "date": "2026-06-30",
+      "sets": [
+        {
+          "weightKg": 87.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 87.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 87.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 87.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 87.5,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-30",
+      "exerciseId": "demo-ex-1",
+      "date": "2026-06-30",
+      "sets": [
+        {
+          "weightKg": 67.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 67.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 67.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 67.5,
+          "reps": 5
+        },
+        {
+          "weightKg": 67.5,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-35",
+      "exerciseId": "demo-ex-3",
+      "date": "2026-07-05",
+      "sets": [
+        {
+          "weightKg": 130,
+          "reps": 5
+        },
+        {
+          "weightKg": 130,
+          "reps": 5
+        },
+        {
+          "weightKg": 130,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-36",
+      "exerciseId": "demo-ex-5",
+      "date": "2026-07-05",
+      "sets": [
+        {
+          "weightKg": 40,
+          "reps": 6
+        },
+        {
+          "weightKg": 40,
+          "reps": 6
+        },
+        {
+          "weightKg": 40,
+          "reps": 6
+        },
+        {
+          "weightKg": 40,
+          "reps": 5
+        }
+      ]
+    },
+    {
+      "id": "demo-act-33",
+      "exerciseId": "demo-ex-2",
+      "date": "2026-07-07",
+      "sets": [
+        {
+          "weightKg": 90,
+          "reps": 5
+        },
+        {
+          "weightKg": 90,
+          "reps": 5
+        },
+        {
+          "weightKg": 90,
+          "reps": 5
+        },
+        {
+          "weightKg": 90,
+          "reps": 5
+        },
+        {
+          "weightKg": 90,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-34",
+      "exerciseId": "demo-ex-1",
+      "date": "2026-07-07",
+      "sets": [
+        {
+          "weightKg": 70,
+          "reps": 5
+        },
+        {
+          "weightKg": 70,
+          "reps": 5
+        },
+        {
+          "weightKg": 70,
+          "reps": 5
+        },
+        {
+          "weightKg": 70,
+          "reps": 5
+        },
+        {
+          "weightKg": 70,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-37",
+      "exerciseId": "demo-ex-3",
+      "date": "2026-07-12",
+      "sets": [
+        {
+          "weightKg": 135,
+          "reps": 5
+        },
+        {
+          "weightKg": 135,
+          "reps": 5
+        },
+        {
+          "weightKg": 135,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "id": "demo-act-38",
+      "exerciseId": "demo-ex-5",
+      "date": "2026-07-12",
+      "sets": [
+        {
+          "weightKg": 41.5,
+          "reps": 6
+        },
+        {
+          "weightKg": 41.5,
+          "reps": 6
+        },
+        {
+          "weightKg": 41.5,
+          "reps": 6
+        },
+        {
+          "weightKg": 41.5,
+          "reps": 5
+        }
+      ]
+    }
+  ],
+  "profile": {
+    "statureCm": 178
+  },
+  "votedExerciseIds": ["demo-ex-3", "demo-ex-2", "demo-ex-4"],
+  "exportedAt": "2026-07-14T08:00:00.000Z"
+}

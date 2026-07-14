@@ -1,6 +1,14 @@
 import LZString from 'lz-string'
 import { PLAN_NOT_FOUND_ERROR } from '../domain/plans'
-import type { AppData, Exercise, PlanEntry, StatureRange, WorkoutPlan } from '../domain/types'
+import { isDifficulty } from '../domain/types'
+import type {
+  Difficulty,
+  AppData,
+  Exercise,
+  PlanEntry,
+  StatureRange,
+  WorkoutPlan,
+} from '../domain/types'
 import { generateId } from '../utils/id'
 import { isValidYouTubeUrl, parseYouTubeVideoId } from './youtube'
 
@@ -15,6 +23,8 @@ export interface SharedExercise {
   description: string
   youtubeUrl: string
   muscleGroup: string
+  /** Assente nei codici generati prima di M13: si legge come «media», non si rifiuta il codice. */
+  difficulty?: Difficulty
   stature?: StatureRange
   faceBlurConfirmed: boolean
 }
@@ -46,6 +56,7 @@ function toSharedExercise(exercise: Exercise): SharedExercise {
     description: exercise.description,
     youtubeUrl: exercise.youtubeUrl,
     muscleGroup: exercise.muscleGroup,
+    difficulty: exercise.difficulty,
     // Niente chiavi undefined: il payload fa un round-trip JSON
     ...(exercise.stature ? { stature: exercise.stature } : {}),
     faceBlurConfirmed: exercise.faceBlurConfirmed,
@@ -90,6 +101,8 @@ function isSharedExercise(value: unknown): value is SharedExercise {
     typeof value.youtubeUrl === 'string' &&
     isValidYouTubeUrl(value.youtubeUrl) &&
     typeof value.muscleGroup === 'string' &&
+    // I codici in circolazione non hanno la difficoltà: si accettano lo stesso
+    (value.difficulty === undefined || isDifficulty(value.difficulty)) &&
     typeof value.faceBlurConfirmed === 'boolean' &&
     (value.stature === undefined ||
       (isRecord(value.stature) &&
@@ -173,6 +186,7 @@ function mergeSharedExercise(
     description: shared.description.trim(),
     youtubeUrl: shared.youtubeUrl.trim(),
     muscleGroup: shared.muscleGroup.trim(),
+    difficulty: shared.difficulty ?? 'medium',
     ...(shared.stature ? { stature: shared.stature } : {}),
     faceBlurConfirmed: shared.faceBlurConfirmed,
     votes: 0,

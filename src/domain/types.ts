@@ -4,6 +4,18 @@ export interface StatureRange {
   maxCm: number
 }
 
+/**
+ * Grado di difficoltà. Nei DATI sono codici in inglese, come i codici d'errore: la frase
+ * («Facile», «Easy») la sceglie la lingua al rendering, non il file di backup.
+ */
+export type Difficulty = 'easy' | 'medium' | 'hard'
+
+export const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard']
+
+export function isDifficulty(value: unknown): value is Difficulty {
+  return DIFFICULTIES.includes(value as Difficulty)
+}
+
 /** Esercizio proposto da un utente. Il video è solo un link YouTube (nessun hosting). */
 export interface Exercise {
   id: string
@@ -11,8 +23,9 @@ export interface Exercise {
   description: string
   youtubeUrl: string
   muscleGroup: string
+  difficulty: Difficulty
   stature?: StatureRange
-  /** L'utente dichiara che il volto nel video è offuscato con l'AI. */
+  /** LEGACY (M12): l'offuscamento del volto è un consiglio, non un obbligo. Non si valida più. */
   faceBlurConfirmed: boolean
   votes: number
   createdAt: string
@@ -59,7 +72,7 @@ export interface UserProfile {
   statureCm: number | null
 }
 
-export const CURRENT_SCHEMA_VERSION = 3
+export const CURRENT_SCHEMA_VERSION = 4
 
 /** Tutti i dati dell'app: è l'unità di persistenza (localStorage) e di export/import JSON. */
 export interface AppData {

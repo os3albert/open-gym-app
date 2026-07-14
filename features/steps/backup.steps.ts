@@ -24,6 +24,7 @@ function withExercise(data: AppData, name: string, youtubeUrl: string): AppData 
     description: '',
     youtubeUrl,
     muscleGroup: '',
+    difficulty: 'medium',
     faceBlurConfirmed: true,
   })
 }

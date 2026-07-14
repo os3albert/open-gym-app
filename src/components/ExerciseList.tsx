@@ -7,7 +7,7 @@ import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import type { Exercise } from '../domain/types'
+import type { Difficulty, Exercise } from '../domain/types'
 import { useT } from '../i18n/context'
 import type { DisplayExercise } from '../services/community'
 import { encodeExerciseShare } from '../services/share'
@@ -23,6 +23,17 @@ interface Props {
   onToggleVote: (exerciseId: string) => void
   onEdit: (exercise: Exercise) => void
   onDelete: (exerciseId: string) => void
+}
+
+/**
+ * Un colore per grado, con lo stesso significato ovunque: verde = facile, ambra = media,
+ * rosso = difficile. Sono bordo e testo di un chip, non riempimenti: il contrasto regge in
+ * entrambi i temi senza doverli raddoppiare.
+ */
+const DIFFICULTY_COLORS: Record<Difficulty, string> = {
+  easy: 'var(--mui-palette-success-main)',
+  medium: 'var(--mui-palette-warning-main)',
+  hard: 'var(--mui-palette-error-main)',
 }
 
 /** Riquadro tratteggiato per le liste vuote (il testo resta contratto dei test). */
@@ -136,6 +147,16 @@ export function ExerciseList({
                     label="community"
                   />
                 )}
+                <Chip
+                  size="small"
+                  variant="outlined"
+                  data-cy="difficulty-badge"
+                  label={t(`difficulty.${exercise.difficulty}`)}
+                  sx={{
+                    borderColor: DIFFICULTY_COLORS[exercise.difficulty],
+                    color: DIFFICULTY_COLORS[exercise.difficulty],
+                  }}
+                />
                 {exercise.muscleGroup && <Chip size="small" label={exercise.muscleGroup} />}
                 {exercise.stature && (
                   <Chip

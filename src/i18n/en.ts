@@ -113,6 +113,15 @@ export const en: Dictionary = {
 
   'number.chooseValue': (p) => `Choose a value for ${p.label}`,
 
+  'difficulty.easy': 'Easy',
+  'difficulty.medium': 'Medium',
+  'difficulty.hard': 'Hard',
+  'form.difficulty': 'Difficulty',
+  'form.difficultyChoose': 'Choose…',
+  'filters.difficulty': 'Filter by difficulty',
+  'filters.allDifficulties': 'All',
+  'errors.MISSING_DIFFICULTY': 'Choose the difficulty level',
+
   'filters.myStature': 'My height (cm)',
   'filters.staturePlaceholder': 'e.g. 180',
   'filters.save': 'Save',

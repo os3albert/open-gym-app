@@ -17,6 +17,7 @@ function input(name: string, extra: Partial<NewExercise> = {}): NewExercise {
     description: '',
     youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
     muscleGroup: 'Petto',
+    difficulty: 'medium',
     faceBlurConfirmed: true,
     ...extra,
   }
@@ -92,6 +93,7 @@ describe('applyFilters', () => {
     const visible = names(sampleData(), {
       suitableOnly: true,
       muscleGroup: 'Petto',
+      difficulty: null,
       sort: 'votes',
     })
     expect(visible).to.deep.equal(['Adatto'])
@@ -121,5 +123,21 @@ describe('muscleGroups', () => {
     data = addExercise(data, input('B', { muscleGroup: 'Dorso' }))
     data = addExercise(data, input('C', { muscleGroup: 'Petto' }))
     expect(muscleGroups(data.exercises)).to.deep.equal(['Dorso', 'Petto'])
+  })
+})
+
+describe('filtro per difficoltà (M13)', () => {
+  it('mostra solo gli esercizi del grado scelto', () => {
+    let data = addExercise(emptyData(), input('Facile', { difficulty: 'easy' }))
+    data = addExercise(
+      data,
+      input('Difficile', {
+        difficulty: 'hard',
+        youtubeUrl: 'https://youtu.be/BBBBBBBBBBB',
+      }),
+    )
+
+    expect(names(data, { ...defaultFilters, difficulty: 'hard' })).to.deep.equal(['Difficile'])
+    expect(names(data)).to.have.lengthOf(2)
   })
 })

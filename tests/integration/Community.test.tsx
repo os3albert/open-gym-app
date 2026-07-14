@@ -4,6 +4,7 @@ import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '../../src/App'
 import type { CommunityExercise } from '../../src/services/communityData'
+import { scegliOpzione } from './helpers'
 
 const WORKER = 'https://worker.example'
 
@@ -114,6 +115,7 @@ describe('proposta alla community', () => {
       screen.getByLabelText('Link YouTube (volto offuscato)'),
       'https://youtu.be/AAAAAAAAAAA',
     )
+    await scegliOpzione(user, 'Difficoltà', 'Media')
     await user.click(screen.getByRole('button', { name: 'Proponi esercizio' }))
   }
 

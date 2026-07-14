@@ -215,24 +215,34 @@ export const theme = createTheme({
     MuiBottomNavigationAction: {
       styleOverrides: {
         root: ({ theme: t }) => ({
-          minWidth: 60,
+          // Non selezionata: solo icona, stretta. Selezionata: si apre e fa spazio all'etichetta,
+          // che deve starci INTERA («Allenamento», «Impostazioni») senza andare a capo.
+          minWidth: 48,
+          maxWidth: 200,
           borderRadius: 999,
           margin: 6,
-          paddingInline: 4,
-          transition: 'color 140ms ease, background-color 140ms ease',
+          paddingInline: 6,
+          transition: underTest
+            ? 'none'
+            : 'color 140ms ease, background-color 140ms ease, padding 220ms cubic-bezier(0.22, 1, 0.36, 1), flex-grow 220ms cubic-bezier(0.22, 1, 0.36, 1)',
           // L'icona della destinazione attiva si ingrandisce: dice «sei qui» senza testo
           '& .MuiSvgIcon-root': {
             transition: underTest ? 'none' : 'transform 220ms cubic-bezier(0.22, 1, 0.36, 1)',
           },
           '&.Mui-selected .MuiSvgIcon-root': { transform: 'scale(1.15)' },
-          // Pill tonale sull'accento per la destinazione attiva (stile MD3)
+          // Pill tonale sull'accento per la destinazione attiva (stile MD3), che si apre per fare
+          // spazio all'etichetta
           '&.Mui-selected': {
+            paddingInline: 14,
             backgroundColor: '#e7f6c8',
             color: '#365314',
             ...t.applyStyles('dark', { backgroundColor: '#33401a', color: '#d9f99d' }),
           },
         }),
-        label: { '&.Mui-selected': { fontWeight: 700 } },
+        label: {
+          whiteSpace: 'nowrap',
+          '&.Mui-selected': { fontWeight: 700, fontSize: '0.8125rem' },
+        },
       },
     },
   },
