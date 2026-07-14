@@ -77,6 +77,21 @@ describe('Tracking pesi (M3)', () => {
       .and('include', '500 kg×reps')
   })
 
+  it('la rotella dei valori sceglie il carico senza digitare (M12)', () => {
+    cy.visitWithData({ ...seed, activity: [] })
+
+    cy.get('[data-cy=tab-allenamento]').click()
+    cy.scegliOpzione('session-exercise-select', 'Stacco da terra')
+
+    cy.scegliNumero('set-weight', '100')
+    cy.get('[data-cy=set-weight]').should('have.value', '100')
+    cy.scegliNumero('set-reps', '8')
+    cy.get('[data-cy=set-reps]').should('have.value', '8')
+
+    cy.get('[data-cy=add-set]').click()
+    cy.get('[data-cy=set-chip]').should('contain.text', '100 kg × 8')
+  })
+
   it('senza storico il campo peso resta vuoto e i +/- funzionano', () => {
     cy.visitWithData({ ...seed, activity: [] })
 

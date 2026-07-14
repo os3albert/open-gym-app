@@ -11,3 +11,13 @@ export async function scegliOpzione(user: UserEvent, etichettaCampo: string, opz
   const listbox = await screen.findByRole('listbox')
   await user.click(within(listbox).getByRole('option', { name: opzione }))
 }
+
+/**
+ * Sceglie un valore dalla rotella di un NumberField (M12). Il campo resta digitabile: la
+ * rotella si apre dal suo bottone, non cliccando il campo — così non copre ciò che sta sotto.
+ */
+export async function scegliNumero(user: UserEvent, etichettaCampo: string, valore: string) {
+  await user.click(screen.getByRole('button', { name: `Scegli un valore per ${etichettaCampo}` }))
+  const listbox = await screen.findByRole('listbox')
+  await user.click(within(listbox).getByRole('option', { name: valore }))
+}

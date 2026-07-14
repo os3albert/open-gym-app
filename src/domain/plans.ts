@@ -3,13 +3,13 @@ import { generateId } from '../utils/id'
 import { EXERCISE_NOT_FOUND_ERROR } from './activity'
 import type { AppData, PlanEntry, WorkoutDay, WorkoutPlan } from './types'
 
-export const EMPTY_PLAN_NAME_ERROR = 'Il nome della scheda è obbligatorio'
-export const PLAN_NOT_FOUND_ERROR = 'Scheda non trovata'
-export const EMPTY_DAY_NAME_ERROR = 'Il nome del giorno è obbligatorio'
-export const DUPLICATE_DAY_NAME_ERROR = "Nella scheda c'è già un giorno con questo nome"
-export const DAY_NOT_FOUND_ERROR = 'Giorno non trovato nella scheda'
-export const INVALID_TARGET_ERROR = 'Il target non è valido: servono almeno 1 serie e 1 ripetizione'
-export const DUPLICATE_ENTRY_ERROR = 'Questo esercizio è già previsto in questo giorno'
+export const EMPTY_PLAN_NAME_ERROR = 'EMPTY_PLAN_NAME'
+export const PLAN_NOT_FOUND_ERROR = 'PLAN_NOT_FOUND'
+export const EMPTY_DAY_NAME_ERROR = 'EMPTY_DAY_NAME'
+export const DUPLICATE_DAY_NAME_ERROR = 'DUPLICATE_DAY_NAME'
+export const DAY_NOT_FOUND_ERROR = 'DAY_NOT_FOUND'
+export const INVALID_TARGET_ERROR = 'INVALID_TARGET'
+export const DUPLICATE_ENTRY_ERROR = 'DUPLICATE_ENTRY'
 
 /** Applica una trasformazione alla scheda indicata; lancia se la scheda non esiste. */
 function updatePlan(

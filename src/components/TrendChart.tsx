@@ -1,4 +1,6 @@
 import type { TrendMetric, TrendPoint } from '../domain/activity'
+import type { TextKey } from '../i18n'
+import { useT } from '../i18n/context'
 import { formatDateIt } from '../utils/date'
 
 interface Props {
@@ -11,11 +13,11 @@ const HEIGHT = 200
 const PAD = { top: 16, right: 16, bottom: 26, left: 44 }
 
 /** Etichette per metrica: unità dei valori e titolo usato nella descrizione accessibile. */
-const METRIC_LABELS: Record<TrendMetric, { unit: string; title: string }> = {
-  maxWeight: { unit: 'kg', title: 'Andamento del carico' },
-  totalReps: { unit: 'reps', title: 'Andamento delle ripetizioni totali' },
-  maxReps: { unit: 'reps', title: 'Andamento delle ripetizioni massime' },
-  volume: { unit: 'kg×reps', title: 'Andamento del volume' },
+const METRIC_LABELS: Record<TrendMetric, { unit: string; title: TextKey }> = {
+  maxWeight: { unit: 'kg', title: 'chart.maxWeight' },
+  totalReps: { unit: 'reps', title: 'chart.totalReps' },
+  maxReps: { unit: 'reps', title: 'chart.maxReps' },
+  volume: { unit: 'kg×reps', title: 'chart.volume' },
 }
 
 /**
@@ -24,11 +26,15 @@ const METRIC_LABELS: Record<TrendMetric, { unit: string; title: string }> = {
  * tooltip nativi (<title>) su hit-target più grandi del marker.
  */
 export function TrendChart({ points, metric = 'maxWeight' }: Props) {
+  // Prima di ogni return anticipato: gli hook si chiamano sempre, e sempre nello stesso ordine
+  const t = useT()
+
   if (points.length === 0) {
-    return <p data-cy="trend-empty">Nessuna sessione registrata per questo esercizio.</p>
+    return <p data-cy="trend-empty">{t('chart.empty')}</p>
   }
 
-  const { unit, title } = METRIC_LABELS[metric]
+  const { unit, title: titleKey } = METRIC_LABELS[metric]
+  const title = t(titleKey)
   const times = points.map((p) => new Date(`${p.date}T00:00:00`).getTime())
   const values = points.map((p) => p.value)
   const tMin = Math.min(...times)

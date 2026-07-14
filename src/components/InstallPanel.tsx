@@ -4,6 +4,7 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useInstallPrompt } from '../hooks/useInstallPrompt'
+import { useT } from '../i18n/context'
 
 /**
  * Invito a installare l'app. Compare solo quando serve davvero: sparisce se l'app è
@@ -11,6 +12,7 @@ import { useInstallPrompt } from '../hooks/useInstallPrompt'
  * di installazione (vedi hooks/useInstallPrompt.ts).
  */
 export function InstallPanel() {
+  const t = useT()
   const { canInstall, showIosHint, install } = useInstallPrompt()
 
   if (canInstall) {
@@ -22,7 +24,7 @@ export function InstallPanel() {
           data-cy="install-button"
           onClick={() => void install()}
         >
-          Installa l'app
+          {t('install.button')}
         </Button>
       </Stack>
     )
@@ -38,7 +40,8 @@ export function InstallPanel() {
       >
         <IosShareIcon fontSize="small" color="primary" />
         <Typography variant="body2" color="text.secondary">
-          Per installarla: <strong>Condividi</strong> → <strong>Aggiungi a schermata Home</strong>.
+          {t('install.iosHintPrefix')} <strong>{t('install.iosShare')}</strong> →{' '}
+          <strong>{t('install.iosAddToHome')}</strong>.
         </Typography>
       </Stack>
     )

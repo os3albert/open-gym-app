@@ -7,12 +7,15 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { lastSession, sessionsByDate } from '../domain/activity'
+import { translateError } from '../i18n'
+import { useT } from '../i18n/context'
 import type { AppData, WorkoutSet } from '../domain/types'
 import { suggestNextWeight } from '../services/weightSuggestion'
 import { formatDateIt } from '../utils/date'
+import { range } from '../utils/number'
+import { NumberField } from './NumberField'
 import { SelectField } from './SelectField'
 
 interface Props {
@@ -24,7 +27,12 @@ interface Props {
 }
 
 /** Registrazione della sessione di oggi: pensata per l'uso in palestra (+/- rapidi, valori proposti). */
+/** Le scale della palestra: carichi a passi di 2,5 kg, ripetizioni fino a 30. */
+const WEIGHTS = range(0, 300, 2.5)
+const REPS = range(1, 30)
+
 export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
+  const t = useT()
   const [exerciseId, setExerciseId] = useState('')
   const [weight, setWeight] = useState('')
   const [reps, setReps] = useState('')
@@ -45,18 +53,13 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
     setReps(last === null ? '' : String(last.sets[last.sets.length - 1].reps))
   }
 
-  function step(value: string, delta: number, min: number): string {
-    const next = Math.max(min, (Number(value) || 0) + delta)
-    return String(Math.round(next * 10) / 10)
-  }
-
   function handleAddSet() {
     try {
       onAddSet(exerciseId, { weightKg: Number(weight), reps: Number(reps) })
       setError(null)
       // Peso e ripetizioni restano compilati: la prossima serie si aggiunge con un tap
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Serie non valida')
+      setError(translateError(t, err))
     }
   }
 
@@ -64,103 +67,59 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
     <Card component="section">
       <CardContent>
         <Typography variant="h2" gutterBottom>
-          Allenamento di oggi
+          {t('session.title')}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          {formatDateIt(today)} — registra serie, ripetizioni e peso.
+          {t('session.subtitle', { date: formatDateIt(today) })}
         </Typography>
         {exercisesByName.length === 0 ? (
-          <Typography data-cy="session-no-exercises">
-            Non c'è ancora nessun esercizio: proponine uno nella scheda «Esercizi».
-          </Typography>
+          <Typography data-cy="session-no-exercises">{t('session.noExercises')}</Typography>
         ) : (
           <Stack spacing={2}>
             <SelectField
-              label="Esercizio"
+              label={t('session.exercise')}
               value={exerciseId}
               onChange={handleSelectExercise}
               dataCy="session-exercise-select"
               sx={{ maxWidth: 320 }}
               options={[
-                { value: '', label: 'Scegli un esercizio…' },
+                { value: '', label: t('session.chooseExercise') },
                 ...exercisesByName.map((e) => ({ value: e.id, label: e.name })),
               ]}
             />
             <Stack direction="row" spacing={3} useFlexGap sx={{ flexWrap: 'wrap' }}>
-              <Stack
-                direction="row"
-                spacing={1}
-                useFlexGap
-                sx={{ flexWrap: 'wrap', alignItems: 'center' }}
-              >
-                <TextField
-                  label="Peso (kg)"
-                  type="number"
-                  value={weight}
-                  onChange={(e) => setWeight(e.target.value)}
-                  sx={{ width: 110 }}
-                  slotProps={{ htmlInput: { 'data-cy': 'set-weight', step: '0.5' } }}
-                />
-                <Button
-                  size="small"
-                  variant="outlined"
-                  color="inherit"
-                  data-cy="weight-minus"
-                  aria-label="Diminuisci il peso di 2,5 kg"
-                  onClick={() => setWeight((w) => step(w, -2.5, 0))}
-                  sx={{ minWidth: 0 }}
-                >
-                  −2,5
-                </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  color="inherit"
-                  data-cy="weight-plus"
-                  aria-label="Aumenta il peso di 2,5 kg"
-                  onClick={() => setWeight((w) => step(w, +2.5, 0))}
-                  sx={{ minWidth: 0 }}
-                >
-                  +2,5
-                </Button>
-              </Stack>
-              <Stack
-                direction="row"
-                spacing={1}
-                useFlexGap
-                sx={{ flexWrap: 'wrap', alignItems: 'center' }}
-              >
-                <TextField
-                  label="Ripetizioni"
-                  type="number"
-                  value={reps}
-                  onChange={(e) => setReps(e.target.value)}
-                  sx={{ width: 110 }}
-                  slotProps={{ htmlInput: { 'data-cy': 'set-reps' } }}
-                />
-                <Button
-                  size="small"
-                  variant="outlined"
-                  color="inherit"
-                  data-cy="reps-minus"
-                  aria-label="Diminuisci le ripetizioni"
-                  onClick={() => setReps((r) => step(r, -1, 1))}
-                  sx={{ minWidth: 0 }}
-                >
-                  −1
-                </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  color="inherit"
-                  data-cy="reps-plus"
-                  aria-label="Aumenta le ripetizioni"
-                  onClick={() => setReps((r) => step(r, +1, 1))}
-                  sx={{ minWidth: 0 }}
-                >
-                  +1
-                </Button>
-              </Stack>
+              <NumberField
+                label={t('session.weight')}
+                value={weight}
+                onChange={setWeight}
+                dataCy="set-weight"
+                options={WEIGHTS}
+                sx={{ width: 130 }}
+                stepper={{
+                  step: 2.5,
+                  min: 0,
+                  decreaseCy: 'weight-minus',
+                  increaseCy: 'weight-plus',
+                  decreaseLabel: t('session.weightMinus'),
+                  increaseLabel: t('session.weightPlus'),
+                }}
+              />
+              <NumberField
+                label={t('session.reps')}
+                value={reps}
+                onChange={setReps}
+                dataCy="set-reps"
+                options={REPS}
+                sx={{ width: 130 }}
+                stepper={{
+                  step: 1,
+                  min: 1,
+                  decreaseCy: 'reps-minus',
+                  increaseCy: 'reps-plus',
+                  decreaseLabel: t('session.repsMinus'),
+                  increaseLabel: t('session.repsPlus'),
+                }}
+              />
             </Stack>
             {error && (
               <Alert severity="error" role="alert" data-cy="session-error">
@@ -174,7 +133,7 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
                 disabled={!exerciseId}
                 onClick={handleAddSet}
               >
-                Aggiungi serie
+                {t('session.addSet')}
               </Button>
             </Stack>
           </Stack>
@@ -183,7 +142,7 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
         {todayRecords.length > 0 && (
           <Box data-cy="today-session" sx={{ mt: 3 }}>
             <Typography variant="h3" component="h3" gutterBottom>
-              Serie registrate oggi
+              {t('session.todaySets')}
             </Typography>
             <Stack component="ul" spacing={1.5} sx={{ listStyle: 'none', m: 0, p: 0 }}>
               {todayRecords.map((record) => (
@@ -222,7 +181,11 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
                         <IconButton
                           size="small"
                           data-cy="remove-set"
-                          aria-label={`Rimuovi la serie ${set.weightKg} kg × ${set.reps} di ${exerciseName(record.exerciseId)}`}
+                          aria-label={t('session.removeSet', {
+                            weight: set.weightKg,
+                            reps: set.reps,
+                            name: exerciseName(record.exerciseId),
+                          })}
                           onClick={() => onRemoveSet(record.id, index)}
                         >
                           <CloseIcon sx={{ fontSize: '0.9rem' }} />

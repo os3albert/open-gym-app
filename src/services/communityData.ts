@@ -1,15 +1,14 @@
 import {
   EMPTY_NAME_ERROR,
-  FACE_BLUR_REQUIRED_ERROR,
   INVALID_STATURE_RANGE_ERROR,
   INVALID_YOUTUBE_LINK_ERROR,
 } from '../domain/exercises'
 import type { StatureRange } from '../domain/types'
 import { parseYouTubeVideoId } from './youtube'
 
-export const DUPLICATE_EXERCISE_ERROR = 'Questo video è già nel catalogo della community'
-export const UNKNOWN_EXERCISE_ERROR = 'Esercizio non presente nel catalogo della community'
-export const TOO_LONG_ERROR = 'Il testo inserito è troppo lungo'
+export const DUPLICATE_EXERCISE_ERROR = 'DUPLICATE_EXERCISE'
+export const UNKNOWN_EXERCISE_ERROR = 'UNKNOWN_EXERCISE'
+export const TOO_LONG_ERROR = 'TOO_LONG'
 
 /**
  * Limiti di lunghezza: il catalogo è un file pubblico del repo, e senza un tetto una
@@ -46,7 +45,7 @@ export interface ProposalInput {
   description?: string
   youtubeUrl: string
   muscleGroup?: string
-  faceBlurConfirmed: boolean
+  faceBlurConfirmed?: boolean
   stature?: StatureRange
 }
 
@@ -75,7 +74,6 @@ export function validateProposal(
   const muscleGroup = input.muscleGroup?.trim() ?? ''
   const youtubeUrl = input.youtubeUrl?.trim() ?? ''
   if (name === '') throw new Error(EMPTY_NAME_ERROR)
-  if (!input.faceBlurConfirmed) throw new Error(FACE_BLUR_REQUIRED_ERROR)
 
   if (
     name.length > FIELD_LIMITS.name ||
@@ -101,7 +99,7 @@ export function validateProposal(
     description,
     youtubeUrl,
     muscleGroup,
-    faceBlurConfirmed: true,
+    faceBlurConfirmed: input.faceBlurConfirmed ?? false,
     ...(input.stature ? { stature: input.stature } : {}),
     createdAt: now(),
   }

@@ -3,7 +3,7 @@ import type { CommunityExercise, CommunityVotes, ProposalInput } from './communi
 import { voteCounts } from './communityData'
 import { parseYouTubeVideoId } from './youtube'
 
-export const COMMUNITY_UNREACHABLE_ERROR = 'Community non raggiungibile: riprova più tardi'
+export const COMMUNITY_UNREACHABLE_ERROR = 'COMMUNITY_UNREACHABLE'
 
 const REPO = 'os3albert/open-gym-app'
 const BRANCH = 'main'

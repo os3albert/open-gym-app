@@ -8,6 +8,7 @@ import {
   type NewExercise,
 } from '../../src/domain/exercises'
 import type { StatureRange } from '../../src/domain/types'
+import { makeTranslate, translateError } from '../../src/i18n'
 import { emptyData } from '../../src/services/storage'
 import type { GymWorld } from '../support/world'
 
@@ -97,7 +98,7 @@ When(
 )
 
 When(
-  "provo a proporre l'esercizio {string} senza confermare il volto offuscato",
+  "propongo l'esercizio {string} senza confermare il volto offuscato",
   function (this: GymWorld, name: string) {
     try {
       this.data = addExercise(this.data, {
@@ -147,7 +148,9 @@ Then('il mio voto per {string} non risulta attivo', function (this: GymWorld, na
 Then(
   "la proposta viene rifiutata con l'errore {string}",
   function (this: GymWorld, message: string) {
-    expect(this.error).to.equal(message)
+    // Il dominio lancia un CODICE (INVALID_YOUTUBE_LINK), lo scenario parla la lingua dell'utente:
+    // è lo step a tradurre, non la specifica a doversi imparare i codici.
+    expect(translateError(makeTranslate('it'), this.error)).to.equal(message)
   },
 )
 

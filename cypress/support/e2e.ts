@@ -10,11 +10,15 @@ declare global {
       visitWithData(data: unknown): Chainable<Cypress.AUTWindow>
       /** Apre il form di proposta (collassato all'atterraggio); no-op se è già aperto. */
       apriFormProposta(): Chainable<void>
+      /** Va alla vista Impostazioni: da M12 tema e backup vivono lì, non più sotto ogni vista. */
+      apriImpostazioni(): Chainable<void>
       /**
        * Sceglie una voce da un SelectField (menu MUI, non più un <select> nativo:
        * cy.select() qui non funziona). Apre il menu e clicca l'opzione per etichetta.
        */
       scegliOpzione(dataCy: string, etichetta: string): Chainable<void>
+      /** Sceglie un valore dalla rotella di un NumberField (si apre dal bottone del campo). */
+      scegliNumero(dataCy: string, valore: string): Chainable<void>
     }
   }
 }
@@ -25,6 +29,19 @@ Cypress.Commands.add('scegliOpzione', (dataCy: string, etichetta: string) => {
   cy.get('[role=listbox]').contains('[role=option]', etichetta).click()
   // Il menu si chiude in dissolvenza: senza attendere, il click successivo può finire sul backdrop
   cy.get('[role=listbox]').should('not.exist')
+})
+
+Cypress.Commands.add('scegliNumero', (dataCy: string, valore: string) => {
+  cy.get(`[data-cy=${dataCy}-wheel]`).click()
+  cy.get('[role=listbox] [role=option]')
+    .filter((_, el) => el.textContent === valore)
+    .first()
+    .click()
+  cy.get('[role=listbox]').should('not.exist')
+})
+
+Cypress.Commands.add('apriImpostazioni', () => {
+  cy.get('[data-cy=tab-impostazioni]').click()
 })
 
 Cypress.Commands.add('apriFormProposta', () => {

@@ -3,6 +3,7 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import { useT } from '../i18n/context'
 import { SHARE_HASH_PREFIX } from '../services/share'
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
  * (fallback universale), la copia negli appunti e la Web Share API sono comodità in più.
  */
 export function ShareCodeBox({ code }: Props) {
+  const t = useT()
   const [feedback, setFeedback] = useState<string | null>(null)
   const link = `${window.location.origin}${window.location.pathname}${SHARE_HASH_PREFIX}${code}`
 
@@ -38,7 +40,7 @@ export function ShareCodeBox({ code }: Props) {
           htmlInput: {
             readOnly: true,
             'data-cy': 'share-code',
-            'aria-label': 'Codice di condivisione',
+            'aria-label': t('share.codeLabel'),
             sx: { fontFamily: 'monospace', fontSize: '0.8rem', wordBreak: 'break-all' },
           },
         }}
@@ -48,17 +50,17 @@ export function ShareCodeBox({ code }: Props) {
           size="small"
           variant="outlined"
           data-cy="share-copy"
-          onClick={() => copy(code, 'Codice copiato negli appunti!')}
+          onClick={() => copy(code, t('share.codeCopied'))}
         >
-          Copia codice
+          {t('share.copyCode')}
         </Button>
         <Button
           size="small"
           variant="outlined"
           data-cy="share-copy-link"
-          onClick={() => copy(link, 'Link copiato negli appunti!')}
+          onClick={() => copy(link, t('share.linkCopied'))}
         >
-          Copia link
+          {t('share.copyLink')}
         </Button>
         {typeof navigator.share === 'function' && (
           <Button
@@ -67,7 +69,7 @@ export function ShareCodeBox({ code }: Props) {
             data-cy="share-native"
             onClick={() => navigator.share({ text: link }).catch(() => {})}
           >
-            Condividi…
+            {t('share.native')}
           </Button>
         )}
       </Stack>

@@ -15,6 +15,7 @@ describe('Backup dei dati', () => {
 
   it('importa un backup JSON v1 sostituendo tutto e migrandolo allo schema corrente', () => {
     // La fixture è volutamente un backup v1: l'import deve migrarla senza perdite
+    cy.apriImpostazioni()
     cy.get('[data-cy=import-input]').selectFile('cypress/fixtures/backup-esempio.json', {
       force: true,
     })
@@ -23,6 +24,9 @@ describe('Backup dei dati', () => {
     cy.get('[data-cy=import-replace]').click()
 
     cy.get('[data-cy=backup-message]').should('contain.text', 'importato correttamente')
+
+    // Il backup vive in Impostazioni: la lista si guarda tornando sulla sua vista
+    cy.get('[data-cy=tab-esercizi]').click()
     cy.get('[data-cy=exercise-item]').should('have.length', 1).and('contain.text', 'Military press')
   })
 
@@ -49,6 +53,8 @@ describe('Backup dei dati', () => {
       votedExerciseIds: [],
     })
 
+    cy.apriImpostazioni()
+
     cy.get('[data-cy=import-input]').selectFile('cypress/fixtures/backup-esempio.json', {
       force: true,
     })
@@ -56,16 +62,23 @@ describe('Backup dei dati', () => {
 
     cy.get('[data-cy=backup-message]').should('contain.text', 'senza duplicati')
     // Stesso video: resta il solo esercizio locale
+
+    // Il backup vive in Impostazioni: la lista si guarda tornando sulla sua vista
+    cy.get('[data-cy=tab-esercizi]').click()
     cy.get('[data-cy=exercise-item]').should('have.length', 1).and('contain.text', 'Lento avanti')
   })
 
   it('segnala un file di backup non valido senza proporre scelte', () => {
+    cy.apriImpostazioni()
     cy.get('[data-cy=import-input]').selectFile('cypress/fixtures/backup-non-valido.json', {
       force: true,
     })
 
     cy.get('[data-cy=backup-message]').should('contain.text', 'non riconosciuto')
     cy.get('[data-cy=import-choice]').should('not.exist')
+
+    // Il backup vive in Impostazioni: la lista si guarda tornando sulla sua vista
+    cy.get('[data-cy=tab-esercizi]').click()
     cy.get('[data-cy=exercise-item]').should('not.exist')
   })
 
@@ -73,8 +86,9 @@ describe('Backup dei dati', () => {
     cy.apriFormProposta()
     cy.get('[data-cy=exercise-name]').type('Panca piana')
     cy.get('[data-cy=exercise-youtube]').type('https://youtu.be/dQw4w9WgXcQ')
-    cy.get('[data-cy=face-blur-checkbox]').check()
     cy.get('[data-cy=exercise-submit]').click()
+
+    cy.apriImpostazioni()
 
     cy.get('[data-cy=export-button]').click()
 
@@ -83,7 +97,8 @@ describe('Backup dei dati', () => {
       expect(backup.exportedAt).to.be.a('string')
       expect(backup.exercises).to.have.length(1)
       expect(backup.exercises[0].name).to.equal('Panca piana')
-      expect(backup.exercises[0].faceBlurConfirmed).to.equal(true)
+      // Campo legacy (M12): non lo chiede più nessuno, ma resta nello schema per i backup vecchi
+      expect(backup.exercises[0].faceBlurConfirmed).to.equal(false)
       expect(backup.profile).to.deep.equal({ statureCm: null })
     })
   })

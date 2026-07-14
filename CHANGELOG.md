@@ -2,6 +2,33 @@
 
 Tutte le modifiche rilevanti del progetto, per release.
 
+## 1.4.0 — 2026-07-14
+
+Impostazioni, due lingue e input pensati per la palestra (milestone M12, issue #63–#68).
+
+### Lingua (M12)
+
+- **Italiano e inglese**, scelti da Impostazioni. Dizionari tipati l'uno sull'altro: una
+  traduzione mancante **non compila**, non arriva in produzione.
+- Il dominio (e il worker) lanciano **codici** d'errore, non frasi: `EMPTY_NAME`, non
+  «Il nome dell'esercizio è obbligatorio». La frase la sceglie la lingua, al rendering.
+- La lingua **non si deduce dal browser**: si sceglie, e resta. Nessuna sorpresa all'avvio.
+
+### Impostazioni (M12)
+
+- Nuova quinta sezione: **lingua**, **tema** (che lascia la barra in alto) e **backup**
+  (che smette di comparire in fondo a ogni schermata).
+
+### Proposta e input (M12)
+
+- «Nuova proposta» diventa un **pulsante flottante** che apre il form in un **modale**;
+  anche «Modifica» apre lo stesso modale, con i campi già compilati.
+- Gli input numerici hanno una **rotella di valori** (carichi a passi di 2,5 kg, ripetizioni,
+  stature) accanto ai pulsanti di incremento. Restano digitabili: i valori fuori scala si
+  scrivono a mano.
+- Il **volto offuscato non è più obbligatorio**: resta il consiglio (si guarda il movimento,
+  non la persona), sparisce la spunta che bloccava la proposta.
+
 ## 1.3.0 — 2026-07-12
 
 Identità visiva e statistiche d'uso rispettose della privacy (milestone M9, issue #43–#44).

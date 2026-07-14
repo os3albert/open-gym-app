@@ -1,16 +1,16 @@
 import { useState, type FormEvent } from 'react'
 import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import Checkbox from '@mui/material/Checkbox'
-import FormControlLabel from '@mui/material/FormControlLabel'
+import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import type { NewExercise } from '../domain/exercises'
+import { useT } from '../i18n/context'
 import type { Exercise } from '../domain/types'
 import { parseYouTubeVideoId, youtubeThumbnailUrl } from '../services/youtube'
+import { range } from '../utils/number'
+import { NumberField } from './NumberField'
 
 interface Props {
   /** Esercizio in modifica; null = nuova proposta. Rimontare il form (key) quando cambia. */
@@ -21,7 +21,11 @@ interface Props {
   error: string | null
 }
 
+/** Le stature plausibili: le stesse che il dominio accetta (100–250 cm). */
+const STATURES = range(100, 250)
+
 export function ExerciseForm({ initial = null, onSubmit, onCancel, error }: Props) {
+  const t = useT()
   const [name, setName] = useState(initial?.name ?? '')
   const [muscleGroup, setMuscleGroup] = useState(initial?.muscleGroup ?? '')
   const [youtubeUrl, setYoutubeUrl] = useState(initial?.youtubeUrl ?? '')
@@ -32,7 +36,6 @@ export function ExerciseForm({ initial = null, onSubmit, onCancel, error }: Prop
   const [statureMax, setStatureMax] = useState(
     initial?.stature ? String(initial.stature.maxCm) : '',
   )
-  const [faceBlurConfirmed, setFaceBlurConfirmed] = useState(initial?.faceBlurConfirmed ?? false)
 
   const previewVideoId = parseYouTubeVideoId(youtubeUrl)
 
@@ -44,7 +47,6 @@ export function ExerciseForm({ initial = null, onSubmit, onCancel, error }: Prop
       muscleGroup,
       youtubeUrl,
       description,
-      faceBlurConfirmed,
       ...(hasStature ? { stature: { minCm: Number(statureMin), maxCm: Number(statureMax) } } : {}),
     })
     if (accepted && !initial) {
@@ -54,128 +56,104 @@ export function ExerciseForm({ initial = null, onSubmit, onCancel, error }: Prop
       setDescription('')
       setStatureMin('')
       setStatureMax('')
-      setFaceBlurConfirmed(false)
     }
   }
 
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h2" gutterBottom>
-          {initial ? 'Modifica esercizio' : 'Proponi un esercizio'}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          Carica il link di un video YouTube con il volto offuscato dall'AI: si valuta l'esercizio,
-          non la persona.
-        </Typography>
-        <Stack component="form" spacing={2} onSubmit={handleSubmit}>
-          <TextField
-            label="Nome esercizio"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            slotProps={{ htmlInput: { 'data-cy': 'exercise-name' } }}
+    <Box sx={{ p: { xs: 2.5, sm: 3 } }}>
+      <Typography variant="h2" gutterBottom id="titolo-proposta">
+        {initial ? t('form.editTitle') : t('form.newTitle')}
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        {t('form.intro')}
+      </Typography>
+      <Stack component="form" spacing={2} onSubmit={handleSubmit}>
+        <TextField
+          label={t('form.name')}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          slotProps={{ htmlInput: { 'data-cy': 'exercise-name' } }}
+        />
+        <TextField
+          label={t('form.muscleGroup')}
+          value={muscleGroup}
+          onChange={(e) => setMuscleGroup(e.target.value)}
+          slotProps={{ htmlInput: { 'data-cy': 'exercise-muscle' } }}
+        />
+        <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: 'wrap' }}>
+          <NumberField
+            label={t('form.statureFrom')}
+            placeholder={t('form.statureFromExample')}
+            value={statureMin}
+            onChange={setStatureMin}
+            dataCy="exercise-stature-min"
+            options={STATURES}
           />
-          <TextField
-            label="Gruppo muscolare"
-            value={muscleGroup}
-            onChange={(e) => setMuscleGroup(e.target.value)}
-            slotProps={{ htmlInput: { 'data-cy': 'exercise-muscle' } }}
+          <NumberField
+            label={t('form.statureTo')}
+            placeholder={t('form.statureToExample')}
+            value={statureMax}
+            onChange={setStatureMax}
+            dataCy="exercise-stature-max"
+            options={STATURES}
           />
-          <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: 'wrap' }}>
-            <TextField
-              label="Statura consigliata da (cm)"
-              type="number"
-              placeholder="es. 170"
-              value={statureMin}
-              onChange={(e) => setStatureMin(e.target.value)}
-              slotProps={{ htmlInput: { 'data-cy': 'exercise-stature-min' } }}
-            />
-            <TextField
-              label="a (cm)"
-              type="number"
-              placeholder="es. 190"
-              value={statureMax}
-              onChange={(e) => setStatureMax(e.target.value)}
-              slotProps={{ htmlInput: { 'data-cy': 'exercise-stature-max' } }}
-            />
-          </Stack>
-          <Typography variant="caption" color="text.secondary">
-            Lascia vuota la fascia di statura se l'esercizio è adatto a tutti.
-          </Typography>
-          <TextField
-            label="Link YouTube (volto offuscato)"
-            placeholder="https://www.youtube.com/watch?v=..."
-            value={youtubeUrl}
-            onChange={(e) => setYoutubeUrl(e.target.value)}
-            slotProps={{ htmlInput: { 'data-cy': 'exercise-youtube' } }}
-          />
-          {previewVideoId && (
-            <img
-              className="video-preview"
-              data-cy="video-preview"
-              src={youtubeThumbnailUrl(previewVideoId)}
-              alt="Anteprima del video YouTube"
-            />
-          )}
-          <TextField
-            label="Descrizione"
-            multiline
-            rows={3}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            slotProps={{ htmlInput: { 'data-cy': 'exercise-description' } }}
-          />
-          <details className="guidelines" data-cy="video-guidelines">
-            <summary>Linee guida video (volto offuscato)</summary>
-            <ul>
-              <li>
-                Su YouTube Studio: Editor → Sfoca → «Sfocatura viso», rileva e segue i volti
-                automaticamente (gratuito).
-              </li>
-              <li>
-                In alternativa: app di editing con blur AI (es. CapCut) prima del caricamento.
-              </li>
-              <li>Il video deve mostrare l'esecuzione completa dell'esercizio.</li>
-              <li>Carica come «Non in elenco» se non vuoi che appaia nel tuo canale.</li>
-            </ul>
-          </details>
-          <FormControlLabel
-            label="Confermo che il volto nel video è offuscato"
-            control={
-              <Checkbox
-                checked={faceBlurConfirmed}
-                onChange={(e) => setFaceBlurConfirmed(e.target.checked)}
-                // Lo slot input di Checkbox non tipizza i data-*: cast al tipo HTML nativo
-                slotProps={{
-                  input: {
-                    'data-cy': 'face-blur-checkbox',
-                  } as React.InputHTMLAttributes<HTMLInputElement>,
-                }}
-              />
-            }
-          />
-          {error && (
-            <Alert severity="error" role="alert" data-cy="form-error">
-              {error}
-            </Alert>
-          )}
-          <Stack direction="row" spacing={1.5} useFlexGap sx={{ flexWrap: 'wrap' }}>
-            <Button
-              type="submit"
-              variant="contained"
-              data-cy="exercise-submit"
-              disabled={!faceBlurConfirmed}
-            >
-              {initial ? 'Salva modifiche' : 'Proponi esercizio'}
-            </Button>
-            {initial && onCancel && (
-              <Button variant="text" color="inherit" data-cy="edit-cancel" onClick={onCancel}>
-                Annulla modifica
-              </Button>
-            )}
-          </Stack>
         </Stack>
-      </CardContent>
-    </Card>
+        <Typography variant="caption" color="text.secondary">
+          {t('form.statureHint')}
+        </Typography>
+        <TextField
+          label={t('form.youtube')}
+          placeholder="https://www.youtube.com/watch?v=..."
+          value={youtubeUrl}
+          onChange={(e) => setYoutubeUrl(e.target.value)}
+          slotProps={{ htmlInput: { 'data-cy': 'exercise-youtube' } }}
+        />
+        {previewVideoId && (
+          <img
+            className="video-preview"
+            data-cy="video-preview"
+            src={youtubeThumbnailUrl(previewVideoId)}
+            alt={t('form.videoPreviewAlt')}
+          />
+        )}
+        <TextField
+          label={t('form.description')}
+          multiline
+          rows={3}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          slotProps={{ htmlInput: { 'data-cy': 'exercise-description' } }}
+        />
+        <details className="guidelines" data-cy="video-guidelines">
+          <summary>{t('form.guidelinesSummary')}</summary>
+          <ul>
+            <li>{t('form.guidelineStudio')}</li>
+            <li>{t('form.guidelineApps')}</li>
+            <li>{t('form.guidelineFullRep')}</li>
+            <li>{t('form.guidelineUnlisted')}</li>
+          </ul>
+        </details>
+        {/* Il volto offuscato è un consiglio, non un obbligo (M12): niente più spunta che blocca
+              la proposta. Resta la dicitura, perché la ragione per cui lo consigliamo non cambia. */}
+        <Typography variant="caption" color="text.secondary" data-cy="face-blur-note">
+          {t('form.faceBlurNote')}
+        </Typography>
+        {error && (
+          <Alert severity="error" role="alert" data-cy="form-error">
+            {error}
+          </Alert>
+        )}
+        <Stack direction="row" spacing={1.5} useFlexGap sx={{ flexWrap: 'wrap' }}>
+          <Button type="submit" variant="contained" data-cy="exercise-submit">
+            {initial ? t('form.submitEdit') : t('form.submitNew')}
+          </Button>
+          {initial && onCancel && (
+            <Button variant="text" color="inherit" data-cy="edit-cancel" onClick={onCancel}>
+              {t('form.cancelEdit')}
+            </Button>
+          )}
+        </Stack>
+      </Stack>
+    </Box>
   )
 }

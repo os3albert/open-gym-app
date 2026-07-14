@@ -6,12 +6,15 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { activePlan, dayForDate, nextScheduledDay, planUsesWeekdays } from '../domain/plans'
+import { translateError } from '../i18n'
+import { useT } from '../i18n/context'
 import type { AppData, Exercise, PlanEntry, WorkoutSet } from '../domain/types'
 import { suggestNextWeight } from '../services/weightSuggestion'
 import { formatDateIt } from '../utils/date'
+import { range } from '../utils/number'
+import { NumberField } from './NumberField'
 import { SelectField } from './SelectField'
 
 interface Props {
@@ -25,7 +28,11 @@ interface Props {
  * L'allenamento del giorno dalla scheda attiva (issue #19): esercizi previsti oggi,
  * peso proposto dallo storico, «Fatto ✓» che registra la sessione nello storico.
  */
+const WEIGHTS = range(0, 300, 2.5)
+const REPS = range(1, 30)
+
 export function TodayWorkout({ data, today, onComplete }: Props) {
+  const t = useT()
   const [manualDayName, setManualDayName] = useState('')
   const plan = activePlan(data)
   if (!plan || plan.days.length === 0) return null
@@ -39,15 +46,16 @@ export function TodayWorkout({ data, today, onComplete }: Props) {
     <Card component="section" data-cy="today-workout">
       <CardContent>
         <Typography variant="h2" gutterBottom>
-          La tua scheda: {plan.name}
+          {t('today.yourPlan', { name: plan.name })}
         </Typography>
 
         {restDay && !day && (
           <Typography data-cy="rest-day" sx={{ mb: 2 }}>
-            Oggi riposo 💤{' '}
+            {t('today.restDay')}{' '}
             {next && (
               <span data-cy="next-workout">
-                Prossimo allenamento: <strong>{next.day.name}</strong> ({formatDateIt(next.date)})
+                {t('today.nextWorkout')} <strong>{next.day.name}</strong> ({formatDateIt(next.date)}
+                )
               </span>
             )}
           </Typography>
@@ -55,17 +63,13 @@ export function TodayWorkout({ data, today, onComplete }: Props) {
 
         {!autoDay && (
           <SelectField
-            label={
-              restDay
-                ? 'Ti alleni lo stesso? Scegli il giorno'
-                : 'Che giorno della scheda fai oggi?'
-            }
+            label={restDay ? t('today.chooseDayAnyway') : t('today.whichDay')}
             value={manualDayName}
             onChange={setManualDayName}
             dataCy="today-day-select"
             sx={{ minWidth: 260 }}
             options={[
-              { value: '', label: 'Scegli…' },
+              { value: '', label: t('today.choose') },
               ...plan.days.map((d) => ({ value: d.name, label: d.name })),
             ]}
           />
@@ -79,11 +83,11 @@ export function TodayWorkout({ data, today, onComplete }: Props) {
               data-cy="today-day-name"
               sx={{ my: 1.5 }}
             >
-              {day.name} — spunta gli esercizi man mano che li completi.
+              {t('today.dayHint', { name: day.name })}
             </Typography>
             {day.entries.length === 0 ? (
               <Typography variant="body2" color="text.secondary">
-                Questo giorno non ha esercizi: aggiungili dalla scheda.
+                {t('today.dayEmpty')}
               </Typography>
             ) : (
               <Box component="ul" sx={{ listStyle: 'none', m: 0, p: 0, display: 'grid', gap: 2 }}>
@@ -122,6 +126,7 @@ interface EntryProps {
 }
 
 function TodayEntry({ exercise, entry, done, suggestedWeight, onComplete }: EntryProps) {
+  const t = useT()
   const [weight, setWeight] = useState(suggestedWeight === null ? '' : String(suggestedWeight))
   const [reps, setReps] = useState(String(entry.reps))
   const [skipped, setSkipped] = useState(false)
@@ -132,7 +137,7 @@ function TodayEntry({ exercise, entry, done, suggestedWeight, onComplete }: Entr
       onComplete(exercise.id, entry.sets, { weightKg: Number(weight), reps: Number(reps) })
       setError(null)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Serie non valida')
+      setError(translateError(t, err))
     }
   }
 
@@ -166,18 +171,18 @@ function TodayEntry({ exercise, entry, done, suggestedWeight, onComplete }: Entr
           color="success"
           variant="outlined"
           data-cy="today-entry-done"
-          label="✓ Registrato oggi"
+          label={t('today.done')}
         />
       ) : skipped ? (
         <Typography component="span" variant="body2" data-cy="today-entry-skipped">
-          Saltato per oggi{' '}
+          {t('today.skipped')}{' '}
           <Button
             size="small"
             color="inherit"
             data-cy="today-entry-unskip"
             onClick={() => setSkipped(false)}
           >
-            Annulla
+            {t('today.undoSkip')}
           </Button>
         </Typography>
       ) : (
@@ -188,24 +193,24 @@ function TodayEntry({ exercise, entry, done, suggestedWeight, onComplete }: Entr
             useFlexGap
             sx={{ flexWrap: 'wrap', alignItems: 'center' }}
           >
-            <TextField
-              label="Peso (kg)"
-              type="number"
+            <NumberField
+              label={t('session.weight')}
               value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              sx={{ width: 110 }}
-              slotProps={{ htmlInput: { 'data-cy': 'today-weight', step: '0.5' } }}
+              onChange={setWeight}
+              dataCy="today-weight"
+              options={WEIGHTS}
+              sx={{ width: 130 }}
             />
-            <TextField
-              label="Ripetizioni"
-              type="number"
+            <NumberField
+              label={t('session.reps')}
               value={reps}
-              onChange={(e) => setReps(e.target.value)}
-              sx={{ width: 110 }}
-              slotProps={{ htmlInput: { 'data-cy': 'today-reps' } }}
+              onChange={setReps}
+              dataCy="today-reps"
+              options={REPS}
+              sx={{ width: 130 }}
             />
             <Button variant="contained" data-cy="today-entry-complete" onClick={handleComplete}>
-              Fatto ✓
+              {t('today.complete')}
             </Button>
             <Button
               size="small"
@@ -213,7 +218,7 @@ function TodayEntry({ exercise, entry, done, suggestedWeight, onComplete }: Entr
               data-cy="today-entry-skip"
               onClick={() => setSkipped(true)}
             >
-              Salta
+              {t('today.skip')}
             </Button>
           </Stack>
           {error && (

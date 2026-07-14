@@ -6,7 +6,6 @@ function proponiEsercizio(nome: string, link: string) {
   cy.get('[data-cy=exercise-muscle]').type('Petto')
   cy.get('[data-cy=exercise-youtube]').type(link)
   cy.get('[data-cy=exercise-description]').type('Descrizione di prova')
-  cy.get('[data-cy=face-blur-checkbox]').check()
   cy.get('[data-cy=exercise-submit]').click()
 }
 
@@ -19,14 +18,12 @@ describe('Gestione esercizi', () => {
     proponiEsercizio('Panca piana', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
 
     cy.get('[data-cy=exercise-item]').should('have.length', 1).and('contain.text', 'Panca piana')
-    cy.get('[data-cy=face-blur-badge]').should('be.visible')
     cy.get('[data-cy=form-error]').should('not.exist')
   })
 
-  it('senza la conferma del volto offuscato il pulsante di invio resta disabilitato', () => {
+  it('il volto offuscato è un consiglio, non un obbligo: si propone senza spuntare nulla (M12)', () => {
     cy.apriFormProposta()
-    cy.get('[data-cy=exercise-submit]').should('be.disabled')
-    cy.get('[data-cy=face-blur-checkbox]').check()
+    cy.get('[data-cy=face-blur-note]').should('be.visible')
     cy.get('[data-cy=exercise-submit]').should('be.enabled')
   })
 
@@ -49,13 +46,17 @@ describe('Gestione esercizi', () => {
     cy.get('[data-cy=exercise-upvote]').should('have.attr', 'aria-pressed', 'false')
   })
 
-  it('atterra sulla lista della community, con il form di proposta chiuso e apribile', () => {
+  it('atterra sulla lista della community; la proposta si apre dal FAB in un modale (M12)', () => {
     cy.get('[data-cy=exercise-name]').should('not.exist')
     cy.get('[data-cy=propose-toggle]').should('have.attr', 'aria-expanded', 'false').click()
 
+    // Il form vive in un modale: si chiude dalla sua X, non ri-cliccando il FAB (che ci sta sotto)
+    cy.get('[role=dialog]').should('be.visible')
     cy.get('[data-cy=exercise-name]').should('be.visible')
-    cy.get('[data-cy=propose-toggle]').should('have.attr', 'aria-expanded', 'true').click()
+    cy.get('[data-cy=form-close]').click()
+
     cy.get('[data-cy=exercise-name]').should('not.exist')
+    cy.get('[data-cy=propose-toggle]').should('have.attr', 'aria-expanded', 'false')
   })
 
   it('modifica un esercizio esistente', () => {

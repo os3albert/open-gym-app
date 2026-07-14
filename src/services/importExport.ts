@@ -4,8 +4,8 @@ import { generateId } from '../utils/id'
 import { migrateToCurrentSchema } from './migrations'
 import { parseYouTubeVideoId } from './youtube'
 
-export const INVALID_JSON_ERROR = 'Il file non contiene JSON valido'
-export const INVALID_FORMAT_ERROR = 'Formato di backup non riconosciuto'
+export const INVALID_JSON_ERROR = 'INVALID_JSON'
+export const INVALID_FORMAT_ERROR = 'INVALID_FORMAT'
 
 /** Serializza tutti i dati dell'app (usato anche da storage.ts per localStorage). */
 export function exportToJson(data: AppData): string {

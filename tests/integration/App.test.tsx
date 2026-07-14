@@ -3,7 +3,8 @@ import '@testing-library/jest-dom/vitest'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '../../src/App'
-import { FACE_BLUR_REQUIRED_ERROR, INVALID_YOUTUBE_LINK_ERROR } from '../../src/domain/exercises'
+import { it as itDict } from '../../src/i18n/it'
+import { INVALID_YOUTUBE_LINK_ERROR } from '../../src/domain/exercises'
 
 beforeEach(() => {
   localStorage.clear()
@@ -11,7 +12,7 @@ beforeEach(() => {
   window.history.replaceState(null, '', '/')
 })
 
-/** Il form di proposta è collassato: si apre dal bottone «Nuova proposta» (issue #37). No-op se è già aperto. */
+/** Il form di proposta vive in un modale (M12): si apre dal FAB «Nuova proposta». No-op se è già aperto. */
 async function openProposeForm() {
   if (screen.queryByLabelText('Nome esercizio')) return
   const user = userEvent.setup()
@@ -34,7 +35,6 @@ async function proposeExercise(
     await user.type(screen.getByLabelText('a (cm)'), String(stature.max))
   }
   await user.type(screen.getByLabelText('Link YouTube (volto offuscato)'), youtubeUrl)
-  await user.click(screen.getByLabelText('Confermo che il volto nel video è offuscato'))
   await user.click(screen.getByRole('button', { name: /Proponi esercizio|Salva modifiche/ }))
 }
 
@@ -48,7 +48,6 @@ describe('proposta di un esercizio', () => {
 
     expect(screen.getByRole('heading', { name: 'Panca piana' })).toBeInTheDocument()
     expect(screen.getByText('170–190 cm')).toBeInTheDocument()
-    expect(screen.getByText('✓ volto offuscato')).toBeInTheDocument()
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
 
@@ -56,14 +55,10 @@ describe('proposta di un esercizio', () => {
     render(<App />)
     await proposeExercise('Squat', 'https://vimeo.com/12345')
 
-    expect(screen.getByRole('alert')).toHaveTextContent(INVALID_YOUTUBE_LINK_ERROR)
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      itDict[`errors.${INVALID_YOUTUBE_LINK_ERROR}`],
+    )
     expect(screen.queryByRole('heading', { name: 'Squat' })).not.toBeInTheDocument()
-  })
-
-  it('senza conferma del volto offuscato il pulsante di invio è disabilitato', async () => {
-    render(<App />)
-    await openProposeForm()
-    expect(screen.getByRole('button', { name: 'Proponi esercizio' })).toBeDisabled()
   })
 
   it('il form di proposta è chiuso di partenza: si atterra sulla lista della community', () => {
@@ -76,18 +71,46 @@ describe('proposta di un esercizio', () => {
     )
   })
 
-  it(`il dominio rifiuta comunque la proposta senza conferma (messaggio: ${FACE_BLUR_REQUIRED_ERROR})`, async () => {
-    // La checkbox disabilita il submit: qui si verifica solo che la difesa esista anche nel dominio
-    const { createExercise } = await import('../../src/domain/exercises')
-    expect(() =>
-      createExercise({
-        name: 'X',
-        description: '',
-        youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
-        muscleGroup: '',
-        faceBlurConfirmed: false,
-      }),
-    ).toThrow(FACE_BLUR_REQUIRED_ERROR)
+  it('il FAB apre il form in un modale, e a salvataggio riuscito si richiude (M12)', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Nuova proposta' }))
+    expect(await screen.findByRole('dialog')).toBeInTheDocument()
+
+    await user.type(screen.getByLabelText('Nome esercizio'), 'Rematore')
+    await user.type(
+      screen.getByLabelText('Link YouTube (volto offuscato)'),
+      'https://youtu.be/dQw4w9WgXcQ',
+    )
+    await user.click(screen.getByRole('button', { name: 'Proponi esercizio' }))
+
+    // Il modale non deve restare davanti al risultato
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Rematore' })).toBeInTheDocument()
+  })
+
+  it('anche «Modifica» apre lo stesso modale, con i campi precaricati (M12)', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await proposeExercise('Squat', 'https://youtu.be/dQw4w9WgXcQ')
+
+    await user.click(screen.getByRole('button', { name: 'Modifica' }))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByLabelText('Nome esercizio')).toHaveValue('Squat')
+    expect(within(dialog).getByRole('button', { name: 'Salva modifiche' })).toBeInTheDocument()
+  })
+
+  it('il volto offuscato non è più obbligatorio: resta solo la dicitura (M12)', async () => {
+    render(<App />)
+    await openProposeForm()
+
+    expect(screen.queryByLabelText(/volto nel video è offuscato/)).not.toBeInTheDocument()
+    expect(screen.getByText(/Il volto non è importante/)).toBeInTheDocument()
+    // Il submit non è più bloccato da una spunta
+    expect(screen.getByRole('button', { name: 'Proponi esercizio' })).toBeEnabled()
   })
 })
 

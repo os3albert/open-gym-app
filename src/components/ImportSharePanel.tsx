@@ -8,6 +8,8 @@ import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import { translateError } from '../i18n'
+import { useT } from '../i18n/context'
 import { decodeShare, type SharePayload } from '../services/share'
 
 interface Props {
@@ -20,6 +22,7 @@ interface Props {
 
 /** Importazione di un codice condiviso: anteprima, conferma, «Prova questa scheda». */
 export function ImportSharePanel({ initialCode, onImport, onActivatePlan }: Props) {
+  const t = useT()
   const [code, setCode] = useState(initialCode ?? '')
   const [preview, setPreview] = useState<SharePayload | null>(() => {
     if (!initialCode) return null
@@ -41,7 +44,7 @@ export function ImportSharePanel({ initialCode, onImport, onActivatePlan }: Prop
       setImportedPlanId(null)
     } catch (err) {
       setPreview(null)
-      setError(err instanceof Error ? err.message : 'Codice non valido')
+      setError(translateError(t, err))
     }
   }
 
@@ -49,11 +52,7 @@ export function ImportSharePanel({ initialCode, onImport, onActivatePlan }: Prop
     if (!preview) return
     const planId = onImport(preview)
     setImportedPlanId(planId ?? null)
-    setMessage(
-      preview.kind === 'plan'
-        ? 'Scheda aggiunta alle tue!'
-        : 'Esercizio aggiunto ai tuoi (se non lo avevi già).',
-    )
+    setMessage(preview.kind === 'plan' ? t('import.planAdded') : t('import.exerciseAdded'))
     setPreview(null)
     setCode('')
   }
@@ -69,14 +68,14 @@ export function ImportSharePanel({ initialCode, onImport, onActivatePlan }: Prop
     <Card component="section" data-cy="import-panel">
       <CardContent>
         <Typography variant="h2" gutterBottom>
-          Importa da un altro utente
+          {t('import.title')}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          Incolla il codice di condivisione ricevuto: vedrai un'anteprima prima di aggiungere.
+          {t('import.explanation')}
         </Typography>
         <Stack spacing={1.5}>
           <TextField
-            label="Codice ricevuto"
+            label={t('import.codeLabel')}
             multiline
             rows={3}
             value={code}
@@ -95,7 +94,7 @@ export function ImportSharePanel({ initialCode, onImport, onActivatePlan }: Prop
               disabled={!code.trim()}
               onClick={handlePreview}
             >
-              Anteprima
+              {t('import.preview')}
             </Button>
           </Stack>
 
@@ -113,7 +112,7 @@ export function ImportSharePanel({ initialCode, onImport, onActivatePlan }: Prop
               {preview.kind === 'exercise' ? (
                 <>
                   <Typography variant="h3" component="h3" gutterBottom>
-                    Esercizio: {preview.exercise.name}
+                    {t('import.exerciseLabel', { name: preview.exercise.name })}
                   </Typography>
                   <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
                     {preview.exercise.muscleGroup && (
@@ -131,7 +130,7 @@ export function ImportSharePanel({ initialCode, onImport, onActivatePlan }: Prop
               ) : (
                 <>
                   <Typography variant="h3" component="h3" gutterBottom>
-                    Scheda: {preview.plan.name}
+                    {t('import.planLabel', { name: preview.plan.name })}
                   </Typography>
                   {preview.plan.days.map((day) => (
                     <Box key={day.name} data-cy="import-preview-day" sx={{ mt: 1 }}>
@@ -151,10 +150,10 @@ export function ImportSharePanel({ initialCode, onImport, onActivatePlan }: Prop
               )}
               <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap', mt: 2 }}>
                 <Button variant="contained" data-cy="import-confirm" onClick={handleConfirm}>
-                  Aggiungi ai miei
+                  {t('import.add')}
                 </Button>
                 <Button color="inherit" data-cy="import-cancel" onClick={handleCancel}>
-                  Annulla
+                  {t('list.cancel')}
                 </Button>
               </Stack>
             </Box>
@@ -173,10 +172,10 @@ export function ImportSharePanel({ initialCode, onImport, onActivatePlan }: Prop
                 onClick={() => {
                   onActivatePlan(importedPlanId)
                   setImportedPlanId(null)
-                  setMessage('Fatta! Ora è la tua scheda attiva.')
+                  setMessage(t('import.activated'))
                 }}
               >
-                Prova questa scheda
+                {t('import.tryPlan')}
               </Button>
             </Stack>
           )}

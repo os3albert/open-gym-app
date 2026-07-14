@@ -6,8 +6,10 @@ import Checkbox from '@mui/material/Checkbox'
 import Divider from '@mui/material/Divider'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
 import type { ExerciseFilters, SortOrder } from '../domain/filters'
+import { useT } from '../i18n/context'
+import { range } from '../utils/number'
+import { NumberField } from './NumberField'
 import { SelectField } from './SelectField'
 
 interface Props {
@@ -22,6 +24,8 @@ interface Props {
   requiresStature: boolean
 }
 
+const STATURES = range(100, 250)
+
 export function FilterBar({
   filters,
   onFiltersChange,
@@ -31,6 +35,7 @@ export function FilterBar({
   statureError,
   requiresStature,
 }: Props) {
+  const t = useT()
   const [statureInput, setStatureInput] = useState(statureCm === null ? '' : String(statureCm))
 
   function handleStatureSubmit(event: FormEvent) {
@@ -55,16 +60,16 @@ export function FilterBar({
         onSubmit={handleStatureSubmit}
         sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap' }}
       >
-        <TextField
-          label="La mia statura (cm)"
-          type="number"
-          placeholder="es. 180"
+        <NumberField
+          label={t('filters.myStature')}
+          placeholder={t('filters.staturePlaceholder')}
           value={statureInput}
-          onChange={(e) => setStatureInput(e.target.value)}
-          slotProps={{ htmlInput: { 'data-cy': 'stature-input' } }}
+          onChange={setStatureInput}
+          dataCy="stature-input"
+          options={STATURES}
         />
         <Button type="submit" variant="outlined" size="small" data-cy="stature-save">
-          Salva
+          {t('filters.save')}
         </Button>
       </Box>
       {statureError && (
@@ -75,7 +80,7 @@ export function FilterBar({
       <Divider />
       <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: 'wrap', alignItems: 'center' }}>
         <FormControlLabel
-          label="Adatti a me"
+          label={t('filters.suitableForMe')}
           control={
             <Checkbox
               checked={filters.suitableOnly}
@@ -90,31 +95,31 @@ export function FilterBar({
           }
         />
         <SelectField
-          label="Filtra per gruppo muscolare"
+          label={t('filters.muscleGroup')}
           value={filters.muscleGroup ?? ''}
           onChange={(value) => onFiltersChange({ ...filters, muscleGroup: value || null })}
           dataCy="filter-muscle"
           sx={{ minWidth: 220 }}
           options={[
-            { value: '', label: 'Tutti' },
+            { value: '', label: t('filters.all') },
             ...muscleGroups.map((group) => ({ value: group, label: group })),
           ]}
         />
         <SelectField
-          label="Ordina per"
+          label={t('filters.sortBy')}
           value={filters.sort}
           onChange={(value) => onFiltersChange({ ...filters, sort: value as SortOrder })}
           dataCy="sort-select"
           sx={{ minWidth: 160 }}
           options={[
-            { value: 'votes', label: 'Più votati' },
-            { value: 'recent', label: 'Più recenti' },
+            { value: 'votes', label: t('filters.mostVoted') },
+            { value: 'recent', label: t('filters.mostRecent') },
           ]}
         />
       </Stack>
       {requiresStature && (
         <Alert severity="warning" role="status" data-cy="stature-required">
-          Per usare «Adatti a me» inserisci prima la tua statura qui sopra.
+          {t('filters.statureRequired')}
         </Alert>
       )}
     </Stack>

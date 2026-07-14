@@ -114,7 +114,6 @@ describe('proposta alla community', () => {
       screen.getByLabelText('Link YouTube (volto offuscato)'),
       'https://youtu.be/AAAAAAAAAAA',
     )
-    await user.click(screen.getByLabelText('Confermo che il volto nel video è offuscato'))
     await user.click(screen.getByRole('button', { name: 'Proponi esercizio' }))
   }
 

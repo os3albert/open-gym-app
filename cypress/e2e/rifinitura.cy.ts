@@ -45,7 +45,13 @@ describe('Rifinitura UX (M5)', () => {
     cy.viewport(375, 667)
     cy.visitWithData(seed)
 
-    for (const tab of ['tab-esercizi', 'tab-schede', 'tab-allenamento', 'tab-storico']) {
+    for (const tab of [
+      'tab-esercizi',
+      'tab-schede',
+      'tab-allenamento',
+      'tab-storico',
+      'tab-impostazioni',
+    ]) {
       cy.get(`[data-cy=${tab}]`).click()
       assertNoHorizontalScroll()
     }
@@ -60,6 +66,7 @@ describe('Rifinitura UX (M5)', () => {
     // Niente onBeforeLoad: la test isolation pulisce già localStorage, e le opzioni
     // della visit verrebbero riapplicate anche da cy.reload() cancellando la preferenza.
     cy.visit('/')
+    cy.apriImpostazioni()
     // In «auto» il tema segue il sistema (che in headless può essere chiaro o scuro)
     // Il select è un menu MUI: la scelta corrente si legge dal testo, non da un value
     cy.get('[data-cy=theme-select]').should('have.text', 'Auto')
@@ -73,6 +80,7 @@ describe('Rifinitura UX (M5)', () => {
 
     cy.reload()
     cy.get('html').should('have.attr', 'data-theme', 'light')
+    cy.apriImpostazioni()
     cy.get('[data-cy=theme-select]').should('have.text', 'Chiaro')
   })
 })

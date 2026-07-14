@@ -2,7 +2,6 @@
 import { expect } from 'chai'
 import {
   EMPTY_NAME_ERROR,
-  FACE_BLUR_REQUIRED_ERROR,
   INVALID_STATURE_RANGE_ERROR,
   INVALID_YOUTUBE_LINK_ERROR,
 } from '../../src/domain/exercises'
@@ -74,9 +73,6 @@ describe('validateProposal', () => {
     expect(() =>
       validateProposal(proposal({ youtubeUrl: 'https://vimeo.com/1' }), catalog, now, newId),
     ).to.throw(INVALID_YOUTUBE_LINK_ERROR)
-    expect(() =>
-      validateProposal(proposal({ faceBlurConfirmed: false }), catalog, now, newId),
-    ).to.throw(FACE_BLUR_REQUIRED_ERROR)
     expect(() =>
       validateProposal(proposal({ stature: { minCm: 200, maxCm: 150 } }), catalog, now, newId),
     ).to.throw(INVALID_STATURE_RANGE_ERROR)

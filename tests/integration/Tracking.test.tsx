@@ -4,11 +4,12 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '../../src/App'
 import { INVALID_SET_ERROR, recordSet } from '../../src/domain/activity'
+import { it as itDict } from '../../src/i18n/it'
 import { addExercise } from '../../src/domain/exercises'
 import type { AppData } from '../../src/domain/types'
 import { emptyData, saveData } from '../../src/services/storage'
 import { addDaysIso, formatDateIt, todayIso } from '../../src/utils/date'
-import { scegliOpzione } from './helpers'
+import { scegliNumero, scegliOpzione } from './helpers'
 
 beforeEach(() => {
   localStorage.clear()
@@ -97,6 +98,23 @@ describe('registrazione della sessione (issue #14)', () => {
     expect(screen.getByText('60 kg × 8')).toBeInTheDocument()
   })
 
+  it('la rotella propone i valori plausibili senza togliere la tastiera (M12)', async () => {
+    const user = userEvent.setup()
+    seed()
+    render(<App />)
+    await openTraining(user)
+    await scegliOpzione(user, 'Esercizio', 'Squat')
+
+    // Si sceglie dalla rotella…
+    await scegliNumero(user, 'Peso (kg)', '82.5')
+    expect(screen.getByLabelText('Peso (kg)')).toHaveValue(82.5)
+
+    // …ma il campo resta un input vero: un valore fuori scala si digita
+    await user.clear(screen.getByLabelText('Peso (kg)'))
+    await user.type(screen.getByLabelText('Peso (kg)'), '317')
+    expect(screen.getByLabelText('Peso (kg)')).toHaveValue(317)
+  })
+
   it('i pulsanti rapidi incrementano peso e ripetizioni', async () => {
     const user = userEvent.setup()
     seed()
@@ -122,7 +140,8 @@ describe('registrazione della sessione (issue #14)', () => {
     await user.type(screen.getByLabelText('Peso (kg)'), '60')
     await user.click(screen.getByRole('button', { name: 'Aggiungi serie' }))
 
-    expect(screen.getByRole('alert')).toHaveTextContent(INVALID_SET_ERROR)
+    // Il dominio lancia il CODICE, l'interfaccia mostra la frase: qui si asserisce ciò che l'utente legge
+    expect(screen.getByRole('alert')).toHaveTextContent(itDict[`errors.${INVALID_SET_ERROR}`])
   })
 
   it('una serie si può rimuovere', async () => {

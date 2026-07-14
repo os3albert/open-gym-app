@@ -1,12 +1,14 @@
 import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import { useRegisterSW } from 'virtual:pwa-register/react'
+import { useT } from '../i18n/context'
 
 /**
  * Avviso «nuova versione disponibile» (issue #25): il service worker è in modalità
  * prompt, quindi l'aggiornamento si applica solo quando l'utente lo chiede.
  */
 export function UpdateBanner() {
+  const t = useT()
   const {
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
@@ -27,7 +29,7 @@ export function UpdateBanner() {
             data-cy="update-reload"
             onClick={() => updateServiceWorker(true)}
           >
-            Aggiorna ora
+            {t('update.now')}
           </Button>
           <Button
             color="inherit"
@@ -35,12 +37,12 @@ export function UpdateBanner() {
             data-cy="update-dismiss"
             onClick={() => setNeedRefresh(false)}
           >
-            Più tardi
+            {t('update.later')}
           </Button>
         </>
       }
     >
-      È disponibile una nuova versione dell'app.
+      {t('update.available')}
     </Alert>
   )
 }

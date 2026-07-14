@@ -64,6 +64,10 @@ export const theme = createTheme({
   components: {
     // Il Collapse del form di proposta deve essere già "aperto" al primo tick nei test
     MuiCollapse: { defaultProps: { timeout: underTest ? 0 : undefined } },
+    // Stessa ragione del Collapse: durante la transizione MUI mette pointer-events: none,
+    // e userEvent clicca DAVVERO. Senza questo, i test sul modale falliscono a tradimento.
+    MuiDialog: { defaultProps: { transitionDuration: underTest ? 0 : undefined } },
+    MuiBackdrop: { defaultProps: { transitionDuration: underTest ? 0 : undefined } },
     MuiButton: {
       defaultProps: { disableElevation: true },
       styleOverrides: {
