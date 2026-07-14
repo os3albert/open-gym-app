@@ -192,6 +192,14 @@ export const it = {
   'today.dayHint': (p: { name: string }) =>
     `${p.name} — spunta gli esercizi man mano che li completi.`,
   'today.dayEmpty': 'Questo giorno non ha esercizi: aggiungili dalla scheda.',
+  'today.setLog': 'Log delle serie',
+  'today.setNumber': 'Serie',
+  'today.status': 'Stato',
+  'today.addSet': '+ Aggiungi serie',
+  'today.position': (p: { position: number; total: number }) => `${p.position} di ${p.total}`,
+  'today.recordSet': (p: { set: number; name: string }) =>
+    `Registra la serie ${p.set} di ${p.name}`,
+  'today.removeSet': (p: { set: number; name: string }) => `Annulla la serie ${p.set} di ${p.name}`,
   'today.done': '✓ Registrato oggi',
   'today.skipped': 'Saltato per oggi',
   'today.undoSkip': 'Annulla',

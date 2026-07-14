@@ -109,11 +109,13 @@ describe('Schede di allenamento (M4)', () => {
     cy.get('[data-cy=today-weight]').should('have.value', '100')
     cy.get('[data-cy=today-reps]').should('have.value', '8')
 
-    cy.get('[data-cy=today-entry-complete]').click()
-    cy.get('[data-cy=today-entry-done]').should('be.visible')
-    cy.get('[data-cy=set-chip]').should('have.length', 3).and('contain.text', '100 kg × 8')
+    // Il set log ha una riga per serie prevista (3×8); la prima si registra dalla sua spunta
+    cy.get('[data-cy=set-row]').should('have.length', 3)
+    cy.get('[data-cy=set-row-record]').first().click()
+    cy.get('[data-cy=set-row-done]').should('have.length', 1)
+    cy.get('[data-cy=set-row-weight]').first().should('contain.text', '100')
 
-    // La sessione finisce nello storico dei pesi
+    // La serie finisce nello storico dei pesi
     cy.get('[data-cy=tab-storico]').click()
     cy.get('[data-cy=session-item]').should('have.length', 2)
   })

@@ -120,7 +120,6 @@ export default function App() {
     saveStature,
     addSet,
     deleteSet,
-    completeEntry,
     createPlan,
     renamePlan,
     removePlan,
@@ -333,21 +332,22 @@ export default function App() {
               />
             )}
             {view === 'allenamento' && (
-              <>
-                <TodayWorkout
-                  data={data}
-                  today={todayIso()}
-                  onComplete={(exerciseId, sets, set) =>
-                    completeEntry(exerciseId, todayIso(), sets, set)
-                  }
-                />
-                <WorkoutSession
-                  data={data}
-                  today={todayIso()}
-                  onAddSet={(exerciseId, set) => addSet(exerciseId, todayIso(), set)}
-                  onRemoveSet={deleteSet}
-                />
-              </>
+              <TodayWorkout
+                data={data}
+                today={todayIso()}
+                onRecordSet={(exerciseId, set) => addSet(exerciseId, todayIso(), set)}
+                onRemoveSet={deleteSet}
+                // Senza scheda attiva (o di riposo) resta la registrazione libera: altrimenti
+                // chi non ha ancora una scheda troverebbe una vista che non fa niente
+                fallback={
+                  <WorkoutSession
+                    data={data}
+                    today={todayIso()}
+                    onAddSet={(exerciseId, set) => addSet(exerciseId, todayIso(), set)}
+                    onRemoveSet={deleteSet}
+                  />
+                }
+              />
             )}
             {view === 'storico' && <HistoryView data={data} />}
             {/* Proposta e modifica passano dallo STESSO modale: un solo form, due modi di aprirlo */}
@@ -400,7 +400,10 @@ export default function App() {
             color="primary"
             // Esteso all'atterraggio (la scritta serve a farsi capire), sola «+» appena si scorre:
             // a quel punto l'icona basta, e la lista si riprende lo spazio.
-            variant={scrolled ? 'circular' : 'extended'}
+            // Sempre «extended»: a cambiare è la LARGHEZZA, che si anima. Alternando i due
+            // variant MUI ricalcola il box di colpo, e il pulsante saltava.
+            variant="extended"
+
             data-cy="propose-toggle"
             aria-expanded={formOpen}
             // Il nome accessibile NON dipende dalla scritta: quando il FAB si ritira, i test (e gli
@@ -413,11 +416,31 @@ export default function App() {
               // Sopra la TabNav flottante (62px + il suo margine e il notch dei telefoni)
               bottom: 'calc(88px + env(safe-area-inset-bottom))',
               zIndex: (t) => t.zIndex.appBar - 1,
+              overflow: 'hidden',
+              // Ritirandosi resta un cerchio: la larghezza scende a quella dell'altezza
+              minWidth: 0,
+              width: scrolled ? 56 : 'auto',
+              px: scrolled ? 0 : 2,
+              transition: (t) =>
+                t.transitions.create(['width', 'padding'], {
+                  duration: t.transitions.duration.shorter,
+                  easing: t.transitions.easing.easeInOut,
+                }),
             }}
           >
-            <AddIcon sx={{ mr: scrolled ? 0 : 1 }} />
-            {/* Non «Proponi esercizio»: è il nome del submit del form, le query per ruolo collidono */}
-            {!scrolled && t('app.newProposal')}
+            <AddIcon sx={{ mr: scrolled ? 0 : 1, flexShrink: 0 }} />
+            {/* Non «Proponi esercizio»: è il nome del submit del form, le query per ruolo collidono.
+                La scritta non si smonta: sfuma, così la larghezza può animarsi senza scatti. */}
+            <Box
+              component="span"
+              sx={{
+                whiteSpace: 'nowrap',
+                opacity: scrolled ? 0 : 1,
+                transition: (t) => t.transitions.create('opacity'),
+              }}
+            >
+              {t('app.newProposal')}
+            </Box>
           </Fab>
         )}
         <TabNav view={view} onChange={setView} />

@@ -1,41 +1,56 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
+import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { activePlan, dayForDate, nextScheduledDay, planUsesWeekdays } from '../domain/plans'
+import type { AppData, Exercise, PlanEntry, WorkoutSet } from '../domain/types'
 import { translateError } from '../i18n'
 import { useT } from '../i18n/context'
-import type { AppData, Exercise, PlanEntry, WorkoutSet } from '../domain/types'
 import { suggestNextWeight } from '../services/weightSuggestion'
+import { parseYouTubeVideoId } from '../services/youtube'
 import { formatDateIt } from '../utils/date'
 import { range } from '../utils/number'
 import { NumberField } from './NumberField'
 import { SelectField } from './SelectField'
+import { YouTubePlayer } from './YouTubePlayer'
+
+const WEIGHTS = range(0, 300, 2.5)
+const REPS = range(1, 30)
 
 interface Props {
   data: AppData
   today: string
-  /** Registra tutte le serie previste dall'esercizio della scheda. Lancia se non valide. */
-  onComplete: (exerciseId: string, sets: number, set: WorkoutSet) => void
+  /** Registra UNA serie: il set log è fatto di righe, e una riga è una serie. */
+  onRecordSet: (exerciseId: string, set: WorkoutSet) => void
+  onRemoveSet: (recordId: string, setIndex: number) => void
+  /** Cosa mostrare quando oggi non c'è nulla in programma: la registrazione libera. */
+  fallback: ReactNode
 }
 
 /**
- * L'allenamento del giorno dalla scheda attiva (issue #19): esercizi previsti oggi,
- * peso proposto dallo storico, «Fatto ✓» che registra la sessione nello storico.
+ * L'allenamento del giorno, dalla scheda attiva.
+ *
+ * Da M14 è un CAROSELLO: un esercizio per schermata, che scorre in orizzontale con lo swipe.
+ * Ogni card porta il video (per rivedere l'esecuzione mentre si è sotto il bilanciere) e il set
+ * log, riga per riga. Lo scorrimento è CSS puro (scroll-snap): nessuna libreria, come il grafico.
+ *
+ * Se oggi non c'è nulla in programma — nessuna scheda attiva, o giorno di riposo — si mostra il
+ * `fallback`: senza, chi non ha ancora una scheda troverebbe una vista che non fa niente.
  */
-const WEIGHTS = range(0, 300, 2.5)
-const REPS = range(1, 30)
-
-export function TodayWorkout({ data, today, onComplete }: Props) {
+export function TodayWorkout({ data, today, onRecordSet, onRemoveSet, fallback }: Props) {
   const t = useT()
   const [manualDayName, setManualDayName] = useState('')
   const plan = activePlan(data)
-  if (!plan || plan.days.length === 0) return null
+
+  if (!plan || plan.days.length === 0) return <>{fallback}</>
 
   const autoDay = dayForDate(plan, today)
   const day = autoDay ?? plan.days.find((d) => d.name === manualDayName) ?? null
@@ -43,8 +58,8 @@ export function TodayWorkout({ data, today, onComplete }: Props) {
   const next = restDay ? nextScheduledDay(plan, today) : null
 
   return (
-    <Card component="section" data-cy="today-workout">
-      <CardContent>
+    <Stack spacing={2} data-cy="today-workout">
+      <Box component="section">
         <Typography variant="h2" gutterBottom>
           {t('today.yourPlan', { name: plan.name })}
         </Typography>
@@ -74,67 +89,92 @@ export function TodayWorkout({ data, today, onComplete }: Props) {
             ]}
           />
         )}
+      </Box>
 
-        {day && (
-          <>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              data-cy="today-day-name"
-              sx={{ my: 1.5 }}
-            >
-              {t('today.dayHint', { name: day.name })}
-            </Typography>
-            {day.entries.length === 0 ? (
-              <Typography variant="body2" color="text.secondary">
-                {t('today.dayEmpty')}
-              </Typography>
-            ) : (
-              <Box component="ul" sx={{ listStyle: 'none', m: 0, p: 0, display: 'grid', gap: 2 }}>
-                {day.entries.map((entry) => {
-                  const exercise = data.exercises.find((e) => e.id === entry.exerciseId)
-                  if (!exercise) return null
-                  const done = data.activity.some(
-                    (a) => a.exerciseId === entry.exerciseId && a.date === today,
-                  )
-                  return (
-                    <TodayEntry
-                      key={entry.exerciseId}
-                      exercise={exercise}
-                      entry={entry}
-                      done={done}
-                      suggestedWeight={suggestNextWeight(data.activity, entry.exerciseId)}
-                      onComplete={onComplete}
-                    />
-                  )
-                })}
-              </Box>
-            )}
-          </>
-        )}
-      </CardContent>
-    </Card>
+      {day === null ? (
+        fallback
+      ) : day.entries.length === 0 ? (
+        <Typography variant="body2" color="text.secondary" data-cy="today-day-name">
+          {t('today.dayEmpty')}
+        </Typography>
+      ) : (
+        <>
+          <Typography variant="body2" color="text.secondary" data-cy="today-day-name">
+            {t('today.dayHint', { name: day.name })}
+          </Typography>
+          {/* Il carosello: una card per esercizio, agganciata al centro dello scorrimento */}
+          <Box
+            data-cy="today-carousel"
+            sx={{
+              display: 'flex',
+              gap: 2,
+              overflowX: 'auto',
+              scrollSnapType: 'x mandatory',
+              pb: 1,
+              // La barra di scorrimento non serve: si scorre col dito
+              scrollbarWidth: 'none',
+              '&::-webkit-scrollbar': { display: 'none' },
+            }}
+          >
+            {day.entries.map((entry, index) => (
+              <ExerciseCard
+                key={entry.exerciseId}
+                data={data}
+                today={today}
+                entry={entry}
+                position={index + 1}
+                total={day.entries.length}
+                onRecordSet={onRecordSet}
+                onRemoveSet={onRemoveSet}
+              />
+            ))}
+          </Box>
+        </>
+      )}
+    </Stack>
   )
 }
 
-interface EntryProps {
-  exercise: Exercise
+interface CardProps {
+  data: AppData
+  today: string
   entry: PlanEntry
-  done: boolean
-  suggestedWeight: number | null
-  onComplete: (exerciseId: string, sets: number, set: WorkoutSet) => void
+  position: number
+  total: number
+  onRecordSet: (exerciseId: string, set: WorkoutSet) => void
+  onRemoveSet: (recordId: string, setIndex: number) => void
 }
 
-function TodayEntry({ exercise, entry, done, suggestedWeight, onComplete }: EntryProps) {
+/** Una schermata del carosello: l'esercizio, il suo video e il log delle serie di oggi. */
+function ExerciseCard({
+  data,
+  today,
+  entry,
+  position,
+  total,
+  onRecordSet,
+  onRemoveSet,
+}: CardProps) {
   const t = useT()
-  const [weight, setWeight] = useState(suggestedWeight === null ? '' : String(suggestedWeight))
+  const exercise: Exercise | undefined = data.exercises.find((e) => e.id === entry.exerciseId)
+  const record = data.activity.find((a) => a.exerciseId === entry.exerciseId && a.date === today)
+  const done = record?.sets ?? []
+
+  const suggested = suggestNextWeight(data.activity, entry.exerciseId)
+  const [weight, setWeight] = useState(suggested === null ? '' : String(suggested))
   const [reps, setReps] = useState(String(entry.reps))
-  const [skipped, setSkipped] = useState(false)
+  const [extra, setExtra] = useState(0)
   const [error, setError] = useState<string | null>(null)
 
-  function handleComplete() {
+  if (!exercise) return null
+
+  const videoId = parseYouTubeVideoId(exercise.youtubeUrl)
+  // Le righe previste dalla scheda, più le serie in più (fatte o chieste a mano)
+  const rows = Math.max(entry.sets, done.length) + extra
+
+  function registra() {
     try {
-      onComplete(exercise.id, entry.sets, { weightKg: Number(weight), reps: Number(reps) })
+      onRecordSet(entry.exerciseId, { weightKg: Number(weight), reps: Number(reps) })
       setError(null)
     } catch (err) {
       setError(translateError(t, err))
@@ -142,92 +182,165 @@ function TodayEntry({ exercise, entry, done, suggestedWeight, onComplete }: Entr
   }
 
   return (
-    <Box
-      component="li"
+    <Card
       data-cy="today-entry"
-      sx={{ border: 1, borderColor: 'divider', borderRadius: 3, p: 2 }}
+      sx={{
+        scrollSnapAlign: 'center',
+        flex: '0 0 auto',
+        width: { xs: '86%', sm: 420 },
+        maxWidth: '100%',
+      }}
     >
-      <Stack
-        direction="row"
-        spacing={1}
-        useFlexGap
-        sx={{ flexWrap: 'wrap', alignItems: 'baseline', mb: done || skipped ? 1 : 1.5 }}
-      >
-        <Typography component="strong" sx={{ fontWeight: 600 }}>
-          {exercise.name}
-        </Typography>
-        <Typography
-          component="span"
-          variant="body2"
-          color="text.secondary"
-          data-cy="today-entry-target"
+      {videoId && <YouTubePlayer videoId={videoId} title={exercise.name} />}
+      <CardContent>
+        <Stack
+          direction="row"
+          spacing={1}
+          useFlexGap
+          sx={{ alignItems: 'center', flexWrap: 'wrap' }}
         >
-          {entry.sets}×{entry.reps}
-        </Typography>
-      </Stack>
-      {done ? (
-        <Chip
-          size="small"
-          color="success"
-          variant="outlined"
-          data-cy="today-entry-done"
-          label={t('today.done')}
-        />
-      ) : skipped ? (
-        <Typography component="span" variant="body2" data-cy="today-entry-skipped">
-          {t('today.skipped')}{' '}
-          <Button
-            size="small"
-            color="inherit"
-            data-cy="today-entry-unskip"
-            onClick={() => setSkipped(false)}
-          >
-            {t('today.undoSkip')}
-          </Button>
-        </Typography>
-      ) : (
-        <Stack spacing={1.5}>
-          <Stack
-            direction="row"
-            spacing={1.5}
-            useFlexGap
-            sx={{ flexWrap: 'wrap', alignItems: 'center' }}
-          >
-            <NumberField
-              label={t('session.weight')}
-              value={weight}
-              onChange={setWeight}
-              dataCy="today-weight"
-              options={WEIGHTS}
-              sx={{ width: 130 }}
-            />
-            <NumberField
-              label={t('session.reps')}
-              value={reps}
-              onChange={setReps}
-              dataCy="today-reps"
-              options={REPS}
-              sx={{ width: 130 }}
-            />
-            <Button variant="contained" data-cy="today-entry-complete" onClick={handleComplete}>
-              {t('today.complete')}
-            </Button>
-            <Button
-              size="small"
-              color="inherit"
-              data-cy="today-entry-skip"
-              onClick={() => setSkipped(true)}
-            >
-              {t('today.skip')}
-            </Button>
-          </Stack>
-          {error && (
-            <Alert severity="error" role="alert" data-cy="today-entry-error">
-              {error}
-            </Alert>
-          )}
+          <Typography variant="h3" component="h3" sx={{ flex: 1 }}>
+            {exercise.name}
+          </Typography>
+          <Chip size="small" variant="outlined" label={t(`difficulty.${exercise.difficulty}`)} />
         </Stack>
-      )}
-    </Box>
+        <Typography variant="overline" color="text.secondary" data-cy="today-entry-position">
+          {t('today.position', { position, total })}
+        </Typography>
+
+        {exercise.description && (
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+            {exercise.description}
+          </Typography>
+        )}
+
+        <Typography variant="h3" component="h4" sx={{ mt: 2.5, mb: 1 }}>
+          {t('today.setLog')}
+        </Typography>
+
+        <Box component="table" data-cy="set-log" sx={{ width: '100%', borderCollapse: 'collapse' }}>
+          <Box component="thead">
+            <Box component="tr" sx={{ '& th': { textAlign: 'left', pb: 1 } }}>
+              <Typography component="th" variant="overline" color="text.secondary">
+                {t('today.setNumber')}
+              </Typography>
+              <Typography component="th" variant="overline" color="text.secondary">
+                {t('session.weight')}
+              </Typography>
+              <Typography component="th" variant="overline" color="text.secondary">
+                {t('session.reps')}
+              </Typography>
+              <Typography component="th" variant="overline" color="text.secondary">
+                {t('today.status')}
+              </Typography>
+            </Box>
+          </Box>
+          <Box component="tbody">
+            {Array.from({ length: rows }, (_, i) => {
+              const fatta = done[i]
+              // Solo la prima riga non ancora fatta si registra: le serie si appendono in ordine,
+              // e registrare la terza prima della seconda le scambierebbe di posto.
+              const isNext = i === done.length
+              return (
+                <Box
+                  component="tr"
+                  key={i}
+                  data-cy="set-row"
+                  sx={{ '& td': { py: 0.75, borderTop: 1, borderColor: 'divider' } }}
+                >
+                  <Box component="td" sx={{ fontVariantNumeric: 'tabular-nums' }}>
+                    {i + 1}
+                  </Box>
+                  {fatta ? (
+                    <>
+                      <Box component="td" data-cy="set-row-weight">
+                        {fatta.weightKg}
+                      </Box>
+                      <Box component="td" data-cy="set-row-reps">
+                        {fatta.reps}
+                      </Box>
+                      <Box component="td">
+                        <IconButton
+                          size="small"
+                          color="success"
+                          data-cy="set-row-done"
+                          aria-label={t('today.removeSet', { set: i + 1, name: exercise.name })}
+                          onClick={() => record && onRemoveSet(record.id, i)}
+                        >
+                          <CheckCircleIcon />
+                        </IconButton>
+                      </Box>
+                    </>
+                  ) : isNext ? (
+                    <>
+                      <Box component="td" sx={{ pr: 1 }}>
+                        <NumberField
+                          label={t('session.weight')}
+                          value={weight}
+                          onChange={setWeight}
+                          dataCy="today-weight"
+                          options={WEIGHTS}
+                          sx={{ width: 96 }}
+                        />
+                      </Box>
+                      <Box component="td" sx={{ pr: 1 }}>
+                        <NumberField
+                          label={t('session.reps')}
+                          value={reps}
+                          onChange={setReps}
+                          dataCy="today-reps"
+                          options={REPS}
+                          sx={{ width: 96 }}
+                        />
+                      </Box>
+                      <Box component="td">
+                        <IconButton
+                          size="small"
+                          color="primary"
+                          data-cy="set-row-record"
+                          aria-label={t('today.recordSet', { set: i + 1, name: exercise.name })}
+                          onClick={registra}
+                        >
+                          <RadioButtonUncheckedIcon />
+                        </IconButton>
+                      </Box>
+                    </>
+                  ) : (
+                    // Righe più in là: si vede il target, ma non è ancora il loro turno
+                    <>
+                      <Box component="td" sx={{ color: 'text.disabled' }}>
+                        —
+                      </Box>
+                      <Box component="td" sx={{ color: 'text.disabled' }}>
+                        {entry.reps}
+                      </Box>
+                      <Box component="td">
+                        <RadioButtonUncheckedIcon fontSize="small" color="disabled" />
+                      </Box>
+                    </>
+                  )}
+                </Box>
+              )
+            })}
+          </Box>
+        </Box>
+
+        {error && (
+          <Alert severity="error" role="alert" data-cy="session-error" sx={{ mt: 1.5 }}>
+            {error}
+          </Alert>
+        )}
+
+        <Button
+          fullWidth
+          color="inherit"
+          data-cy="today-add-set"
+          onClick={() => setExtra((n) => n + 1)}
+          sx={{ mt: 1.5, borderTop: 1, borderColor: 'divider', borderRadius: 0 }}
+        >
+          {t('today.addSet')}
+        </Button>
+      </CardContent>
+    </Card>
   )
 }
