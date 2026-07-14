@@ -16,14 +16,5 @@
     "muscleGroup": "Petto",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-14T06:11:49.481Z"
-  },
-  {
-    "id": "891165e4-e221-4f63-a615-d9dfd547ff03",
-    "name": "Prova",
-    "description": "",
-    "youtubeUrl": "https://youtu.be/dQw4w9WgXcQ",
-    "muscleGroup": "",
-    "faceBlurConfirmed": false,
-    "createdAt": "2026-07-14T15:15:22.151Z"
   }
 ]
