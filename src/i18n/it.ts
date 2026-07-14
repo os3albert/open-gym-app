@@ -126,6 +126,7 @@ export const it = {
   'list.cancel': 'Annulla',
 
   // Campi numerici
+  'number.confirm': 'Conferma',
   'number.chooseValue': (p: { label: string }) => `Scegli un valore per ${p.label}`,
 
   // Gruppi muscolari (codici nei dati, parole qui)

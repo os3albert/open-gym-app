@@ -19,6 +19,8 @@ declare global {
       scegliOpzione(dataCy: string, etichetta: string): Chainable<void>
       /** Sceglie un valore dalla rotella di un NumberField (si apre dal bottone del campo). */
       scegliNumero(dataCy: string, valore: string): Chainable<void>
+      /** Scrive un numero fuori scala nello spinner e conferma. */
+      digitaNumero(dataCy: string, valore: string): Chainable<void>
       /** Sceglie il gruppo muscolare dal modale (M14): il campo non si digita più. */
       scegliGruppo(codice: string): Chainable<void>
     }
@@ -34,12 +36,21 @@ Cypress.Commands.add('scegliOpzione', (dataCy: string, etichetta: string) => {
 })
 
 Cypress.Commands.add('scegliNumero', (dataCy: string, valore: string) => {
-  cy.get(`[data-cy=${dataCy}-wheel]`).click()
-  cy.get('[role=listbox] [role=option]')
+  // Da M14 il campo è di sola lettura: apre uno spinner in un modale al centro dello schermo
+  cy.get(`[data-cy=${dataCy}]`).click()
+  cy.get(`[data-cy=${dataCy}-options] [role=option]`)
     .filter((_, el) => el.textContent === valore)
     .first()
     .click()
-  cy.get('[role=listbox]').should('not.exist')
+  cy.get(`[data-cy=${dataCy}-options]`).should('not.exist')
+})
+
+Cypress.Commands.add('digitaNumero', (dataCy: string, valore: string) => {
+  cy.get(`[data-cy=${dataCy}]`).click()
+  cy.get(`[data-cy=${dataCy}-input]`).clear()
+  cy.get(`[data-cy=${dataCy}-input]`).type(valore)
+  cy.get(`[data-cy=${dataCy}-confirm]`).click()
+  cy.get(`[data-cy=${dataCy}-options]`).should('not.exist')
 })
 
 Cypress.Commands.add('scegliGruppo', (codice: string) => {

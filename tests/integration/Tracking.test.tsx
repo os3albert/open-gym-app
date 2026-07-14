@@ -9,7 +9,7 @@ import { addExercise } from '../../src/domain/exercises'
 import type { AppData } from '../../src/domain/types'
 import { emptyData, saveData } from '../../src/services/storage'
 import { addDaysIso, formatDateIt, todayIso } from '../../src/utils/date'
-import { scegliNumero, scegliOpzione } from './helpers'
+import { digitaNumero, scegliNumero, scegliOpzione } from './helpers'
 
 beforeEach(() => {
   localStorage.clear()
@@ -46,8 +46,8 @@ describe('suggerimento del carico (issue #16)', () => {
 
     await scegliOpzione(user, 'Esercizio', 'Squat')
 
-    expect(screen.getByLabelText('Peso (kg)')).toHaveValue(80)
-    expect(screen.getByLabelText('Ripetizioni')).toHaveValue(5)
+    expect(screen.getByLabelText('Peso (kg)')).toHaveValue('80')
+    expect(screen.getByLabelText('Ripetizioni')).toHaveValue('5')
   })
 
   it("propone la progressione se l'ultima sessione ha raggiunto le ripetizioni obiettivo", async () => {
@@ -58,7 +58,7 @@ describe('suggerimento del carico (issue #16)', () => {
 
     await scegliOpzione(user, 'Esercizio', 'Squat')
 
-    expect(screen.getByLabelText('Peso (kg)')).toHaveValue(82.5)
+    expect(screen.getByLabelText('Peso (kg)')).toHaveValue('82.5')
   })
 
   it('senza storico i campi restano vuoti', async () => {
@@ -69,8 +69,8 @@ describe('suggerimento del carico (issue #16)', () => {
 
     await scegliOpzione(user, 'Esercizio', 'Squat')
 
-    expect(screen.getByLabelText('Peso (kg)')).toHaveValue(null)
-    expect(screen.getByLabelText('Ripetizioni')).toHaveValue(null)
+    expect(screen.getByLabelText('Peso (kg)')).toHaveValue('')
+    expect(screen.getByLabelText('Ripetizioni')).toHaveValue('')
   })
 })
 
@@ -82,12 +82,11 @@ describe('registrazione della sessione (issue #14)', () => {
     await openTraining(user)
 
     await scegliOpzione(user, 'Esercizio', 'Squat')
-    await user.type(screen.getByLabelText('Peso (kg)'), '60')
-    await user.type(screen.getByLabelText('Ripetizioni'), '8')
+    await scegliNumero(user, 'Peso (kg)', '60')
+    await scegliNumero(user, 'Ripetizioni', '8')
     await user.click(screen.getByRole('button', { name: 'Aggiungi serie' }))
 
-    await user.clear(screen.getByLabelText('Peso (kg)'))
-    await user.type(screen.getByLabelText('Peso (kg)'), '65')
+    await scegliNumero(user, 'Peso (kg)', '65')
     await user.click(screen.getByRole('button', { name: 'Aggiungi serie' }))
 
     expect(screen.getByText('60 kg × 8')).toBeInTheDocument()
@@ -99,36 +98,20 @@ describe('registrazione della sessione (issue #14)', () => {
     expect(screen.getByText('60 kg × 8')).toBeInTheDocument()
   })
 
-  it('la rotella propone i valori plausibili senza togliere la tastiera (M12)', async () => {
+  it('lo spinner propone i valori plausibili e accetta i fuori scala (M14)', async () => {
     const user = userEvent.setup()
     seed()
     render(<App />)
     await openTraining(user)
     await scegliOpzione(user, 'Esercizio', 'Squat')
 
-    // Si sceglie dalla rotella…
+    // Si sceglie dalla rotella dello spinner…
     await scegliNumero(user, 'Peso (kg)', '82.5')
-    expect(screen.getByLabelText('Peso (kg)')).toHaveValue(82.5)
+    expect(screen.getByLabelText('Peso (kg)')).toHaveValue('82.5')
 
-    // …ma il campo resta un input vero: un valore fuori scala si digita
-    await user.clear(screen.getByLabelText('Peso (kg)'))
-    await user.type(screen.getByLabelText('Peso (kg)'), '317')
-    expect(screen.getByLabelText('Peso (kg)')).toHaveValue(317)
-  })
-
-  it('i pulsanti rapidi incrementano peso e ripetizioni', async () => {
-    const user = userEvent.setup()
-    seed()
-    render(<App />)
-    await openTraining(user)
-    await scegliOpzione(user, 'Esercizio', 'Squat')
-
-    await user.click(screen.getByRole('button', { name: 'Aumenta il peso di 2,5 kg' }))
-    await user.click(screen.getByRole('button', { name: 'Aumenta il peso di 2,5 kg' }))
-    await user.click(screen.getByRole('button', { name: 'Aumenta le ripetizioni' }))
-
-    expect(screen.getByLabelText('Peso (kg)')).toHaveValue(5)
-    expect(screen.getByLabelText('Ripetizioni')).toHaveValue(1)
+    // …ma dentro il modale si può anche scrivere: un 317 kg non sta in nessuna rotella
+    await digitaNumero(user, 'Peso (kg)', '317')
+    expect(screen.getByLabelText('Peso (kg)')).toHaveValue('317')
   })
 
   it("rifiuta una serie non valida mostrando l'errore", async () => {
@@ -138,8 +121,9 @@ describe('registrazione della sessione (issue #14)', () => {
     await openTraining(user)
     await scegliOpzione(user, 'Esercizio', 'Squat')
 
-    await user.type(screen.getByLabelText('Peso (kg)'), '60')
-    await user.click(screen.getByRole('button', { name: 'Aggiungi serie' }))
+    // Solo il peso: senza ripetizioni la serie non è valida
+    await scegliNumero(user, 'Peso (kg)', '60')
+    await user.click(await screen.findByRole('button', { name: 'Aggiungi serie' }))
 
     // Il dominio lancia il CODICE, l'interfaccia mostra la frase: qui si asserisce ciò che l'utente legge
     expect(screen.getByRole('alert')).toHaveTextContent(itDict[`errors.${INVALID_SET_ERROR}`])
@@ -151,8 +135,8 @@ describe('registrazione della sessione (issue #14)', () => {
     render(<App />)
     await openTraining(user)
     await scegliOpzione(user, 'Esercizio', 'Squat')
-    await user.type(screen.getByLabelText('Peso (kg)'), '60')
-    await user.type(screen.getByLabelText('Ripetizioni'), '8')
+    await scegliNumero(user, 'Peso (kg)', '60')
+    await scegliNumero(user, 'Ripetizioni', '8')
     await user.click(screen.getByRole('button', { name: 'Aggiungi serie' }))
 
     await user.click(screen.getByRole('button', { name: /Rimuovi la serie 60 kg × 8/ }))

@@ -111,6 +111,7 @@ export const en: Dictionary = {
   'list.confirmDelete': 'Confirm deletion',
   'list.cancel': 'Cancel',
 
+  'number.confirm': 'Confirm',
   'number.chooseValue': (p) => `Choose a value for ${p.label}`,
 
   'muscle.chest': 'Chest',

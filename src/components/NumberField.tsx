@@ -1,179 +1,148 @@
 import { useEffect, useRef, useState } from 'react'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Button from '@mui/material/Button'
-import ClickAwayListener from '@mui/material/ClickAwayListener'
-import IconButton from '@mui/material/IconButton'
-import InputAdornment from '@mui/material/InputAdornment'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
 import MenuItem from '@mui/material/MenuItem'
 import MenuList from '@mui/material/MenuList'
-import Paper from '@mui/material/Paper'
-import Popper from '@mui/material/Popper'
-import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import type { SxProps, Theme } from '@mui/material/styles'
 import { useT } from '../i18n/context'
-
-/** I due bottoni di incremento a fianco del campo: in palestra si tocca, non si digita. */
-export interface NumberStepper {
-  step: number
-  min: number
-  decreaseCy: string
-  increaseCy: string
-  decreaseLabel: string
-  increaseLabel: string
-}
 
 interface Props {
   label: string
   value: string
   onChange: (value: string) => void
   dataCy: string
-  /** I valori plausibili, quelli che la rotella propone. Digitare resta sempre possibile. */
+  /** I valori plausibili, quelli che lo spinner propone. Digitare resta possibile, nel modale. */
   options: number[]
-  stepper?: NumberStepper
   placeholder?: string
   sx?: SxProps<Theme>
 }
 
-/** Somma `delta` al valore corrente senza scendere sotto `min`; il vuoto vale 0. */
-function applyStep(current: string, delta: number, min: number): string {
-  const next = Number(((Number(current) || 0) + delta).toFixed(2))
-  return String(Math.max(min, next))
-}
-
 /**
- * Unico input numerico dell'app (come SelectField è l'unico select).
+ * Unico input numerico dell'app (come SelectField è l'unico select e MuscleGroupField l'unico
+ * gruppo muscolare).
  *
- * Il campo resta un vero input digitabile — serve per i valori fuori scala — e accanto ha una
- * ROTELLA di valori pronti, che si apre dal bottone del campo. Perché da un bottone e non da un
- * click qualsiasi sul campo: aprendola a ogni click coprirebbe ciò che sta sotto (compreso
- * «Aggiungi serie»), e l'utente che vuole solo digitare se la troverebbe sempre tra i piedi.
+ * Il campo in pagina è di SOLA LETTURA: toccarlo apre uno spinner in un modale al centro dello
+ * schermo, dove si scorre la rotella dei valori — in palestra si tocca, non si digita. Dentro il
+ * modale c'è comunque un campo scrivibile, perché un 137,5 kg fuori scala deve poter entrare.
  *
- * È un Popper e non un Popover: niente backdrop né trappola del focus, così si continua a
- * digitare mentre la rotella è aperta.
+ * Niente più pulsanti +/− a fianco: erano un terzo modo di fare la stessa cosa.
+ *
+ * Contratto dei test: il `data-cy` resta sul campo in pagina, ma NON ci si digita più dentro —
+ * si usano gli helper `scegliNumero(user, label, valore)` e `cy.scegliNumero(dataCy, valore)`.
  */
-export function NumberField({
-  label,
-  value,
-  onChange,
-  dataCy,
-  options,
-  stepper,
-  placeholder,
-  sx,
-}: Props) {
+export function NumberField({ label, value, onChange, dataCy, options, placeholder, sx }: Props) {
   const t = useT()
   const [open, setOpen] = useState(false)
-  const [anchor, setAnchor] = useState<HTMLDivElement | null>(null)
+  // Si lavora su una bozza: «Annulla» deve poter lasciare il valore com'era
+  const [draft, setDraft] = useState(value)
   const selectedRef = useRef<HTMLLIElement>(null)
 
-  // All'apertura la lista si posiziona sul valore corrente: 121 carichi non si scorrono a mano
   useEffect(() => {
-    if (open) selectedRef.current?.scrollIntoView({ block: 'center' })
-  }, [open])
+    if (!open) return
+    setDraft(value)
+    // La lista si posiziona sul valore corrente: 121 carichi non si scorrono a mano
+    const timer = window.setTimeout(
+      () => selectedRef.current?.scrollIntoView({ block: 'center' }),
+      0,
+    )
+    return () => window.clearTimeout(timer)
+  }, [open, value])
+
+  function conferma() {
+    onChange(draft)
+    setOpen(false)
+  }
 
   return (
-    <ClickAwayListener onClickAway={() => setOpen(false)}>
-      <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-        <TextField
-          ref={setAnchor}
-          label={label}
-          type="number"
-          value={value}
-          placeholder={placeholder}
-          onChange={(e) => onChange(e.target.value)}
-          onKeyDown={(e) => e.key === 'Escape' && setOpen(false)}
-          sx={[
-            // Via le frecciette su/giù native: la rotella e i +/− fanno già quel lavoro, e ogni
-            // browser le disegna a modo suo. Si nascondono in CSS invece di passare a type="text",
-            // che toglierebbe la tastiera numerica sul telefono.
-            {
+    <>
+      <TextField
+        label={label}
+        value={value}
+        placeholder={placeholder}
+        onClick={() => setOpen(true)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            setOpen(true)
+          }
+        }}
+        sx={sx}
+        slotProps={{
+          htmlInput: {
+            'data-cy': dataCy,
+            readOnly: true,
+            inputMode: 'decimal',
+            'aria-haspopup': 'dialog',
+            'aria-expanded': open,
+            style: { cursor: 'pointer' },
+          },
+        }}
+      />
+      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="xs">
+        <DialogTitle sx={{ textAlign: 'center' }}>{label}</DialogTitle>
+        <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <TextField
+            autoFocus
+            type="number"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            slotProps={{
+              htmlInput: {
+                'data-cy': `${dataCy}-input`,
+                inputMode: 'decimal',
+                // L'aria-label va sull'input VERO: sul TextField finirebbe sul contenitore
+                'aria-label': label,
+                style: { textAlign: 'center', fontSize: '2rem', fontWeight: 700 },
+              },
+            }}
+            sx={{
+              width: 180,
+              // Via le frecciette native: lo spinner è la rotella qui sotto
               '& input[type=number]': { MozAppearance: 'textfield' },
               '& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button':
                 { WebkitAppearance: 'none', margin: 0 },
-            },
-            ...(Array.isArray(sx) ? sx : [sx]),
-          ]}
-          slotProps={{
-            htmlInput: { 'data-cy': dataCy, inputMode: 'decimal' },
-            input: {
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    size="small"
-                    edge="end"
-                    data-cy={`${dataCy}-wheel`}
-                    aria-label={t('number.chooseValue', { label })}
-                    aria-expanded={open}
-                    onClick={() => setOpen((wasOpen) => !wasOpen)}
-                  >
-                    <ExpandMoreIcon fontSize="small" />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
-        {stepper && (
-          <>
-            <Button
-              size="small"
-              variant="outlined"
-              color="inherit"
-              data-cy={stepper.decreaseCy}
-              aria-label={stepper.decreaseLabel}
-              onClick={() => onChange(applyStep(value, -stepper.step, stepper.min))}
-              sx={{ minWidth: 0 }}
-            >
-              {`−${String(stepper.step).replace('.', ',')}`}
-            </Button>
-            <Button
-              size="small"
-              variant="outlined"
-              color="inherit"
-              data-cy={stepper.increaseCy}
-              aria-label={stepper.increaseLabel}
-              onClick={() => onChange(applyStep(value, stepper.step, stepper.min))}
-              sx={{ minWidth: 0 }}
-            >
-              {`+${String(stepper.step).replace('.', ',')}`}
-            </Button>
-          </>
-        )}
-        <Popper
-          open={open}
-          anchorEl={anchor}
-          placement="bottom-start"
-          sx={{ zIndex: (theme) => theme.zIndex.modal }}
-        >
-          <Paper
-            elevation={8}
-            sx={{ mt: 0.5, maxHeight: 240, overflowY: 'auto', borderRadius: '14px' }}
+            }}
+          />
+          <MenuList
+            role="listbox"
+            dense
+            data-cy={`${dataCy}-options`}
+            sx={{ mt: 1, width: 180, maxHeight: 240, overflowY: 'auto' }}
           >
-            <MenuList role="listbox" dense data-cy={`${dataCy}-options`}>
-              {options.map((option) => {
-                const selected = String(option) === value
-                return (
-                  <MenuItem
-                    key={option}
-                    role="option"
-                    aria-selected={selected}
-                    selected={selected}
-                    ref={selected ? selectedRef : undefined}
-                    onClick={() => {
-                      onChange(String(option))
-                      setOpen(false)
-                    }}
-                    sx={{ justifyContent: 'center', fontVariantNumeric: 'tabular-nums' }}
-                  >
-                    {option}
-                  </MenuItem>
-                )
-              })}
-            </MenuList>
-          </Paper>
-        </Popper>
-      </Stack>
-    </ClickAwayListener>
+            {options.map((option) => {
+              const selected = String(option) === draft
+              return (
+                <MenuItem
+                  key={option}
+                  role="option"
+                  aria-selected={selected}
+                  selected={selected}
+                  ref={selected ? selectedRef : undefined}
+                  onClick={() => {
+                    onChange(String(option))
+                    setOpen(false)
+                  }}
+                  sx={{ justifyContent: 'center', fontVariantNumeric: 'tabular-nums' }}
+                >
+                  {option}
+                </MenuItem>
+              )
+            })}
+          </MenuList>
+        </DialogContent>
+        <DialogActions>
+          <Button color="inherit" data-cy={`${dataCy}-cancel`} onClick={() => setOpen(false)}>
+            {t('list.cancel')}
+          </Button>
+          <Button variant="contained" data-cy={`${dataCy}-confirm`} onClick={conferma}>
+            {t('number.confirm')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   )
 }

@@ -127,8 +127,8 @@ describe('allenamento del giorno (issue #19)', () => {
       .getByRole('heading', { name: 'La tua scheda: Full Body' })
       .closest('section')!
     // Ieri 100 kg × 5 (sotto l'obiettivo): si ripropone lo stesso carico, reps dal target
-    expect(within(section as HTMLElement).getByLabelText('Peso (kg)')).toHaveValue(100)
-    expect(within(section as HTMLElement).getByLabelText('Ripetizioni')).toHaveValue(8)
+    expect(within(section as HTMLElement).getByLabelText('Peso (kg)')).toHaveValue('100')
+    expect(within(section as HTMLElement).getByLabelText('Ripetizioni')).toHaveValue('8')
 
     await user.click(screen.getByRole('button', { name: 'Fatto ✓' }))
 

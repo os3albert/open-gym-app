@@ -95,14 +95,6 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
                 dataCy="set-weight"
                 options={WEIGHTS}
                 sx={{ width: 130 }}
-                stepper={{
-                  step: 2.5,
-                  min: 0,
-                  decreaseCy: 'weight-minus',
-                  increaseCy: 'weight-plus',
-                  decreaseLabel: t('session.weightMinus'),
-                  increaseLabel: t('session.weightPlus'),
-                }}
               />
               <NumberField
                 label={t('session.reps')}
@@ -111,14 +103,6 @@ export function WorkoutSession({ data, today, onAddSet, onRemoveSet }: Props) {
                 dataCy="set-reps"
                 options={REPS}
                 sx={{ width: 130 }}
-                stepper={{
-                  step: 1,
-                  min: 1,
-                  decreaseCy: 'reps-minus',
-                  increaseCy: 'reps-plus',
-                  decreaseLabel: t('session.repsMinus'),
-                  increaseLabel: t('session.repsPlus'),
-                }}
               />
             </Stack>
             {error && (
