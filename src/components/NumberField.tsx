@@ -41,16 +41,23 @@ export function NumberField({ label, value, onChange, dataCy, options, placehold
   const [draft, setDraft] = useState(value)
   const selectedRef = useRef<HTMLLIElement>(null)
 
+  // La bozza si allinea al valore corrente QUANDO si apre, nel gestore del click: farlo in un
+  // effetto sarebbe un setState sincrono dentro l'effetto, che React sconsiglia.
+  function apri() {
+    setDraft(value)
+    setOpen(true)
+  }
+
   useEffect(() => {
     if (!open) return
-    setDraft(value)
-    // La lista si posiziona sul valore corrente: 121 carichi non si scorrono a mano
+    // La lista si posiziona sul valore corrente: 121 carichi non si scorrono a mano.
+    // jsdom non implementa scrollIntoView: l'optional chaining evita che i test crollino.
     const timer = window.setTimeout(
-      () => selectedRef.current?.scrollIntoView({ block: 'center' }),
+      () => selectedRef.current?.scrollIntoView?.({ block: 'center' }),
       0,
     )
     return () => window.clearTimeout(timer)
-  }, [open, value])
+  }, [open])
 
   function conferma() {
     onChange(draft)
@@ -63,11 +70,11 @@ export function NumberField({ label, value, onChange, dataCy, options, placehold
         label={label}
         value={value}
         placeholder={placeholder}
-        onClick={() => setOpen(true)}
+        onClick={apri}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault()
-            setOpen(true)
+            apri()
           }
         }}
         sx={sx}
