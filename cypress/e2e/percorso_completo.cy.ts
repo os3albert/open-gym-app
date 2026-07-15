@@ -8,7 +8,7 @@ const profiloConStatura = {
       name: 'Esercizio per bassi',
       description: 'Fuori fascia per il profilo',
       youtubeUrl: 'https://youtu.be/BBBBBBBBBBB',
-      muscleGroup: 'Gambe',
+      muscleGroup: 'legs',
       stature: { minCm: 150, maxCm: 165 },
       faceBlurConfirmed: true,
       votes: 0,
@@ -28,9 +28,9 @@ describe('Percorso completo esercizi (M2)', () => {
     // Proposta con fascia che comprende la statura del profilo (180 cm)
     cy.apriFormProposta()
     cy.get('[data-cy=exercise-name]').type('Rematore con bilanciere')
-    cy.get('[data-cy=exercise-muscle]').type('Dorso')
-    cy.get('[data-cy=exercise-stature-min]').type('170')
-    cy.get('[data-cy=exercise-stature-max]').type('195')
+    cy.scegliGruppo('back')
+    cy.scegliNumero('exercise-stature-min', '170')
+    cy.scegliNumero('exercise-stature-max', '195')
     cy.get('[data-cy=exercise-youtube]').type('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
     cy.get('[data-cy=video-preview]').should('be.visible')
     cy.scegliOpzione('exercise-difficulty', 'Media')
@@ -59,7 +59,7 @@ describe('Percorso completo esercizi (M2)', () => {
     cy.get('[data-cy=filter-suitable]').check()
     cy.get('[data-cy=stature-required]').should('be.visible')
 
-    cy.get('[data-cy=stature-input]').type('180')
+    cy.scegliNumero('stature-input', '180')
     cy.get('[data-cy=stature-save]').click()
     cy.get('[data-cy=stature-required]').should('not.exist')
   })

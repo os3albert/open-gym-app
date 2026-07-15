@@ -52,6 +52,13 @@ export const it = {
   'app.newProposal': 'Nuova proposta',
   'app.closeForm': 'Chiudi il form',
 
+  // Timer di allenamento (M14): il nome accessibile del FAB resta «Timer», qualunque
+  // cosa mostri la scritta (fase e tempo cambiano ogni secondo).
+  'timer.fab': 'Timer',
+  'timer.exercise': 'Esercizio',
+  'timer.rest': 'Pausa',
+  'timer.stop': 'Ferma il timer',
+
   // Impostazioni
   'settings.theme': 'Tema',
   'settings.themeAuto': 'Auto',
@@ -126,7 +133,22 @@ export const it = {
   'list.cancel': 'Annulla',
 
   // Campi numerici
+  'number.confirm': 'Conferma',
   'number.chooseValue': (p: { label: string }) => `Scegli un valore per ${p.label}`,
+
+  // Gruppi muscolari (codici nei dati, parole qui)
+  'muscle.chest': 'Petto',
+  'muscle.back': 'Schiena',
+  'muscle.legs': 'Gambe',
+  'muscle.shoulders': 'Spalle',
+  'muscle.arms': 'Braccia',
+  'muscle.core': 'Core',
+  'muscle.glutes': 'Glutei',
+  'muscle.calves': 'Polpacci',
+  'muscle.fullBody': 'Full body',
+  'muscle.other': 'Altro',
+  'form.muscleGroupChoose': 'Scegli il gruppo muscolare',
+  'errors.MISSING_MUSCLE_GROUP': 'Scegli il gruppo muscolare',
 
   // Difficoltà
   'difficulty.easy': 'Facile',
@@ -177,6 +199,16 @@ export const it = {
   'today.dayHint': (p: { name: string }) =>
     `${p.name} — spunta gli esercizi man mano che li completi.`,
   'today.dayEmpty': 'Questo giorno non ha esercizi: aggiungili dalla scheda.',
+  'today.setLog': 'Log delle serie',
+  'today.setNumber': 'Serie',
+  'today.status': 'Stato',
+  'today.addSet': '+ Aggiungi serie',
+  'today.position': (p: { position: number; total: number }) => `${p.position} di ${p.total}`,
+  'today.prevExercise': 'Esercizio precedente',
+  'today.nextExercise': 'Esercizio successivo',
+  'today.recordSet': (p: { set: number; name: string }) =>
+    `Registra la serie ${p.set} di ${p.name}`,
+  'today.removeSet': (p: { set: number; name: string }) => `Annulla la serie ${p.set} di ${p.name}`,
   'today.done': '✓ Registrato oggi',
   'today.skipped': 'Saltato per oggi',
   'today.undoSkip': 'Annulla',

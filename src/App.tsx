@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import AddIcon from '@mui/icons-material/Add'
+import StopIcon from '@mui/icons-material/Stop'
+import TimerIcon from '@mui/icons-material/Timer'
+import Fab from '@mui/material/Fab'
 import CloseIcon from '@mui/icons-material/Close'
 import Alert from '@mui/material/Alert'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Dialog from '@mui/material/Dialog'
-import Fab from '@mui/material/Fab'
 import useScrollTrigger from '@mui/material/useScrollTrigger'
 import IconButton from '@mui/material/IconButton'
 import Container from '@mui/material/Container'
@@ -18,6 +20,7 @@ import { theme as muiTheme } from './theme'
 import { makeTranslate, translateError, type Translate } from './i18n'
 import { I18nProvider } from './i18n/provider'
 import { useLanguage } from './hooks/useLanguage'
+import { CollapsingFab } from './components/CollapsingFab'
 import { ExerciseForm } from './components/ExerciseForm'
 import { ExerciseList } from './components/ExerciseList'
 import { FilterBar } from './components/FilterBar'
@@ -33,16 +36,18 @@ import { UpdateBanner } from './components/UpdateBanner'
 import { WorkoutSession } from './components/WorkoutSession'
 import type { NewExercise } from './domain/exercises'
 import { applyFiltersTo, muscleGroups, suitabilityRequiresStature } from './domain/filters'
-import type { Exercise } from './domain/types'
+import type { Exercise, WorkoutSet } from './domain/types'
 import { useAnalytics } from './hooks/useAnalytics'
 import { useAppData } from './hooks/useAppData'
 import { useCommunity, type CommunityMessage } from './hooks/useCommunity'
 import { useFilters } from './hooks/useFilters'
 import { useTheme } from './hooks/useTheme'
 import { useView } from './hooks/useView'
+import { useWorkoutTimer } from './hooks/useWorkoutTimer'
 import { mergeForDisplay } from './services/community'
 import { shareCodeFromHash } from './services/share'
 import { todayIso } from './utils/date'
+import { formatDuration } from './utils/duration'
 
 /**
  * Specchia il tema risolto da useTheme nel color scheme di MUI: il provider riscrive
@@ -120,7 +125,6 @@ export default function App() {
     saveStature,
     addSet,
     deleteSet,
-    completeEntry,
     createPlan,
     renamePlan,
     removePlan,
@@ -148,11 +152,18 @@ export default function App() {
   const analytics = useAnalytics(view)
   // Sotto Vitest non si scorre: il FAB resta esteso, e i test non devono saperne nulla
   const scrolled = useScrollTrigger({ disableHysteresis: true, threshold: 40 })
+  const timer = useWorkoutTimer()
   const [editing, setEditing] = useState<Exercise | null>(null)
   const [formError, setFormError] = useState<string | null>(null)
   const [statureError, setStatureError] = useState<string | null>(null)
   // Il form di proposta è chiuso all'atterraggio: la lista della community viene prima
   const [formOpen, setFormOpen] = useState(false)
+
+  /** Registra la serie di oggi e, se il timer è avviato, fa partire la pausa da sola. */
+  function recordSetForToday(exerciseId: string, set: WorkoutSet) {
+    addSet(exerciseId, todayIso(), set)
+    timer.onSetRecorded()
+  }
 
   function closeForm() {
     setFormOpen(false)
@@ -333,21 +344,22 @@ export default function App() {
               />
             )}
             {view === 'allenamento' && (
-              <>
-                <TodayWorkout
-                  data={data}
-                  today={todayIso()}
-                  onComplete={(exerciseId, sets, set) =>
-                    completeEntry(exerciseId, todayIso(), sets, set)
-                  }
-                />
-                <WorkoutSession
-                  data={data}
-                  today={todayIso()}
-                  onAddSet={(exerciseId, set) => addSet(exerciseId, todayIso(), set)}
-                  onRemoveSet={deleteSet}
-                />
-              </>
+              <TodayWorkout
+                data={data}
+                today={todayIso()}
+                onRecordSet={recordSetForToday}
+                onRemoveSet={deleteSet}
+                // Senza scheda attiva (o di riposo) resta la registrazione libera: altrimenti
+                // chi non ha ancora una scheda troverebbe una vista che non fa niente
+                fallback={
+                  <WorkoutSession
+                    data={data}
+                    today={todayIso()}
+                    onAddSet={recordSetForToday}
+                    onRemoveSet={deleteSet}
+                  />
+                }
+              />
             )}
             {view === 'storico' && <HistoryView data={data} />}
             {/* Proposta e modifica passano dallo STESSO modale: un solo form, due modi di aprirlo */}
@@ -396,17 +408,7 @@ export default function App() {
           )}
         </Container>
         {view === 'esercizi' && (
-          <Fab
-            color="primary"
-            // Esteso all'atterraggio (la scritta serve a farsi capire), sola «+» appena si scorre:
-            // a quel punto l'icona basta, e la lista si riprende lo spazio.
-            variant={scrolled ? 'circular' : 'extended'}
-            data-cy="propose-toggle"
-            aria-expanded={formOpen}
-            // Il nome accessibile NON dipende dalla scritta: quando il FAB si ritira, i test (e gli
-            // screen reader) devono continuare a trovarlo per nome.
-            aria-label={t('app.newProposal')}
-            onClick={() => setFormOpen(true)}
+          <Box
             sx={{
               position: 'fixed',
               right: 16,
@@ -415,10 +417,60 @@ export default function App() {
               zIndex: (t) => t.zIndex.appBar - 1,
             }}
           >
-            <AddIcon sx={{ mr: scrolled ? 0 : 1 }} />
-            {/* Non «Proponi esercizio»: è il nome del submit del form, le query per ruolo collidono */}
-            {!scrolled && t('app.newProposal')}
-          </Fab>
+            {/* Esteso all'atterraggio (la scritta serve a farsi capire), sola «+» appena si
+                scorre: a quel punto l'icona basta, e la lista si riprende lo spazio.
+                Non «Proponi esercizio»: è il nome del submit del form, le query per ruolo
+                collidono. */}
+            <CollapsingFab
+              icon={<AddIcon />}
+              label={t('app.newProposal')}
+              collapsed={scrolled}
+              onClick={() => setFormOpen(true)}
+              dataCy="propose-toggle"
+              ariaExpanded={formOpen}
+            />
+          </Box>
+        )}
+        {view === 'allenamento' && (
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              position: 'fixed',
+              right: 16,
+              bottom: 'calc(88px + env(safe-area-inset-bottom))',
+              zIndex: (t) => t.zIndex.appBar - 1,
+              alignItems: 'center',
+            }}
+          >
+            {timer.phase !== 'idle' && (
+              <Fab
+                size="small"
+                data-cy="workout-timer-stop"
+                aria-label={t('timer.stop')}
+                onClick={timer.stop}
+              >
+                <StopIcon />
+              </Fab>
+            )}
+            {/* Da fermo si ritira allo scroll come «Nuova proposta»; avviato resta esteso:
+                il tempo È l'informazione. Un tocco avvia, poi alterna pausa ↔ esercizio;
+                la pausa parte da sola quando si registra una serie. */}
+            <CollapsingFab
+              icon={<TimerIcon />}
+              label={
+                timer.phase === 'rest'
+                  ? `${t('timer.rest')} ${formatDuration(timer.restMs)}`
+                  : timer.phase === 'exercise'
+                    ? `${t('timer.exercise')} ${formatDuration(timer.totalMs)}`
+                    : t('timer.fab')
+              }
+              collapsed={scrolled && timer.phase === 'idle'}
+              onClick={() => (timer.phase === 'idle' ? timer.start() : timer.toggleRest())}
+              dataCy="workout-timer"
+              ariaLabel={t('timer.fab')}
+            />
+          </Stack>
         )}
         <TabNav view={view} onChange={setView} />
       </ThemeProvider>

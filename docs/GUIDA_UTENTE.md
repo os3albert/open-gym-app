@@ -21,8 +21,9 @@ App: **https://os3albert.github.io/open-gym-app/**
 ## Proporre un esercizio
 
 1. Apri la scheda **Esercizi**: atterri sulla lista della community. Premi il pulsante
-   flottante **Nuova proposta**: il modulo si apre in una finestra. Compila nome, descrizione,
-   gruppo muscolare.
+   flottante **Nuova proposta**: il modulo si apre in una finestra. Compila nome e descrizione, e
+   scegli il **gruppo muscolare** da una lista (è obbligatorio: così i filtri non si riempiono di
+   doppioni fra «Petto», «petto» e «PETTO»).
 2. Incolla il **link YouTube** del video (l'app non ospita video: solo link).
    Il volto **non è importante**: si guarda il movimento, non la persona. Se preferisci,
    offuscalo con l'AI — trovi le linee guida nel modulo — ma non è obbligatorio.
@@ -141,6 +142,16 @@ Lingua e tema NON finiscono nel backup: sono preferenze del dispositivo, non dat
 
 ## Nei campi numerici
 
-Peso, ripetizioni e statura hanno una **rotella di valori** già pronti: si apre dal pulsante
-del campo e si sceglie con un tocco. Accanto restano i pulsanti **+/−**, e il campo resta
-scrivibile a mano per i valori fuori scala.
+Peso, ripetizioni e statura aprono uno **spinner** al centro dello schermo: si scorre la rotella e
+si tocca il valore. Se ti serve un numero fuori scala (137,5 kg), nello stesso riquadro c'è un campo
+per scriverlo.
+
+## L'allenamento del giorno
+
+Se hai una scheda attiva, la scheda **Allenamento** mostra gli esercizi di oggi **uno per
+schermata**: scorri con il dito per passare al successivo. Ogni card ha il **video** dell'esercizio
+e il **log delle serie**: peso e ripetizioni sono già proposti in base all'ultima volta, e la spunta
+a destra registra la serie. «+ Aggiungi serie» ne aggiunge una oltre a quelle previste.
+
+Senza scheda attiva (o nei giorni di riposo) resta la **registrazione libera**, per loggare qualsiasi
+esercizio al volo.

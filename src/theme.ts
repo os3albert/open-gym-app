@@ -66,7 +66,15 @@ export const theme = createTheme({
     MuiCollapse: { defaultProps: { timeout: underTest ? 0 : undefined } },
     // Stessa ragione del Collapse: durante la transizione MUI mette pointer-events: none,
     // e userEvent clicca DAVVERO. Senza questo, i test sul modale falliscono a tradimento.
-    MuiDialog: { defaultProps: { transitionDuration: underTest ? 0 : undefined } },
+    MuiDialog: {
+      defaultProps: {
+        transitionDuration: underTest ? 0 : undefined,
+        // Sotto Vitest il Dialog va smontato SUBITO alla chiusura. Di suo MUI aspetta la fine
+        // della transizione d'uscita per farlo, e finché il nodo è lì il resto della pagina
+        // resta aria-hidden: i test non troverebbero più nulla dietro al modale.
+        ...(underTest ? { closeAfterTransition: false } : {}),
+      },
+    },
     MuiBackdrop: { defaultProps: { transitionDuration: underTest ? 0 : undefined } },
     MuiButton: {
       defaultProps: { disableElevation: true },

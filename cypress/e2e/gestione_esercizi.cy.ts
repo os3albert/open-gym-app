@@ -3,7 +3,7 @@
 function proponiEsercizio(nome: string, link: string, difficolta = 'Media') {
   cy.apriFormProposta()
   cy.get('[data-cy=exercise-name]').type(nome)
-  cy.get('[data-cy=exercise-muscle]').type('Petto')
+  cy.scegliGruppo('chest')
   cy.get('[data-cy=exercise-youtube]').type(link)
   cy.get('[data-cy=exercise-description]').type('Descrizione di prova')
   // Obbligatoria da M13: senza, il dominio rifiuta la proposta
@@ -71,7 +71,12 @@ describe('Gestione esercizi', () => {
     cy.get('[data-cy=exercise-submit]').click()
     cy.get('[data-cy=form-error]').should('contain.text', 'Scegli il grado di difficoltà')
 
+    // Anche il gruppo muscolare è obbligatorio (M14), e si sceglie da un modale
     cy.scegliOpzione('exercise-difficulty', 'Difficile')
+    cy.get('[data-cy=exercise-submit]').click()
+    cy.get('[data-cy=form-error]').should('contain.text', 'Scegli il gruppo muscolare')
+
+    cy.scegliGruppo('back')
     cy.get('[data-cy=exercise-submit]').click()
     // Il modale esce in dissolvenza: finché non è sparito, i suoi campi sono ancora nel DOM
     cy.get('[role=dialog]').should('not.exist')
@@ -115,6 +120,40 @@ describe('Gestione esercizi', () => {
     cy.get('[data-cy=video-iframe]')
       .should('have.attr', 'src')
       .and('include', 'youtube-nocookie.com/embed/dQw4w9WgXcQ')
+  })
+
+  it('ritirandosi allo scorrimento, il FAB mostra ancora il «+» (M14)', () => {
+    // Servono abbastanza card da far scorrere la pagina, altrimenti il FAB non si ritira mai
+    cy.visitWithData({
+      schemaVersion: 3,
+      exercises: Array.from({ length: 8 }, (_, i) => ({
+        id: `ex-${i}`,
+        name: `Esercizio ${i + 1}`,
+        description: '',
+        youtubeUrl: `https://youtu.be/AAAAAAAAAA${i}`,
+        muscleGroup: 'chest',
+        faceBlurConfirmed: true,
+        votes: 0,
+        createdAt: '2026-07-01T10:00:00.000Z',
+      })),
+      plans: [],
+      activePlanId: null,
+      activity: [],
+      profile: { statureCm: null },
+      votedExerciseIds: [],
+    })
+
+    cy.scrollTo(0, 600)
+    // Ritirato: il cerchio è largo quanto è alto…
+    cy.get('[data-cy=propose-toggle]').invoke('outerWidth').should('be.closeTo', 56, 2)
+    // …e il «+» deve stare DENTRO il cerchio: la scritta che sfumava senza cedere larghezza
+    // spingeva l'icona fuori dal ritaglio, lasciando un pulsante vuoto.
+    cy.get('[data-cy=propose-toggle]').then(($fab) => {
+      const fab = $fab[0].getBoundingClientRect()
+      const icon = $fab.find('svg')[0].getBoundingClientRect()
+      expect(icon.left).to.be.at.least(fab.left)
+      expect(icon.right).to.be.at.most(fab.right)
+    })
   })
 
   it('i dati persistono dopo il ricaricamento della pagina', () => {

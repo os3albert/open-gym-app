@@ -2,9 +2,11 @@ import { isValidYouTubeUrl } from '../services/youtube'
 import { generateId } from '../utils/id'
 import {
   isDifficulty,
+  isMuscleGroup,
   type AppData,
   type Difficulty,
   type Exercise,
+  type MuscleGroup,
   type StatureRange,
 } from './types'
 
@@ -12,6 +14,7 @@ export const INVALID_YOUTUBE_LINK_ERROR = 'INVALID_YOUTUBE_LINK'
 export const EMPTY_NAME_ERROR = 'EMPTY_NAME'
 export const INVALID_STATURE_RANGE_ERROR = 'INVALID_STATURE_RANGE'
 export const MISSING_DIFFICULTY_ERROR = 'MISSING_DIFFICULTY'
+export const MISSING_MUSCLE_GROUP_ERROR = 'MISSING_MUSCLE_GROUP'
 
 export const MIN_STATURE_CM = 100
 export const MAX_STATURE_CM = 250
@@ -20,7 +23,7 @@ export interface NewExercise {
   name: string
   description: string
   youtubeUrl: string
-  muscleGroup: string
+  muscleGroup: MuscleGroup
   difficulty: Difficulty
   stature?: StatureRange
   /**
@@ -40,6 +43,7 @@ function validate(input: NewExercise): void {
   if (!input.name.trim()) throw new Error(EMPTY_NAME_ERROR)
   if (!isValidYouTubeUrl(input.youtubeUrl)) throw new Error(INVALID_YOUTUBE_LINK_ERROR)
   if (!isDifficulty(input.difficulty)) throw new Error(MISSING_DIFFICULTY_ERROR)
+  if (!isMuscleGroup(input.muscleGroup)) throw new Error(MISSING_MUSCLE_GROUP_ERROR)
   if (input.stature && !isValidStatureRange(input.stature)) {
     throw new Error(INVALID_STATURE_RANGE_ERROR)
   }
@@ -53,7 +57,7 @@ export function createExercise(input: NewExercise, now: Date = new Date()): Exer
     name: input.name.trim(),
     description: input.description.trim(),
     youtubeUrl: input.youtubeUrl.trim(),
-    muscleGroup: input.muscleGroup.trim(),
+    muscleGroup: input.muscleGroup,
     difficulty: input.difficulty,
     ...(input.stature ? { stature: input.stature } : {}),
     faceBlurConfirmed: input.faceBlurConfirmed ?? false,
@@ -80,7 +84,7 @@ export function updateExercise(data: AppData, exerciseId: string, input: NewExer
         name: input.name.trim(),
         description: input.description.trim(),
         youtubeUrl: input.youtubeUrl.trim(),
-        muscleGroup: input.muscleGroup.trim(),
+        muscleGroup: input.muscleGroup,
         difficulty: input.difficulty,
         ...(input.stature ? { stature: input.stature } : {}),
       }

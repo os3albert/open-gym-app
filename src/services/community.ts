@@ -1,3 +1,4 @@
+import { normalizeMuscleGroup } from '../domain/muscleGroups'
 import type { Exercise } from '../domain/types'
 import type { CommunityExercise, CommunityVotes, ProposalInput } from './communityData'
 import { voteCounts } from './communityData'
@@ -125,6 +126,8 @@ export function mergeForDisplay(
   })
   const fromCommunity: DisplayExercise[] = community.map((e) => ({
     ...e,
+    // Il catalogo pubblico ha voci col gruppo scritto a mano: si normalizza, non si scarta
+    muscleGroup: normalizeMuscleGroup(e.muscleGroup),
     // Il catalogo pubblico ha voci proposte prima di M13, senza difficoltà: valgono «media»
     difficulty: e.difficulty ?? 'medium',
     votes: counts[e.id] ?? 0,

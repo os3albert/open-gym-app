@@ -2,6 +2,40 @@
 
 Tutte le modifiche rilevanti del progetto, per release.
 
+## 1.6.0 — 2026-07-15
+
+Gruppi muscolari chiusi, spinner a modale, allenamento a carosello (milestone M14, issue #81–#85).
+
+### Gruppi muscolari (M14)
+
+- Il gruppo muscolare non è più testo libero: si sceglie da un **modale** con la lista dei gruppi,
+  ed è **obbligatorio**. «Petto», «petto» e «PETTO» erano tre gruppi diversi nei filtri: ora sono
+  lo stesso.
+- Nei dati è un **codice** tradotto (come la difficoltà): in inglese l'app dice «Chest», non «Petto».
+- Schema **v5**: i backup precedenti si importano come sempre — il testo esistente viene
+  riconosciuto (sinonimi italiani e inglesi, senza badare a maiuscole e accenti) e ciò che non si
+  riconosce finisce su «Altro».
+
+### Numeri (M14)
+
+- Via i pulsanti **+/−**: resta lo **spinner**, che si apre in un modale al centro dello schermo.
+  Dentro c'è la rotella dei valori e un campo per scrivere, per i valori fuori scala.
+
+### Allenamento (M14)
+
+- La vista diventa un **carosello**: un esercizio per schermata, che scorre con lo **swipe**.
+  Ogni card ha il **video** dell'esercizio e il **log delle serie**, riga per riga: una spunta
+  registra la serie. Senza scheda attiva resta la registrazione libera.
+- Il carosello ha anche le **frecce** indietro/avanti (con la rotella del mouse lo snap
+  riagganciava sempre la card di partenza) e margini ai bordi: prima e ultima card si centrano,
+  e un fling non salta gli esercizi.
+- Un **timer di allenamento** dal pulsante flottante: un tocco avvia la sessione, registrare una
+  serie fa partire **da sola la pausa**, un altro tocco la chiude (o ne apre una manuale), lo
+  stop accanto ferma tutto. Solo in memoria: niente nel backup.
+- Il pulsante «Nuova proposta» si **ritira con una transizione**, invece di saltare — e da
+  ritirato mostra il «+» (la scritta, sfumando senza cedere larghezza, lo spingeva fuori:
+  restava un cerchio vuoto).
+
 ## 1.5.0 — 2026-07-14
 
 Difficoltà degli esercizi e rifiniture di interazione (milestone M13, issue #70–#73).

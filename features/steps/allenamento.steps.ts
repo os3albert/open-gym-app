@@ -14,7 +14,7 @@ function ensureExercise(world: GymWorld, name: string): string {
       name,
       description: '',
       youtubeUrl: 'https://youtu.be/AAAAAAAAAAA',
-      muscleGroup: '',
+      muscleGroup: 'chest',
       difficulty: 'medium',
       faceBlurConfirmed: true,
     })

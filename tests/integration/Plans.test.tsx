@@ -25,7 +25,7 @@ function withExercises(...names: string[]): AppData {
       name,
       description: '',
       youtubeUrl: `https://youtu.be/AAAAAAAAAA${i}`,
-      muscleGroup: 'Gambe',
+      muscleGroup: 'legs',
       difficulty: 'medium',
       faceBlurConfirmed: true,
     })
@@ -79,10 +79,9 @@ describe('creazione e gestione delle schede (issue #18)', () => {
     expect(screen.getByText('✓ attiva')).toBeInTheDocument()
 
     await openTab(user, 'Allenamento')
-    const section = screen
-      .getByRole('heading', { name: 'La tua scheda: Scheda B' })
-      .closest('section')!
-    expect(within(section as HTMLElement).getByText('Trazioni')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'La tua scheda: Scheda B' })).toBeInTheDocument()
+    // Il carosello mostra l'esercizio della scheda attivata
+    expect(screen.getByRole('heading', { name: 'Trazioni' })).toBeInTheDocument()
   })
 
   it('una scheda non attiva si elimina con conferma', async () => {
@@ -117,24 +116,30 @@ describe('allenamento del giorno (issue #19)', () => {
     return setActivePlan(data, data.plans[0].id)
   }
 
-  it('propone gli esercizi di oggi con il peso suggerito e «Fatto ✓» registra la sessione', async () => {
+  it('il carosello mostra una card per esercizio, col set log e il carico suggerito (M14)', async () => {
     const user = userEvent.setup()
     saveData(seedActivePlanForToday())
     render(<App />)
     await openTab(user, 'Allenamento')
 
-    const section = screen
-      .getByRole('heading', { name: 'La tua scheda: Full Body' })
-      .closest('section')!
+    const card = screen.getByRole('heading', { name: 'Squat' }).closest('li, div[class*=Card]')!
     // Ieri 100 kg × 5 (sotto l'obiettivo): si ripropone lo stesso carico, reps dal target
-    expect(within(section as HTMLElement).getByLabelText('Peso (kg)')).toHaveValue(100)
-    expect(within(section as HTMLElement).getByLabelText('Ripetizioni')).toHaveValue(8)
+    expect(screen.getByLabelText('Peso (kg)')).toHaveValue('100')
+    expect(screen.getByLabelText('Ripetizioni')).toHaveValue('8')
 
-    await user.click(screen.getByRole('button', { name: 'Fatto ✓' }))
+    // Il set log ha una riga per ogni serie prevista dalla scheda (3×8)
+    expect(within(card as HTMLElement).getAllByRole('row')).toHaveLength(4) // intestazione + 3
 
-    expect(screen.getByText('✓ Registrato oggi')).toBeInTheDocument()
-    // Le 3 serie sono nello storico di oggi (sezione «Serie registrate oggi»)
-    expect(screen.getAllByText('100 kg × 8')).toHaveLength(3)
+    // Le frecce del carosello (jsdom non fa layout: lo scorrimento vero lo copre Cypress)
+    await user.click(screen.getByRole('button', { name: 'Esercizio successivo' }))
+    await user.click(screen.getByRole('button', { name: 'Esercizio precedente' }))
+
+    // La spunta della prima riga registra QUELLA serie: una riga, una serie
+    await user.click(screen.getByRole('button', { name: 'Registra la serie 1 di Squat' }))
+
+    expect(screen.getByRole('button', { name: 'Annulla la serie 1 di Squat' })).toBeInTheDocument()
+    await openTab(user, 'Storico')
+    expect(screen.getByText(/100 kg × 8/)).toBeInTheDocument()
   })
 
   it('senza allenamento previsto oggi mostra il riposo con il prossimo allenamento', async () => {

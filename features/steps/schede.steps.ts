@@ -31,7 +31,7 @@ function ensureExercise(data: AppData, name: string): { data: AppData; exerciseI
     name,
     description: '',
     youtubeUrl: `https://youtu.be/${videoIdFor(name)}`,
-    muscleGroup: '',
+    muscleGroup: 'chest',
     difficulty: 'medium',
     faceBlurConfirmed: true,
   })
@@ -187,7 +187,7 @@ Given(
       name,
       description: 'Già presente qui',
       youtubeUrl: `https://www.youtube.com/watch?v=${videoIdFor(name)}`,
-      muscleGroup: '',
+      muscleGroup: 'chest',
       difficulty: 'medium',
       faceBlurConfirmed: true,
     })

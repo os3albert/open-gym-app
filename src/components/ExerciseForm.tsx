@@ -7,7 +7,8 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import type { NewExercise } from '../domain/exercises'
 import { useT } from '../i18n/context'
-import { DIFFICULTIES, type Difficulty, type Exercise } from '../domain/types'
+import { DIFFICULTIES, type Difficulty, type Exercise, type MuscleGroup } from '../domain/types'
+import { MuscleGroupField } from './MuscleGroupField'
 import { SelectField } from './SelectField'
 import { parseYouTubeVideoId, youtubeThumbnailUrl } from '../services/youtube'
 import { range } from '../utils/number'
@@ -28,7 +29,7 @@ const STATURES = range(100, 250)
 export function ExerciseForm({ initial = null, onSubmit, onCancel, error }: Props) {
   const t = useT()
   const [name, setName] = useState(initial?.name ?? '')
-  const [muscleGroup, setMuscleGroup] = useState(initial?.muscleGroup ?? '')
+  const [muscleGroup, setMuscleGroup] = useState<MuscleGroup | ''>(initial?.muscleGroup ?? '')
   const [youtubeUrl, setYoutubeUrl] = useState(initial?.youtubeUrl ?? '')
   const [description, setDescription] = useState(initial?.description ?? '')
   // Nessuna preselezione: la difficoltà è una scelta, e senza il dominio rifiuta la proposta
@@ -47,7 +48,7 @@ export function ExerciseForm({ initial = null, onSubmit, onCancel, error }: Prop
     const hasStature = statureMin.trim() !== '' || statureMax.trim() !== ''
     const accepted = onSubmit({
       name,
-      muscleGroup,
+      muscleGroup: muscleGroup as MuscleGroup,
       youtubeUrl,
       description,
       difficulty: difficulty as Difficulty,
@@ -79,12 +80,7 @@ export function ExerciseForm({ initial = null, onSubmit, onCancel, error }: Prop
           onChange={(e) => setName(e.target.value)}
           slotProps={{ htmlInput: { 'data-cy': 'exercise-name' } }}
         />
-        <TextField
-          label={t('form.muscleGroup')}
-          value={muscleGroup}
-          onChange={(e) => setMuscleGroup(e.target.value)}
-          slotProps={{ htmlInput: { 'data-cy': 'exercise-muscle' } }}
-        />
+        <MuscleGroupField value={muscleGroup} onChange={setMuscleGroup} dataCy="exercise-muscle" />
         <SelectField
           label={t('form.difficulty')}
           value={difficulty}

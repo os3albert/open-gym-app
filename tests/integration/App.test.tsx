@@ -4,7 +4,7 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '../../src/App'
 import { it as itDict } from '../../src/i18n/it'
-import { scegliOpzione } from './helpers'
+import { scegliGruppo, scegliNumero, scegliOpzione } from './helpers'
 import { INVALID_YOUTUBE_LINK_ERROR } from '../../src/domain/exercises'
 
 beforeEach(() => {
@@ -30,10 +30,10 @@ async function proposeExercise(
   const user = userEvent.setup()
   await openProposeForm()
   await user.type(screen.getByLabelText('Nome esercizio'), name)
-  await user.type(screen.getByLabelText('Gruppo muscolare'), 'Petto')
+  await scegliGruppo(user, 'Petto')
   if (stature) {
-    await user.type(screen.getByLabelText('Statura consigliata da (cm)'), String(stature.min))
-    await user.type(screen.getByLabelText('a (cm)'), String(stature.max))
+    await scegliNumero(user, 'Statura consigliata da (cm)', String(stature.min))
+    await scegliNumero(user, 'a (cm)', String(stature.max))
   }
   await user.type(screen.getByLabelText('Link YouTube (volto offuscato)'), youtubeUrl)
   await scegliOpzione(user, 'Difficoltà', 'Media')
@@ -86,6 +86,7 @@ describe('proposta di un esercizio', () => {
       screen.getByLabelText('Link YouTube (volto offuscato)'),
       'https://youtu.be/dQw4w9WgXcQ',
     )
+    await scegliGruppo(user, 'Gambe')
     await scegliOpzione(user, 'Difficoltà', 'Facile')
     await user.click(screen.getByRole('button', { name: 'Proponi esercizio' }))
 
@@ -184,7 +185,7 @@ describe('filtro per statura', () => {
     await proposeExercise('Per alti', 'https://youtu.be/dQw4w9WgXcQ', { min: 180, max: 200 })
     await proposeExercise('Per bassi', 'https://youtu.be/dQw4w9WgXcQ', { min: 150, max: 165 })
 
-    await user.type(screen.getByLabelText('La mia statura (cm)'), '185')
+    await scegliNumero(user, 'La mia statura (cm)', '185')
     await user.click(screen.getByRole('button', { name: 'Salva' }))
     await user.click(screen.getByLabelText('Adatti a me'))
 

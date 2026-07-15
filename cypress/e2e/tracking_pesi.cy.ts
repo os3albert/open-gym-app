@@ -16,7 +16,7 @@ const seed = {
       name: 'Stacco da terra',
       description: 'Stacco convenzionale',
       youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
-      muscleGroup: 'Schiena',
+      muscleGroup: 'back',
       faceBlurConfirmed: true,
       votes: 0,
       createdAt: '2026-07-01T10:00:00.000Z',
@@ -92,17 +92,16 @@ describe('Tracking pesi (M3)', () => {
     cy.get('[data-cy=set-chip]').should('contain.text', '100 kg × 8')
   })
 
-  it('senza storico il campo peso resta vuoto e i +/- funzionano', () => {
+  it('senza storico il campo resta vuoto; nello spinner si scrive anche un fuori scala (M14)', () => {
     cy.visitWithData({ ...seed, activity: [] })
 
     cy.get('[data-cy=tab-allenamento]').click()
     cy.scegliOpzione('session-exercise-select', 'Stacco da terra')
 
     cy.get('[data-cy=set-weight]').should('have.value', '')
-    cy.get('[data-cy=weight-plus]').click().click()
-    cy.get('[data-cy=set-weight]').should('have.value', '5')
-    cy.get('[data-cy=reps-plus]').click()
-    cy.get('[data-cy=set-reps]').should('have.value', '1')
+    // 317,5 kg non sta in nessuna rotella ragionevole: si scrive nel modale
+    cy.digitaNumero('set-weight', '317.5')
+    cy.get('[data-cy=set-weight]').should('have.value', '317.5')
   })
 
   it('una serie non valida viene rifiutata con un errore', () => {
@@ -110,7 +109,7 @@ describe('Tracking pesi (M3)', () => {
 
     cy.get('[data-cy=tab-allenamento]').click()
     cy.scegliOpzione('session-exercise-select', 'Stacco da terra')
-    cy.get('[data-cy=set-weight]').type('60')
+    cy.scegliNumero('set-weight', '60')
     cy.get('[data-cy=add-set]').click()
 
     cy.get('[data-cy=session-error]').should('be.visible')
