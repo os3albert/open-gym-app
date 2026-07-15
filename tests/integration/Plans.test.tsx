@@ -130,6 +130,10 @@ describe('allenamento del giorno (issue #19)', () => {
     // Il set log ha una riga per ogni serie prevista dalla scheda (3×8)
     expect(within(card as HTMLElement).getAllByRole('row')).toHaveLength(4) // intestazione + 3
 
+    // Le frecce del carosello (jsdom non fa layout: lo scorrimento vero lo copre Cypress)
+    await user.click(screen.getByRole('button', { name: 'Esercizio successivo' }))
+    await user.click(screen.getByRole('button', { name: 'Esercizio precedente' }))
+
     // La spunta della prima riga registra QUELLA serie: una riga, una serie
     await user.click(screen.getByRole('button', { name: 'Registra la serie 1 di Squat' }))
 

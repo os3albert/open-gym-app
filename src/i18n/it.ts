@@ -197,6 +197,8 @@ export const it = {
   'today.status': 'Stato',
   'today.addSet': '+ Aggiungi serie',
   'today.position': (p: { position: number; total: number }) => `${p.position} di ${p.total}`,
+  'today.prevExercise': 'Esercizio precedente',
+  'today.nextExercise': 'Esercizio successivo',
   'today.recordSet': (p: { set: number; name: string }) =>
     `Registra la serie ${p.set} di ${p.name}`,
   'today.removeSet': (p: { set: number; name: string }) => `Annulla la serie ${p.set} di ${p.name}`,

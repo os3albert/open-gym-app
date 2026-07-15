@@ -175,6 +175,8 @@ export const en: Dictionary = {
   'today.status': 'Status',
   'today.addSet': '+ Add set',
   'today.position': (p) => `${p.position} of ${p.total}`,
+  'today.prevExercise': 'Previous exercise',
+  'today.nextExercise': 'Next exercise',
   'today.recordSet': (p) => `Log set ${p.set} of ${p.name}`,
   'today.removeSet': (p) => `Undo set ${p.set} of ${p.name}`,
   'today.done': '✓ Logged today',

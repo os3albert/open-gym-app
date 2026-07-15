@@ -119,6 +119,76 @@ describe('Schede di allenamento (M4)', () => {
     cy.get('[data-cy=tab-storico]').click()
     cy.get('[data-cy=session-item]').should('have.length', 2)
   })
+
+  it('il carosello raggiunge tutti gli esercizi con le frecce (M14)', () => {
+    // Su schermo da telefono: una card per schermata, le vicine spuntano appena
+    cy.viewport('iphone-x')
+    const oggi = WEEKDAYS_BY_GETDAY[new Date().getDay()]
+    const molti = Array.from({ length: 4 }, (_, i) => ({
+      id: `ex-c${i}`,
+      name: `Esercizio ${i + 1}`,
+      description: '',
+      youtubeUrl: `https://youtu.be/CCCCCCCCCC${i}`,
+      muscleGroup: 'chest',
+      faceBlurConfirmed: true,
+      votes: 0,
+      createdAt: '2026-07-01T10:00:00.000Z',
+    }))
+    cy.visitWithData({
+      ...seed,
+      exercises: molti,
+      plans: [
+        {
+          id: 'p1',
+          name: 'Full Body',
+          days: [{ name: oggi, entries: molti.map((e) => ({ exerciseId: e.id, sets: 2, reps: 8 })) }],
+          votes: 0,
+        },
+      ],
+      activePlanId: 'p1',
+    })
+
+    cy.get('[data-cy=tab-allenamento]').click()
+    cy.get('[data-cy=today-entry]').should('have.length', 4)
+    // L'ultima card sta ben oltre la finestra del carosello
+    cy.get('[data-cy=today-entry]').last().should('not.be.visible')
+
+    // Avanti fino in fondo, una card per click; lo scrollLeft che cresce serializza
+    // i click rispetto all'animazione di scorrimento
+    cy.get('[data-cy=today-next]').click()
+    cy.get('[data-cy=today-carousel]').invoke('scrollLeft').should('be.greaterThan', 150)
+    cy.get('[data-cy=today-next]').click()
+    cy.get('[data-cy=today-carousel]').invoke('scrollLeft').should('be.greaterThan', 460)
+    cy.get('[data-cy=today-next]').click()
+    cy.get('[data-cy=today-carousel]').invoke('scrollLeft').should('be.greaterThan', 770)
+    cy.get('[data-cy=today-entry]').last().should('be.visible')
+    cy.get('[data-cy=today-entry]').first().should('not.be.visible')
+
+    // E indietro
+    cy.get('[data-cy=today-prev]').click()
+    cy.get('[data-cy=today-carousel]').invoke('scrollLeft').should('be.lessThan', 780)
+  })
+
+  it('«+ Aggiungi serie» aggiunge una riga extra al set log (M14)', () => {
+    const oggi = WEEKDAYS_BY_GETDAY[new Date().getDay()]
+    cy.visitWithData({
+      ...seed,
+      plans: [
+        {
+          id: 'p1',
+          name: 'Full Body',
+          days: [{ name: oggi, entries: [{ exerciseId: 'ex-squat', sets: 3, reps: 8 }] }],
+          votes: 0,
+        },
+      ],
+      activePlanId: 'p1',
+    })
+
+    cy.get('[data-cy=tab-allenamento]').click()
+    cy.get('[data-cy=set-row]').should('have.length', 3)
+    cy.get('[data-cy=today-add-set]').click()
+    cy.get('[data-cy=set-row]').should('have.length', 4)
+  })
 })
 
 export {}

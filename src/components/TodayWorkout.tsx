@@ -1,5 +1,7 @@
-import { useState, type ReactNode } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
@@ -48,7 +50,34 @@ interface Props {
 export function TodayWorkout({ data, today, onRecordSet, onRemoveSet, fallback }: Props) {
   const t = useT()
   const [manualDayName, setManualDayName] = useState('')
+  const carouselRef = useRef<HTMLDivElement>(null)
   const plan = activePlan(data)
+
+  /**
+   * Porta il carosello alla card accanto. Lo swipe da solo non basta: con lo snap «mandatory»
+   * la rotella del mouse muove meno di mezza card e viene sempre riagganciata alla card di
+   * partenza (su desktop non si avanzava mai), e la scrollbar è nascosta apposta.
+   */
+  function scorri(direction: 1 | -1) {
+    const el = carouselRef.current
+    if (!el) return
+    const cards = Array.from(el.querySelectorAll<HTMLElement>('[data-cy=today-entry]'))
+    if (cards.length === 0) return
+    // La card più vicina al centro della finestra di scorrimento: da lì si va alla vicina
+    const center = el.scrollLeft + el.clientWidth / 2
+    let nearest = 0
+    let bestDistance = Number.POSITIVE_INFINITY
+    cards.forEach((card, i) => {
+      const distance = Math.abs(card.offsetLeft + card.offsetWidth / 2 - center)
+      if (distance < bestDistance) {
+        bestDistance = distance
+        nearest = i
+      }
+    })
+    const target = cards[Math.max(0, Math.min(cards.length - 1, nearest + direction))]
+    // jsdom non implementa scrollIntoView: il click non deve crollare nei test
+    target.scrollIntoView?.({ behavior: 'smooth', inline: 'center', block: 'nearest' })
+  }
 
   if (!plan || plan.days.length === 0) return <>{fallback}</>
 
@@ -99,11 +128,35 @@ export function TodayWorkout({ data, today, onRecordSet, onRemoveSet, fallback }
         </Typography>
       ) : (
         <>
-          <Typography variant="body2" color="text.secondary" data-cy="today-day-name">
-            {t('today.dayHint', { name: day.name })}
-          </Typography>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              data-cy="today-day-name"
+              sx={{ flex: 1 }}
+            >
+              {t('today.dayHint', { name: day.name })}
+            </Typography>
+            <IconButton
+              size="small"
+              data-cy="today-prev"
+              aria-label={t('today.prevExercise')}
+              onClick={() => scorri(-1)}
+            >
+              <ChevronLeftIcon />
+            </IconButton>
+            <IconButton
+              size="small"
+              data-cy="today-next"
+              aria-label={t('today.nextExercise')}
+              onClick={() => scorri(1)}
+            >
+              <ChevronRightIcon />
+            </IconButton>
+          </Stack>
           {/* Il carosello: una card per esercizio, agganciata al centro dello scorrimento */}
           <Box
+            ref={carouselRef}
             data-cy="today-carousel"
             sx={{
               display: 'flex',
@@ -111,7 +164,10 @@ export function TodayWorkout({ data, today, onRecordSet, onRemoveSet, fallback }
               overflowX: 'auto',
               scrollSnapType: 'x mandatory',
               pb: 1,
-              // La barra di scorrimento non serve: si scorre col dito
+              // Ai bordi un margine largo quanto ciò che resta accanto a una card (86%):
+              // senza, la prima e l'ultima non possono centrarsi e lo snap le lascia a metà.
+              px: { xs: '7%', sm: 2 },
+              // La barra di scorrimento non serve: si scorre col dito (o con le frecce qui sopra)
               scrollbarWidth: 'none',
               '&::-webkit-scrollbar': { display: 'none' },
             }}
@@ -186,8 +242,12 @@ function ExerciseCard({
       data-cy="today-entry"
       sx={{
         scrollSnapAlign: 'center',
+        // Un fling non salta gli esercizi: ci si ferma su ogni card
+        scrollSnapStop: 'always',
         flex: '0 0 auto',
-        width: { xs: '86%', sm: 420 },
+        // 100% del content-box del carosello = 86% della pagina (il padding del 7% per lato
+        // sta sul contenitore): la card centrata lascia spuntare le vicine.
+        width: { xs: '100%', sm: 420 },
         maxWidth: '100%',
       }}
     >
