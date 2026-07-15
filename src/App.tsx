@@ -5,7 +5,6 @@ import Alert from '@mui/material/Alert'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Dialog from '@mui/material/Dialog'
-import Fab from '@mui/material/Fab'
 import useScrollTrigger from '@mui/material/useScrollTrigger'
 import IconButton from '@mui/material/IconButton'
 import Container from '@mui/material/Container'
@@ -18,6 +17,7 @@ import { theme as muiTheme } from './theme'
 import { makeTranslate, translateError, type Translate } from './i18n'
 import { I18nProvider } from './i18n/provider'
 import { useLanguage } from './hooks/useLanguage'
+import { CollapsingFab } from './components/CollapsingFab'
 import { ExerciseForm } from './components/ExerciseForm'
 import { ExerciseList } from './components/ExerciseList'
 import { FilterBar } from './components/FilterBar'
@@ -396,52 +396,28 @@ export default function App() {
           )}
         </Container>
         {view === 'esercizi' && (
-          <Fab
-            color="primary"
-            // Esteso all'atterraggio (la scritta serve a farsi capire), sola «+» appena si scorre:
-            // a quel punto l'icona basta, e la lista si riprende lo spazio.
-            // Sempre «extended»: a cambiare è la LARGHEZZA, che si anima. Alternando i due
-            // variant MUI ricalcola il box di colpo, e il pulsante saltava.
-            variant="extended"
-
-            data-cy="propose-toggle"
-            aria-expanded={formOpen}
-            // Il nome accessibile NON dipende dalla scritta: quando il FAB si ritira, i test (e gli
-            // screen reader) devono continuare a trovarlo per nome.
-            aria-label={t('app.newProposal')}
-            onClick={() => setFormOpen(true)}
+          <Box
             sx={{
               position: 'fixed',
               right: 16,
               // Sopra la TabNav flottante (62px + il suo margine e il notch dei telefoni)
               bottom: 'calc(88px + env(safe-area-inset-bottom))',
               zIndex: (t) => t.zIndex.appBar - 1,
-              overflow: 'hidden',
-              // Ritirandosi resta un cerchio: la larghezza scende a quella dell'altezza
-              minWidth: 0,
-              width: scrolled ? 56 : 'auto',
-              px: scrolled ? 0 : 2,
-              transition: (t) =>
-                t.transitions.create(['width', 'padding'], {
-                  duration: t.transitions.duration.shorter,
-                  easing: t.transitions.easing.easeInOut,
-                }),
             }}
           >
-            <AddIcon sx={{ mr: scrolled ? 0 : 1, flexShrink: 0 }} />
-            {/* Non «Proponi esercizio»: è il nome del submit del form, le query per ruolo collidono.
-                La scritta non si smonta: sfuma, così la larghezza può animarsi senza scatti. */}
-            <Box
-              component="span"
-              sx={{
-                whiteSpace: 'nowrap',
-                opacity: scrolled ? 0 : 1,
-                transition: (t) => t.transitions.create('opacity'),
-              }}
-            >
-              {t('app.newProposal')}
-            </Box>
-          </Fab>
+            {/* Esteso all'atterraggio (la scritta serve a farsi capire), sola «+» appena si
+                scorre: a quel punto l'icona basta, e la lista si riprende lo spazio.
+                Non «Proponi esercizio»: è il nome del submit del form, le query per ruolo
+                collidono. */}
+            <CollapsingFab
+              icon={<AddIcon />}
+              label={t('app.newProposal')}
+              collapsed={scrolled}
+              onClick={() => setFormOpen(true)}
+              dataCy="propose-toggle"
+              ariaExpanded={formOpen}
+            />
+          </Box>
         )}
         <TabNav view={view} onChange={setView} />
       </ThemeProvider>

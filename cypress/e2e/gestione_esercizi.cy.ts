@@ -122,6 +122,40 @@ describe('Gestione esercizi', () => {
       .and('include', 'youtube-nocookie.com/embed/dQw4w9WgXcQ')
   })
 
+  it('ritirandosi allo scorrimento, il FAB mostra ancora il «+» (M14)', () => {
+    // Servono abbastanza card da far scorrere la pagina, altrimenti il FAB non si ritira mai
+    cy.visitWithData({
+      schemaVersion: 3,
+      exercises: Array.from({ length: 8 }, (_, i) => ({
+        id: `ex-${i}`,
+        name: `Esercizio ${i + 1}`,
+        description: '',
+        youtubeUrl: `https://youtu.be/AAAAAAAAAA${i}`,
+        muscleGroup: 'chest',
+        faceBlurConfirmed: true,
+        votes: 0,
+        createdAt: '2026-07-01T10:00:00.000Z',
+      })),
+      plans: [],
+      activePlanId: null,
+      activity: [],
+      profile: { statureCm: null },
+      votedExerciseIds: [],
+    })
+
+    cy.scrollTo(0, 600)
+    // Ritirato: il cerchio è largo quanto è alto…
+    cy.get('[data-cy=propose-toggle]').invoke('outerWidth').should('be.closeTo', 56, 2)
+    // …e il «+» deve stare DENTRO il cerchio: la scritta che sfumava senza cedere larghezza
+    // spingeva l'icona fuori dal ritaglio, lasciando un pulsante vuoto.
+    cy.get('[data-cy=propose-toggle]').then(($fab) => {
+      const fab = $fab[0].getBoundingClientRect()
+      const icon = $fab.find('svg')[0].getBoundingClientRect()
+      expect(icon.left).to.be.at.least(fab.left)
+      expect(icon.right).to.be.at.most(fab.right)
+    })
+  })
+
   it('i dati persistono dopo il ricaricamento della pagina', () => {
     proponiEsercizio('Affondi', 'https://youtu.be/dQw4w9WgXcQ')
 
