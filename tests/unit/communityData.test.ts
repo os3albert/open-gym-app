@@ -3,6 +3,7 @@ import { expect } from 'chai'
 import {
   EMPTY_NAME_ERROR,
   MISSING_DIFFICULTY_ERROR,
+  MISSING_MUSCLE_GROUP_ERROR,
   INVALID_STATURE_RANGE_ERROR,
   INVALID_YOUTUBE_LINK_ERROR,
 } from '../../src/domain/exercises'
@@ -26,7 +27,7 @@ function proposal(overrides: Partial<Parameters<typeof validateProposal>[0]> = {
     name: 'Panca piana',
     description: 'Presa media',
     youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    muscleGroup: 'chest',
+    muscleGroup: 'chest' as const,
     difficulty: 'medium' as const,
     faceBlurConfirmed: true,
     ...overrides,
@@ -46,6 +47,12 @@ const catalog: CommunityExercise[] = [
 ]
 
 describe('validateProposal', () => {
+  it('rifiuta una proposta senza gruppo muscolare (M14)', () => {
+    expect(() => validateProposal(proposal({ muscleGroup: undefined }), [], now, newId)).to.throw(
+      MISSING_MUSCLE_GROUP_ERROR,
+    )
+  })
+
   it('rifiuta una proposta senza grado di difficoltà (M13)', () => {
     expect(() => validateProposal(proposal({ difficulty: undefined }), [], now, newId)).to.throw(
       MISSING_DIFFICULTY_ERROR,
@@ -94,14 +101,6 @@ describe('validateProposal', () => {
     expect(() =>
       validateProposal(
         proposal({ description: 'x'.repeat(FIELD_LIMITS.description + 1) }),
-        catalog,
-        now,
-        newId,
-      ),
-    ).to.throw(TOO_LONG_ERROR)
-    expect(() =>
-      validateProposal(
-        proposal({ muscleGroup: 'other'.repeat(FIELD_LIMITS.muscleGroup + 1) }),
         catalog,
         now,
         newId,

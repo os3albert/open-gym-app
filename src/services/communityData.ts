@@ -3,8 +3,15 @@ import {
   INVALID_STATURE_RANGE_ERROR,
   INVALID_YOUTUBE_LINK_ERROR,
   MISSING_DIFFICULTY_ERROR,
+  MISSING_MUSCLE_GROUP_ERROR,
 } from '../domain/exercises'
-import { isDifficulty, type Difficulty, type StatureRange } from '../domain/types'
+import {
+  isDifficulty,
+  isMuscleGroup,
+  type Difficulty,
+  type MuscleGroup,
+  type StatureRange,
+} from '../domain/types'
 import { parseYouTubeVideoId } from './youtube'
 
 export const DUPLICATE_EXERCISE_ERROR = 'DUPLICATE_EXERCISE'
@@ -17,7 +24,6 @@ export const TOO_LONG_ERROR = 'TOO_LONG'
  */
 export const FIELD_LIMITS = {
   name: 80,
-  muscleGroup: 40,
   description: 500,
   youtubeUrl: 200,
 } as const
@@ -32,6 +38,7 @@ export interface CommunityExercise {
   name: string
   description: string
   youtubeUrl: string
+  /** Testo libero nelle voci pubblicate prima di M14: l'app lo normalizza a runtime. */
   muscleGroup: string
   /** Opzionale nel TIPO, non nella validazione: le voci pubblicate prima di M13 non ce l'hanno. */
   difficulty?: Difficulty
@@ -47,7 +54,7 @@ export interface ProposalInput {
   name: string
   description?: string
   youtubeUrl: string
-  muscleGroup?: string
+  muscleGroup?: MuscleGroup
   difficulty?: Difficulty
   faceBlurConfirmed?: boolean
   stature?: StatureRange
@@ -79,11 +86,11 @@ export function validateProposal(
   const youtubeUrl = input.youtubeUrl?.trim() ?? ''
   if (name === '') throw new Error(EMPTY_NAME_ERROR)
   if (!isDifficulty(input.difficulty)) throw new Error(MISSING_DIFFICULTY_ERROR)
+  if (!isMuscleGroup(input.muscleGroup)) throw new Error(MISSING_MUSCLE_GROUP_ERROR)
 
   if (
     name.length > FIELD_LIMITS.name ||
     description.length > FIELD_LIMITS.description ||
-    muscleGroup.length > FIELD_LIMITS.muscleGroup ||
     youtubeUrl.length > FIELD_LIMITS.youtubeUrl
   ) {
     throw new Error(TOO_LONG_ERROR)
