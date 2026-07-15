@@ -52,6 +52,13 @@ export const it = {
   'app.newProposal': 'Nuova proposta',
   'app.closeForm': 'Chiudi il form',
 
+  // Timer di allenamento (M14): il nome accessibile del FAB resta «Timer», qualunque
+  // cosa mostri la scritta (fase e tempo cambiano ogni secondo).
+  'timer.fab': 'Timer',
+  'timer.exercise': 'Esercizio',
+  'timer.rest': 'Pausa',
+  'timer.stop': 'Ferma il timer',
+
   // Impostazioni
   'settings.theme': 'Tema',
   'settings.themeAuto': 'Auto',

@@ -26,7 +26,15 @@ Gruppi muscolari chiusi, spinner a modale, allenamento a carosello (milestone M1
 - La vista diventa un **carosello**: un esercizio per schermata, che scorre con lo **swipe**.
   Ogni card ha il **video** dell'esercizio e il **log delle serie**, riga per riga: una spunta
   registra la serie. Senza scheda attiva resta la registrazione libera.
-- Il pulsante «Nuova proposta» si **ritira con una transizione**, invece di saltare.
+- Il carosello ha anche le **frecce** indietro/avanti (con la rotella del mouse lo snap
+  riagganciava sempre la card di partenza) e margini ai bordi: prima e ultima card si centrano,
+  e un fling non salta gli esercizi.
+- Un **timer di allenamento** dal pulsante flottante: un tocco avvia la sessione, registrare una
+  serie fa partire **da sola la pausa**, un altro tocco la chiude (o ne apre una manuale), lo
+  stop accanto ferma tutto. Solo in memoria: niente nel backup.
+- Il pulsante «Nuova proposta» si **ritira con una transizione**, invece di saltare — e da
+  ritirato mostra il «+» (la scritta, sfumando senza cedere larghezza, lo spingeva fuori:
+  restava un cerchio vuoto).
 
 ## 1.5.0 — 2026-07-14
 

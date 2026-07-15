@@ -43,6 +43,10 @@ export const en: Dictionary = {
     'The data saved on this device could not be read: we start from scratch. If you have a JSON backup, you can restore it from the “Data backup” section.',
   'app.communityExercises': 'Community exercises',
   'app.newProposal': 'New proposal',
+  'timer.fab': 'Timer',
+  'timer.exercise': 'Exercise',
+  'timer.rest': 'Rest',
+  'timer.stop': 'Stop the timer',
   'app.closeForm': 'Close the form',
 
   'settings.theme': 'Theme',
