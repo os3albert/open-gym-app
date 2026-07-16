@@ -12,11 +12,13 @@ import Chip from '@mui/material/Chip'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { exerciseHistory, filterByPeriod } from '../domain/activity'
 import { activePlan, dayForDate, nextScheduledDay, planUsesWeekdays } from '../domain/plans'
 import type { AppData, Exercise, PlanEntry, WorkoutSet } from '../domain/types'
 import { translateError } from '../i18n'
 import { useT } from '../i18n/context'
 import { suggestNextWeight } from '../services/weightSuggestion'
+import { DualTrendChart } from './DualTrendChart'
 import { ExerciseMedia } from './ExerciseMedia'
 import { formatDateIt } from '../utils/date'
 import { range } from '../utils/number'
@@ -226,6 +228,19 @@ function ExerciseCard({
   // Le righe previste dalla scheda, più le serie in più (fatte o chieste a mano)
   const rows = Math.max(entry.sets, done.length) + extra
 
+  // Le statistiche sotto il set log (M16): pesi e ripetizioni INSIEME, ultimi 30 giorni.
+  // Registrare una serie le aggiorna in diretta: activity cambia, il grafico pure.
+  const historyWeight = filterByPeriod(
+    exerciseHistory(data.activity, entry.exerciseId, 'maxWeight'),
+    30,
+    today,
+  )
+  const historyReps = filterByPeriod(
+    exerciseHistory(data.activity, entry.exerciseId, 'totalReps'),
+    30,
+    today,
+  )
+
   function registra() {
     try {
       onRecordSet(entry.exerciseId, { weightKg: Number(weight), reps: Number(reps) })
@@ -399,6 +414,15 @@ function ExerciseCard({
         >
           {t('today.addSet')}
         </Button>
+
+        {historyWeight.length > 0 && (
+          <Box data-cy="today-stats" sx={{ mt: 1.5 }}>
+            <Typography variant="h3" component="h4" sx={{ mb: 1 }}>
+              {t('today.stats')}
+            </Typography>
+            <DualTrendChart weight={historyWeight} reps={historyReps} />
+          </Box>
+        )}
       </CardContent>
     </Card>
   )

@@ -180,6 +180,11 @@ describe('Schede di allenamento (M4)', () => {
     cy.get('[data-cy=set-row-done]').should('have.length', 1)
     cy.get('[data-cy=set-row-weight]').first().should('contain.text', '100')
 
+    // Sotto il set log, le statistiche: pesi e ripetizioni insieme, aggiornate in diretta (M16)
+    cy.get('[data-cy=dual-trend-chart]')
+      .should('have.attr', 'aria-label')
+      .and('match', /^Andamento di peso e ripetizioni: peso da 100 a 100 kg, ripetizioni da 5 a 8/)
+
     // La serie finisce nello storico dei pesi
     cy.get('[data-cy=tab-storico]').click()
     cy.get('[data-cy=session-item]').should('have.length', 2)

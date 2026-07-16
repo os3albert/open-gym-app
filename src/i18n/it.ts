@@ -208,6 +208,7 @@ export const it = {
   'today.setNumber': 'Serie',
   'today.status': 'Stato',
   'today.addSet': '+ Aggiungi serie',
+  'today.stats': 'Statistiche',
   'today.position': (p: { position: number; total: number }) => `${p.position} di ${p.total}`,
   'today.prevExercise': 'Esercizio precedente',
   'today.nextExercise': 'Esercizio successivo',
@@ -242,6 +243,17 @@ export const it = {
   'chart.maxReps': 'Andamento delle ripetizioni massime',
   'chart.volume': 'Andamento del volume',
   'chart.empty': 'Nessuna sessione registrata per questo esercizio.',
+  // Contratto dei test come l'aria-label del carico: il prefisso non si cambia
+  'chart.dualLabel': (p: {
+    weightFrom: number
+    weightTo: number
+    repsFrom: number
+    repsTo: number
+    from: string
+    to: string
+  }) =>
+    `Andamento di peso e ripetizioni: peso da ${p.weightFrom} a ${p.weightTo} kg, ` +
+    `ripetizioni da ${p.repsFrom} a ${p.repsTo} (dal ${p.from} al ${p.to})`,
 
   // Video
   'video.play': (p: { title: string }) => `Riproduci il video di ${p.title}`,

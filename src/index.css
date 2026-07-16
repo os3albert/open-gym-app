@@ -23,10 +23,13 @@
  */
 :root {
   --chart-accent: #6aa80e;
+  /* Seconda serie (reps) del grafico doppio: viola, distinto dal lime su entrambi i temi */
+  --chart-reps: #a78bfa;
 }
 
 :root[data-theme='light'] {
   --chart-accent: #4d7c0f;
+  --chart-reps: #7c3aed;
 }
 
 img {
@@ -285,6 +288,24 @@ img {
   fill: var(--chart-accent);
   stroke: var(--card);
   stroke-width: 2;
+}
+
+.trend-line-reps {
+  stroke: var(--chart-reps);
+}
+
+.trend-marker-reps {
+  fill: var(--chart-reps);
+}
+
+.unit-weight {
+  fill: var(--chart-accent);
+  font-weight: 600;
+}
+
+.unit-reps {
+  fill: var(--chart-reps);
+  font-weight: 600;
 }
 
 .trend-hit {

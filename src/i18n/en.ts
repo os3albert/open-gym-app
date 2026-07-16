@@ -183,6 +183,7 @@ export const en: Dictionary = {
   'today.setNumber': 'Set',
   'today.status': 'Status',
   'today.addSet': '+ Add set',
+  'today.stats': 'Statistics',
   'today.position': (p) => `${p.position} of ${p.total}`,
   'today.prevExercise': 'Previous exercise',
   'today.nextExercise': 'Next exercise',
@@ -213,6 +214,9 @@ export const en: Dictionary = {
   'chart.maxReps': 'Max reps trend',
   'chart.volume': 'Volume trend',
   'chart.empty': 'No session logged for this exercise.',
+  'chart.dualLabel': (p) =>
+    `Weight and reps trend: weight from ${p.weightFrom} to ${p.weightTo} kg, ` +
+    `reps from ${p.repsFrom} to ${p.repsTo} (${p.from} to ${p.to})`,
 
   'video.play': (p) => `Play the video of ${p.title}`,
   'video.thumbnailAlt': (p) => `Video thumbnail of ${p.title}`,

@@ -155,6 +155,15 @@ describe('allenamento del giorno (issue #19)', () => {
     await user.click(screen.getByRole('button', { name: 'Registra la serie 1 di Squat' }))
 
     expect(screen.getByRole('button', { name: 'Annulla la serie 1 di Squat' })).toBeInTheDocument()
+
+    // Le statistiche vivono nella card, sotto il set log: pesi e ripetizioni INSIEME (M16).
+    // Ieri 100×5, oggi la serie appena registrata (100×8): il grafico è già aggiornato.
+    expect(
+      screen.getByRole('img', {
+        name: /Andamento di peso e ripetizioni: peso da 100 a 100 kg, ripetizioni da 5 a 8/,
+      }),
+    ).toBeInTheDocument()
+
     await openTab(user, 'Storico')
     expect(screen.getByText(/100 kg × 8/)).toBeInTheDocument()
   })
