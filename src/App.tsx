@@ -25,6 +25,7 @@ import { ExerciseForm } from './components/ExerciseForm'
 import { ExerciseList } from './components/ExerciseList'
 import { FilterBar } from './components/FilterBar'
 import { HistoryView } from './components/HistoryView'
+import { HomeView } from './components/HomeView'
 import { InstallPanel } from './components/InstallPanel'
 import { Logo } from './components/Logo'
 import { PlansView } from './components/PlansView'
@@ -43,6 +44,7 @@ import { useCommunity, type CommunityMessage } from './hooks/useCommunity'
 import { useFilters } from './hooks/useFilters'
 import { useTheme } from './hooks/useTheme'
 import { useView } from './hooks/useView'
+import { useWorkoutDay } from './hooks/useWorkoutDay'
 import { useWorkoutTimer } from './hooks/useWorkoutTimer'
 import { mergeForDisplay } from './services/community'
 import { shareCodeFromHash } from './services/share'
@@ -141,9 +143,12 @@ export default function App() {
     exportJson,
   } = useAppData()
   const [initialShareCode] = useState(consumeShareCodeFromUrl)
-  // Chi apre un link di condivisione atterra direttamente sulla vista Schede
-  const [view, setView] = useView(initialShareCode ? 'schede' : 'community')
+  // Chi apre un link di condivisione atterra direttamente sulla vista Schede;
+  // tutti gli altri sulla Home (M16)
+  const [view, setView] = useView(initialShareCode ? 'schede' : 'home')
   const [filters, setFilters] = useFilters()
+  // Il giorno di allenamento scelto (?giorno=): dalla Home, o dal menu della vista Allenamento
+  const [workoutDay, setWorkoutDay] = useWorkoutDay()
   const [theme, setTheme, resolvedTheme] = useTheme()
   const [language, setLanguage] = useLanguage()
   // App traduce da sé (è la radice: sopra di lei non c'è provider) e passa la stessa
@@ -350,10 +355,23 @@ export default function App() {
                 }}
               />
             )}
+            {view === 'home' && (
+              <HomeView
+                data={data}
+                today={todayIso()}
+                onOpenDay={(dayName) => {
+                  setWorkoutDay(dayName)
+                  setView('allenamento')
+                }}
+                onGoToPlans={() => setView('schede')}
+              />
+            )}
             {view === 'allenamento' && (
               <TodayWorkout
                 data={data}
                 today={todayIso()}
+                selectedDay={workoutDay}
+                onSelectDay={setWorkoutDay}
                 onRecordSet={recordSetForToday}
                 onRemoveSet={deleteSet}
                 // Senza scheda attiva (o di riposo) resta la registrazione libera: altrimenti

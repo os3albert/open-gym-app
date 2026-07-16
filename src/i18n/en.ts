@@ -55,7 +55,23 @@ export const en: Dictionary = {
   'settings.themeDark': 'Dark',
   'settings.language': 'Language',
 
+  'home.weeklyProgress': 'Weekly progress',
+  'home.thisWeek': 'This week',
+  'home.volumeAndIntensity': 'Volume and intensity, day by day',
+  'home.weekChartLabel': (p) =>
+    `Weekly progress: ${p.days} training ${p.days === 1 ? 'day' : 'days'}, total volume ${p.volume} kg×reps`,
+  'home.emptyWeek': 'No workouts logged this week yet.',
+  'home.yourDays': 'Your plan days',
+  'home.noPlan': 'No active plan yet: create one and activate it.',
+  'home.goToPlans': 'Go to plans',
+  'home.planWithoutDays': (p) =>
+    `The plan “${p.name}” has no days yet: add them from Plans → Edit.`,
+  'home.openDay': (p) => `Open the ${p.day} workout`,
+  'home.dayEmpty': 'No exercises on this day',
+  'home.exerciseCount': (p) => (p.count === 1 ? '1 exercise' : `${p.count} exercises`),
+
   'nav.label': 'App sections',
+  'nav.home': 'Home',
   'nav.community': 'Community',
   'nav.plans': 'Plans',
   'nav.workout': 'Workout',
@@ -177,6 +193,7 @@ export const en: Dictionary = {
   'today.chooseDayAnyway': 'Training anyway? Choose the day',
   'today.whichDay': 'Which day of the plan are you doing today?',
   'today.choose': 'Choose…',
+  'today.backToToday': "Today's day",
   'today.dayHint': (p) => `${p.name} — tick the exercises as you complete them.`,
   'today.dayEmpty': 'This day has no exercises: add them from the plan.',
   'today.setLog': 'Set log',

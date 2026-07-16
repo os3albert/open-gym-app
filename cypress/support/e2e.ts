@@ -83,6 +83,9 @@ Cypress.Commands.add('apriImpostazioni', () => {
 })
 
 Cypress.Commands.add('apriFormProposta', () => {
+  // Il FAB vive nella vista Community: da M16 l'atterraggio è la Home, quindi prima ci si
+  // porta lì (cliccare la tab in cui si è già è innocuo)
+  cy.get('[data-cy=tab-community]').click()
   cy.get('body').then(($body) => {
     if ($body.find('[data-cy=exercise-name]').length === 0) {
       cy.get('[data-cy=propose-toggle]').click()

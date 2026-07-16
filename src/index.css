@@ -312,6 +312,16 @@ img {
   fill: transparent;
 }
 
+.week-bar {
+  fill: var(--chart-accent);
+  opacity: 0.85;
+}
+
+.weekday-today {
+  fill: var(--text);
+  font-weight: 700;
+}
+
 .axis-label {
   fill: var(--muted);
   font-size: 11px;

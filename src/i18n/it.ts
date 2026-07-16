@@ -66,8 +66,26 @@ export const it = {
   'settings.themeDark': 'Scuro',
   'settings.language': 'Lingua',
 
+  // Home (M16)
+  'home.weeklyProgress': 'Progresso settimanale',
+  'home.thisWeek': 'Questa settimana',
+  'home.volumeAndIntensity': 'Volume e intensità, giorno per giorno',
+  'home.weekChartLabel': (p: { days: number; volume: number }) =>
+    `Progresso della settimana: ${p.days} ${p.days === 1 ? 'giorno' : 'giorni'} di allenamento, volume totale ${p.volume} kg×reps`,
+  'home.emptyWeek': 'Questa settimana non hai ancora registrato allenamenti.',
+  'home.yourDays': 'I giorni della tua scheda',
+  'home.noPlan': 'Non hai ancora una scheda attiva: creane una e attivala.',
+  'home.goToPlans': 'Vai alle schede',
+  'home.planWithoutDays': (p: { name: string }) =>
+    `La scheda «${p.name}» non ha ancora giorni: aggiungili da Schede → Modifica.`,
+  'home.openDay': (p: { day: string }) => `Apri l'allenamento di ${p.day}`,
+  'home.dayEmpty': 'Nessun esercizio in questo giorno',
+  'home.exerciseCount': (p: { count: number }) =>
+    p.count === 1 ? '1 esercizio' : `${p.count} esercizi`,
+
   // Navigazione
   'nav.label': "Sezioni dell'app",
+  'nav.home': 'Home',
   'nav.community': 'Community',
   'nav.plans': 'Schede',
   'nav.workout': 'Allenamento',
@@ -201,6 +219,7 @@ export const it = {
   'today.chooseDayAnyway': 'Ti alleni lo stesso? Scegli il giorno',
   'today.whichDay': 'Che giorno della scheda fai oggi?',
   'today.choose': 'Scegli…',
+  'today.backToToday': 'Giorno di oggi',
   'today.dayHint': (p: { name: string }) =>
     `${p.name} — spunta gli esercizi man mano che li completi.`,
   'today.dayEmpty': 'Questo giorno non ha esercizi: aggiungili dalla scheda.',

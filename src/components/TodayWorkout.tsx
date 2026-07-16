@@ -31,6 +31,12 @@ const REPS = range(1, 30)
 interface Props {
   data: AppData
   today: string
+  /**
+   * Giorno scelto da fuori (?giorno=, dalla Home): VINCE sul giorno della settimana — chi
+   * clicca «Giorno B» di martedì vuole il Giorno B, non il martedì. Null = decide il calendario.
+   */
+  selectedDay: string | null
+  onSelectDay: (day: string | null) => void
   /** Registra UNA serie: il set log è fatto di righe, e una riga è una serie. */
   onRecordSet: (exerciseId: string, set: WorkoutSet) => void
   onRemoveSet: (recordId: string, setIndex: number) => void
@@ -48,9 +54,16 @@ interface Props {
  * Se oggi non c'è nulla in programma — nessuna scheda attiva, o giorno di riposo — si mostra il
  * `fallback`: senza, chi non ha ancora una scheda troverebbe una vista che non fa niente.
  */
-export function TodayWorkout({ data, today, onRecordSet, onRemoveSet, fallback }: Props) {
+export function TodayWorkout({
+  data,
+  today,
+  selectedDay,
+  onSelectDay,
+  onRecordSet,
+  onRemoveSet,
+  fallback,
+}: Props) {
   const t = useT()
-  const [manualDayName, setManualDayName] = useState('')
   const carouselRef = useRef<HTMLDivElement>(null)
   const plan = activePlan(data)
 
@@ -83,8 +96,11 @@ export function TodayWorkout({ data, today, onRecordSet, onRemoveSet, fallback }
   if (!plan || plan.days.length === 0) return <>{fallback}</>
 
   const autoDay = dayForDate(plan, today)
-  const day = autoDay ?? plan.days.find((d) => d.name === manualDayName) ?? null
-  const restDay = !autoDay && planUsesWeekdays(plan)
+  // Il giorno scelto (dalla Home o dal menu qui sotto) vince sul calendario; un nome che
+  // non esiste nella scheda attiva si ignora, come se non ci fosse
+  const chosenDay = selectedDay ? (plan.days.find((d) => d.name === selectedDay) ?? null) : null
+  const day = chosenDay ?? autoDay ?? null
+  const restDay = !autoDay && !chosenDay && planUsesWeekdays(plan)
   const next = restDay ? nextScheduledDay(plan, today) : null
 
   return (
@@ -106,15 +122,17 @@ export function TodayWorkout({ data, today, onRecordSet, onRemoveSet, fallback }
           </Typography>
         )}
 
-        {!autoDay && (
+        {/* Il menu si vede anche quando un giorno è già scelto da fuori: per cambiarlo,
+            o per tornare al giorno del calendario (la voce vuota azzera ?giorno=) */}
+        {(!autoDay || chosenDay) && (
           <SelectField
             label={restDay ? t('today.chooseDayAnyway') : t('today.whichDay')}
-            value={manualDayName}
-            onChange={setManualDayName}
+            value={chosenDay?.name ?? ''}
+            onChange={(value) => onSelectDay(value === '' ? null : value)}
             dataCy="today-day-select"
             sx={{ minWidth: 260 }}
             options={[
-              { value: '', label: t('today.choose') },
+              { value: '', label: autoDay ? t('today.backToToday') : t('today.choose') },
               ...plan.days.map((d) => ({ value: d.name, label: d.name })),
             ]}
           />

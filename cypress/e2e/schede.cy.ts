@@ -124,7 +124,8 @@ describe('Schede di allenamento (M4)', () => {
       activePlanId: 'p1',
     })
 
-    // Si parte dalla lista: è lì che si sfoglia e si decide
+    // Si parte dalla lista della Community: è lì che si sfoglia e si decide
+    cy.get('[data-cy=tab-community]').click()
     cy.get('[data-cy=exercise-item]')
       .contains('[data-cy=exercise-item]', 'Squat')
       .find('[data-cy=exercise-add-to-plan]')

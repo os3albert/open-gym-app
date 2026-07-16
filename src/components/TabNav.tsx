@@ -4,6 +4,7 @@ import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
 import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined'
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter'
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
 import ShowChartIcon from '@mui/icons-material/ShowChart'
@@ -12,6 +13,7 @@ import { useT } from '../i18n/context'
 import type { TextKey } from '../i18n'
 
 const TABS: Array<{ view: AppView; label: TextKey; icon: React.ReactNode }> = [
+  { view: 'home', label: 'nav.home', icon: <HomeOutlinedIcon /> },
   { view: 'community', label: 'nav.community', icon: <ExploreOutlinedIcon /> },
   { view: 'schede', label: 'nav.plans', icon: <CalendarMonthOutlinedIcon /> },
   { view: 'allenamento', label: 'nav.workout', icon: <FitnessCenterIcon /> },

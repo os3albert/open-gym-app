@@ -57,7 +57,8 @@ function stubNetwork(
 
 beforeEach(() => {
   localStorage.clear()
-  window.history.replaceState(null, '', '/')
+  // La lista della community si esercita da lì: da M16 l'atterraggio nudo è la Home
+  window.history.replaceState(null, '', '/?vista=community')
   vi.stubEnv('VITE_COMMUNITY_API_URL', WORKER)
 })
 
