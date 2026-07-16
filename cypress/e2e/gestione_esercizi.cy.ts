@@ -13,7 +13,9 @@ function proponiEsercizio(nome: string, link: string, difficolta = 'Media') {
 
 describe('Gestione esercizi', () => {
   beforeEach(() => {
-    cy.visit('/', { onBeforeLoad: (win) => win.localStorage.clear() })
+    // La spec esercita la lista della community: ci si atterra dalla query string,
+    // che è il meccanismo dell'app (da M16 l'atterraggio nudo è la Home)
+    cy.visit('/?vista=community', { onBeforeLoad: (win) => win.localStorage.clear() })
   })
 
   it('propone un nuovo esercizio con link YouTube valido', () => {
@@ -143,6 +145,7 @@ describe('Gestione esercizi', () => {
       votedExerciseIds: [],
     })
 
+    cy.get('[data-cy=tab-community]').click()
     cy.scrollTo(0, 600)
     // Ritirato: il cerchio è largo quanto è alto…
     cy.get('[data-cy=propose-toggle]').invoke('outerWidth').should('be.closeTo', 56, 2)
@@ -154,6 +157,41 @@ describe('Gestione esercizi', () => {
       expect(icon.left).to.be.at.least(fab.left)
       expect(icon.right).to.be.at.most(fab.right)
     })
+  })
+
+  it('con tanti esercizi la lista va a pagine, e la ricerca la restringe (M16)', () => {
+    cy.visitWithData({
+      schemaVersion: 6,
+      exercises: Array.from({ length: 30 }, (_, i) => ({
+        id: `ex-${i}`,
+        name: i === 0 ? 'Panca piana' : `Esercizio ${i + 1}`,
+        description: '',
+        youtubeUrl: `https://youtu.be/AAAAAAAAA${String(i).padStart(2, '0')}`,
+        muscleGroup: 'chest',
+        difficulty: 'medium',
+        faceBlurConfirmed: false,
+        votes: 0,
+        createdAt: '2026-07-01T10:00:00.000Z',
+      })),
+      plans: [],
+      activePlanId: null,
+      activity: [],
+      profile: { statureCm: null },
+      votedExerciseIds: [],
+    })
+
+    cy.get('[data-cy=tab-community]').click()
+    // Prima pagina: 24 card e il contatore che dice quante ne restano
+    cy.get('[data-cy=exercise-item]').should('have.length', 24)
+    cy.get('[data-cy=shown-count]').should('have.text', '24 di 30 esercizi')
+    cy.get('[data-cy=show-more]').click()
+    cy.get('[data-cy=exercise-item]').should('have.length', 30)
+    cy.get('[data-cy=show-more]').should('not.exist')
+
+    // La ricerca restringe (e scrive ?q= nell'URL: i filtri sono condivisibili)
+    cy.get('[data-cy=filter-search]').type('panca')
+    cy.get('[data-cy=exercise-item]').should('have.length', 1).and('contain.text', 'Panca piana')
+    cy.location('search').should('contain', 'q=panca')
   })
 
   it('i dati persistono dopo il ricaricamento della pagina', () => {

@@ -123,3 +123,30 @@ export function filterByPeriod(
   const cutoff = addDaysIso(today, -days)
   return points.filter((p) => p.date >= cutoff)
 }
+
+/** Il progresso di un giorno della settimana corrente (Home, M16). */
+export interface WeekDayProgress {
+  date: string
+  /** Σ peso×ripetizioni del giorno: quanto lavoro è stato fatto. Zero = riposo. */
+  volume: number
+  /** Il carico più alto del giorno: quanto si è spinto. */
+  maxWeight: number
+}
+
+/**
+ * La settimana di `today`, da lunedì a domenica, un punto per giorno: è il «weekly progress»
+ * della Home. I giorni senza allenamento valgono zero — il riposo fa parte della settimana.
+ */
+export function weeklyProgress(activity: ActivityRecord[], today: string): WeekDayProgress[] {
+  const jsDay = new Date(`${today}T00:00:00`).getDay() // 0 = domenica
+  const monday = addDaysIso(today, -((jsDay + 6) % 7))
+  return Array.from({ length: 7 }, (_, i) => {
+    const date = addDaysIso(monday, i)
+    const sets = activity.filter((a) => a.date === date).flatMap((a) => a.sets)
+    return {
+      date,
+      volume: sets.reduce((sum, s) => sum + s.weightKg * s.reps, 0),
+      maxWeight: sets.reduce((max, s) => Math.max(max, s.weightKg), 0),
+    }
+  })
+}

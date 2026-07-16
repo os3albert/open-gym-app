@@ -12,10 +12,9 @@ import type { Difficulty, Exercise, WorkoutPlan } from '../domain/types'
 import { useT } from '../i18n/context'
 import type { DisplayExercise } from '../services/community'
 import { encodeExerciseShare } from '../services/share'
-import { parseYouTubeVideoId } from '../services/youtube'
+import { ExerciseMedia } from './ExerciseMedia'
 import { AddToPlanDialog, type AddToPlanTarget } from './AddToPlanDialog'
 import { ShareCodeBox } from './ShareCodeBox'
-import { YouTubePlayer } from './YouTubePlayer'
 
 interface Props {
   /** Esercizi già filtrati e ordinati dal chiamante (locali e/o della community). */
@@ -67,6 +66,9 @@ function EmptyState({ dataCy, children }: { dataCy: string; children: React.Reac
   )
 }
 
+/** Card per pagina: col catalogo a 1.300 voci il DOM non regge la lista intera. */
+const PAGE_SIZE = 24
+
 export function ExerciseList({
   exercises,
   totalCount,
@@ -84,6 +86,8 @@ export function ExerciseList({
   const [addingTo, setAddingTo] = useState<Exercise | null>(null)
   // La conferma resta finché non si apre un altro modale: niente timer, come il resto dell'app
   const [addedMessage, setAddedMessage] = useState<string | null>(null)
+  // Si azzera al cambio dei filtri: App rimonta la lista con una key sui filtri
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
 
   if (totalCount === 0) {
     return <EmptyState dataCy="empty-state">{t('list.empty')}</EmptyState>
@@ -91,6 +95,8 @@ export function ExerciseList({
   if (exercises.length === 0) {
     return <EmptyState dataCy="no-results">{t('list.noResults')}</EmptyState>
   }
+
+  const visible = exercises.slice(0, visibleCount)
 
   return (
     <>
@@ -112,8 +118,7 @@ export function ExerciseList({
           alignItems: 'start',
         }}
       >
-        {exercises.map((exercise) => {
-          const videoId = parseYouTubeVideoId(exercise.youtubeUrl)
+        {visible.map((exercise) => {
           const voted = votedIds.has(exercise.id)
           const confirming = confirmingDeleteId === exercise.id
           return (
@@ -123,7 +128,7 @@ export function ExerciseList({
               data-cy="exercise-item"
               className="exercise-card"
             >
-              {videoId && <YouTubePlayer videoId={videoId} title={exercise.name} />}
+              <ExerciseMedia exercise={exercise} />
               <CardContent sx={{ pb: 0 }}>
                 <Stack
                   direction="row"
@@ -291,6 +296,20 @@ export function ExerciseList({
           )
         })}
       </Box>
+      {exercises.length > visibleCount && (
+        <Stack spacing={0.5} sx={{ mt: 2, alignItems: 'center' }}>
+          <Button
+            variant="outlined"
+            data-cy="show-more"
+            onClick={() => setVisibleCount((n) => n + PAGE_SIZE)}
+          >
+            {t('list.showMore')}
+          </Button>
+          <Typography variant="caption" color="text.secondary" data-cy="shown-count">
+            {t('list.shownCount', { shown: visible.length, total: exercises.length })}
+          </Typography>
+        </Stack>
+      )}
       {addingTo && (
         <AddToPlanDialog
           exercise={addingTo}

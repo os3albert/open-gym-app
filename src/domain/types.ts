@@ -49,12 +49,19 @@ export function isMuscleGroup(value: unknown): value is MuscleGroup {
   return MUSCLE_GROUPS.includes(value as MuscleGroup)
 }
 
-/** Esercizio proposto da un utente. Il video è solo un link YouTube (nessun hosting). */
+/**
+ * Esercizio proposto da un utente o preso dal catalogo. Il media è un link YouTube (nessun
+ * hosting) OPPURE, da M16, la GIF del catalogo Gym visual (linkata dal repo del dataset, mai
+ * copiata qui): almeno uno dei due deve esserci.
+ */
 export interface Exercise {
   id: string
   name: string
   description: string
+  /** Vuoto solo se c'è `gifUrl`: le voci del catalogo non hanno un video. */
   youtubeUrl: string
+  /** GIF animata 180×180 del catalogo (© Gym visual): mostrarla RICHIEDE l'attribuzione. */
+  gifUrl?: string
   muscleGroup: MuscleGroup
   difficulty: Difficulty
   stature?: StatureRange
@@ -105,7 +112,7 @@ export interface UserProfile {
   statureCm: number | null
 }
 
-export const CURRENT_SCHEMA_VERSION = 5
+export const CURRENT_SCHEMA_VERSION = 6
 
 /** Tutti i dati dell'app: è l'unità di persistenza (localStorage) e di export/import JSON. */
 export interface AppData {

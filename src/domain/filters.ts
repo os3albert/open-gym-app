@@ -5,6 +5,8 @@ import type { AppData, Difficulty, Exercise, MuscleGroup } from './types'
 export type SortOrder = 'votes' | 'recent'
 
 export interface ExerciseFilters {
+  /** Ricerca per nome (M16): col catalogo a 1.300 voci si cerca, non si scorre. */
+  text: string
   /** Mostra solo gli esercizi adatti alla statura del profilo ("Adatti a me"). */
   suitableOnly: boolean
   /** Gruppo muscolare esatto, null = tutti. */
@@ -15,10 +17,20 @@ export interface ExerciseFilters {
 }
 
 export const defaultFilters: ExerciseFilters = {
+  text: '',
   suitableOnly: false,
   muscleGroup: null,
   difficulty: null,
   sort: 'votes',
+}
+
+/** Minuscole e senza accenti: «press» trova «Press», «trazioni» trova «Trazióni». */
+function normalizeForSearch(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
 }
 
 /** Senza fascia di statura l'esercizio è considerato adatto a chiunque. */
@@ -48,6 +60,10 @@ export function applyFiltersTo<T extends Exercise>(
   statureCm: number | null,
 ): T[] {
   let result = exercises
+  const query = normalizeForSearch(filters.text)
+  if (query !== '') {
+    result = result.filter((e) => normalizeForSearch(e.name).includes(query))
+  }
   if (filters.suitableOnly && statureCm !== null) {
     result = result.filter((e) => isSuitableForStature(e, statureCm))
   }

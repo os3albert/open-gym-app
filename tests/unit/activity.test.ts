@@ -8,6 +8,7 @@ import {
   recordSet,
   removeSet,
   sessionsByDate,
+  weeklyProgress,
 } from '../../src/domain/activity'
 import { addExercise } from '../../src/domain/exercises'
 import type { AppData } from '../../src/domain/types'
@@ -197,5 +198,49 @@ describe('filterByPeriod', () => {
 
   it('null = tutto lo storico', () => {
     expect(filterByPeriod(points, null, '2026-07-11')).to.deep.equal(points)
+  })
+})
+
+describe('weeklyProgress (Home, M16)', () => {
+  it('la settimana va da lunedì a domenica, e i giorni di riposo valgono zero', () => {
+    // 2026-07-16 è giovedì: la settimana è 13 (lun) → 19 (dom)
+    const activity = [
+      { id: 'a1', exerciseId: 'e1', date: '2026-07-14', sets: [{ weightKg: 100, reps: 8 }] },
+      {
+        id: 'a2',
+        exerciseId: 'e2',
+        date: '2026-07-16',
+        sets: [
+          { weightKg: 60, reps: 10 },
+          { weightKg: 80, reps: 5 },
+        ],
+      },
+      // Fuori settimana: non deve entrare
+      { id: 'a3', exerciseId: 'e1', date: '2026-07-12', sets: [{ weightKg: 200, reps: 1 }] },
+    ]
+
+    const week = weeklyProgress(activity, '2026-07-16')
+
+    expect(week.map((d) => d.date)).to.deep.equal([
+      '2026-07-13',
+      '2026-07-14',
+      '2026-07-15',
+      '2026-07-16',
+      '2026-07-17',
+      '2026-07-18',
+      '2026-07-19',
+    ])
+    expect(week[1].volume).to.equal(800)
+    expect(week[1].maxWeight).to.equal(100)
+    expect(week[3].volume).to.equal(1000)
+    expect(week[3].maxWeight).to.equal(80)
+    expect(week[0].volume).to.equal(0)
+    expect(week[0].maxWeight).to.equal(0)
+  })
+
+  it('anche di domenica la settimana parte dal SUO lunedì, non da quello dopo', () => {
+    const week = weeklyProgress([], '2026-07-19')
+    expect(week[0].date).to.equal('2026-07-13')
+    expect(week[6].date).to.equal('2026-07-19')
   })
 })

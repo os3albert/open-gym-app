@@ -243,6 +243,10 @@ export const theme = createTheme({
           // 3 e non 6: cinque coppie di margini valgono 60px su 279, e li servono all'etichetta
           marginInline: 3,
           paddingInline: 6,
+          // Con SEI voci (Home, M16) a 320px i conti tornano solo stringendo ancora: cinque
+          // icone da 24 + questi spazi + «Allenamento» intero devono stare in 279. Il test
+          // E2E a 320px resta il guardiano.
+          [t.breakpoints.down('sm')]: { marginInline: 1.5, paddingInline: 3 },
           transition: underTest
             ? 'none'
             : 'color 140ms ease, background-color 140ms ease, padding 220ms cubic-bezier(0.22, 1, 0.36, 1), flex-grow 220ms cubic-bezier(0.22, 1, 0.36, 1)',
@@ -258,6 +262,7 @@ export const theme = createTheme({
             // è strettissimo a cedere sono le icone, non l'etichetta
             flex: '1 0 auto',
             paddingInline: 10,
+            [t.breakpoints.down('sm')]: { paddingInline: 8 },
             backgroundColor: '#e7f6c8',
             color: '#365314',
             ...t.applyStyles('dark', { backgroundColor: '#33401a', color: '#d9f99d' }),

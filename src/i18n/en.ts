@@ -55,7 +55,23 @@ export const en: Dictionary = {
   'settings.themeDark': 'Dark',
   'settings.language': 'Language',
 
+  'home.weeklyProgress': 'Weekly progress',
+  'home.thisWeek': 'This week',
+  'home.volumeAndIntensity': 'Volume and intensity, day by day',
+  'home.weekChartLabel': (p) =>
+    `Weekly progress: ${p.days} training ${p.days === 1 ? 'day' : 'days'}, total volume ${p.volume} kg×reps`,
+  'home.emptyWeek': 'No workouts logged this week yet.',
+  'home.yourDays': 'Your plan days',
+  'home.noPlan': 'No active plan yet: create one and activate it.',
+  'home.goToPlans': 'Go to plans',
+  'home.planWithoutDays': (p) =>
+    `The plan “${p.name}” has no days yet: add them from Plans → Edit.`,
+  'home.openDay': (p) => `Open the ${p.day} workout`,
+  'home.dayEmpty': 'No exercises on this day',
+  'home.exerciseCount': (p) => (p.count === 1 ? '1 exercise' : `${p.count} exercises`),
+
   'nav.label': 'App sections',
+  'nav.home': 'Home',
   'nav.community': 'Community',
   'nav.plans': 'Plans',
   'nav.workout': 'Workout',
@@ -112,6 +128,8 @@ export const en: Dictionary = {
   'list.edit': 'Edit',
   'list.share': 'Share',
   'list.addToPlan': 'Add to plan',
+  'list.showMore': 'Show more',
+  'list.shownCount': (p) => `${p.shown} of ${p.total} exercises`,
   'list.delete': 'Delete',
   'list.confirmDelete': 'Confirm deletion',
   'list.cancel': 'Cancel',
@@ -145,6 +163,8 @@ export const en: Dictionary = {
   'filters.staturePlaceholder': 'e.g. 180',
   'filters.save': 'Save',
   'filters.suitableForMe': 'Suitable for me',
+  'filters.search': 'Search by name',
+  'filters.searchPlaceholder': 'e.g. bench, squat…',
   'filters.muscleGroup': 'Filter by muscle group',
   'filters.all': 'All',
   'filters.sortBy': 'Sort by',
@@ -173,12 +193,14 @@ export const en: Dictionary = {
   'today.chooseDayAnyway': 'Training anyway? Choose the day',
   'today.whichDay': 'Which day of the plan are you doing today?',
   'today.choose': 'Choose…',
+  'today.backToToday': "Today's day",
   'today.dayHint': (p) => `${p.name} — tick the exercises as you complete them.`,
   'today.dayEmpty': 'This day has no exercises: add them from the plan.',
   'today.setLog': 'Set log',
   'today.setNumber': 'Set',
   'today.status': 'Status',
   'today.addSet': '+ Add set',
+  'today.stats': 'Statistics',
   'today.position': (p) => `${p.position} of ${p.total}`,
   'today.prevExercise': 'Previous exercise',
   'today.nextExercise': 'Next exercise',
@@ -209,10 +231,14 @@ export const en: Dictionary = {
   'chart.maxReps': 'Max reps trend',
   'chart.volume': 'Volume trend',
   'chart.empty': 'No session logged for this exercise.',
+  'chart.dualLabel': (p) =>
+    `Weight and reps trend: weight from ${p.weightFrom} to ${p.weightTo} kg, ` +
+    `reps from ${p.repsFrom} to ${p.repsTo} (${p.from} to ${p.to})`,
 
   'video.play': (p) => `Play the video of ${p.title}`,
   'video.thumbnailAlt': (p) => `Video thumbnail of ${p.title}`,
   'video.offline': 'Video unavailable while offline',
+  'video.gifAlt': (p) => `Animated demonstration of ${p.title}`,
 
   'backup.title': 'Data backup',
   'backup.explanation':

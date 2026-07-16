@@ -54,7 +54,8 @@ describe('Percorso completo esercizi (M2)', () => {
   })
 
   it('chiede la statura al primo uso del filtro e poi lo applica', () => {
-    cy.visit('/', { onBeforeLoad: (win) => win.localStorage.clear() })
+    // I filtri vivono nella vista Community: da M16 l'atterraggio nudo è la Home
+    cy.visit('/?vista=community', { onBeforeLoad: (win) => win.localStorage.clear() })
 
     cy.get('[data-cy=filter-suitable]').check()
     cy.get('[data-cy=stature-required]').should('be.visible')

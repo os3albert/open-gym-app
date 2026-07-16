@@ -6,6 +6,7 @@ import Checkbox from '@mui/material/Checkbox'
 import Divider from '@mui/material/Divider'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Stack from '@mui/material/Stack'
+import TextField from '@mui/material/TextField'
 import type { ExerciseFilters, SortOrder } from '../domain/filters'
 import { DIFFICULTIES, type Difficulty, type MuscleGroup } from '../domain/types'
 import { useT } from '../i18n/context'
@@ -80,6 +81,16 @@ export function FilterBar({
       )}
       <Divider />
       <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: 'wrap', alignItems: 'center' }}>
+        {/* Col catalogo a 1.300 voci si cerca, non si scorre: il campo scrive ?q= nell'URL */}
+        <TextField
+          type="search"
+          label={t('filters.search')}
+          placeholder={t('filters.searchPlaceholder')}
+          value={filters.text}
+          onChange={(e) => onFiltersChange({ ...filters, text: e.target.value })}
+          sx={{ minWidth: 220 }}
+          slotProps={{ htmlInput: { 'data-cy': 'filter-search' } }}
+        />
         <FormControlLabel
           label={t('filters.suitableForMe')}
           control={

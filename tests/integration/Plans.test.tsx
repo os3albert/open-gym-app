@@ -155,8 +155,49 @@ describe('allenamento del giorno (issue #19)', () => {
     await user.click(screen.getByRole('button', { name: 'Registra la serie 1 di Squat' }))
 
     expect(screen.getByRole('button', { name: 'Annulla la serie 1 di Squat' })).toBeInTheDocument()
+
+    // Le statistiche vivono nella card, sotto il set log: pesi e ripetizioni INSIEME (M16).
+    // Ieri 100×5, oggi la serie appena registrata (100×8): il grafico è già aggiornato.
+    expect(
+      screen.getByRole('img', {
+        name: /Andamento di peso e ripetizioni: peso da 100 a 100 kg, ripetizioni da 5 a 8/,
+      }),
+    ).toBeInTheDocument()
+
     await openTab(user, 'Storico')
     expect(screen.getByText(/100 kg × 8/)).toBeInTheDocument()
+  })
+
+  it("un esercizio del catalogo mostra la GIF animata nel carosello, con l'attribuzione (M16)", async () => {
+    const user = userEvent.setup()
+    let data = addExercise(emptyData(), {
+      name: 'Military press',
+      description: 'Dal catalogo',
+      youtubeUrl: '',
+      gifUrl: 'https://raw.githubusercontent.com/x/y/main/videos/0001.gif',
+      muscleGroup: 'shoulders',
+      difficulty: 'medium',
+    })
+    data = createPlan(data, 'Full Body')
+    const oggi = weekdayNameIt(todayIso())
+    data = addDay(data, data.plans[0].id, oggi)
+    data = addEntry(data, data.plans[0].id, oggi, {
+      exerciseId: data.exercises[0].id,
+      sets: 3,
+      reps: 8,
+    })
+    saveData(setActivePlan(data, data.plans[0].id))
+    render(<App />)
+    await openTab(user, 'Allenamento')
+
+    // La GIF al posto del video, e il copyright del media ben visibile (obbligo di licenza)
+    expect(
+      screen.getByRole('img', { name: 'Dimostrazione animata di Military press' }),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /© Gym visual/ })).toHaveAttribute(
+      'href',
+      'https://gymvisual.com/',
+    )
   })
 
   it('senza allenamento previsto oggi mostra il riposo con il prossimo allenamento', async () => {

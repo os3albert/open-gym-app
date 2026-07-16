@@ -23,6 +23,8 @@ export interface SharedExercise {
   name: string
   description: string
   youtubeUrl: string
+  /** Media alternativo (M16): la GIF del catalogo, per gli esercizi senza video. */
+  gifUrl?: string
   muscleGroup: string
   /** Assente nei codici generati prima di M13: si legge come «media», non si rifiuta il codice. */
   difficulty?: Difficulty
@@ -59,6 +61,7 @@ function toSharedExercise(exercise: Exercise): SharedExercise {
     muscleGroup: exercise.muscleGroup,
     difficulty: exercise.difficulty,
     // Niente chiavi undefined: il payload fa un round-trip JSON
+    ...(exercise.gifUrl ? { gifUrl: exercise.gifUrl } : {}),
     ...(exercise.stature ? { stature: exercise.stature } : {}),
     faceBlurConfirmed: exercise.faceBlurConfirmed,
   }
@@ -100,7 +103,10 @@ function isSharedExercise(value: unknown): value is SharedExercise {
     value.name.trim() !== '' &&
     typeof value.description === 'string' &&
     typeof value.youtubeUrl === 'string' &&
-    isValidYouTubeUrl(value.youtubeUrl) &&
+    (value.gifUrl === undefined || typeof value.gifUrl === 'string') &&
+    // Almeno un media (M16): il video valido, o la GIF del catalogo
+    (isValidYouTubeUrl(value.youtubeUrl) ||
+      (value.youtubeUrl === '' && typeof value.gifUrl === 'string' && value.gifUrl !== '')) &&
     typeof value.muscleGroup === 'string' &&
     // I codici in circolazione non hanno la difficoltà: si accettano lo stesso
     (value.difficulty === undefined || isDifficulty(value.difficulty)) &&
@@ -166,26 +172,33 @@ export function shareCodeFromHash(hash: string): string | null {
   return hash.startsWith(SHARE_HASH_PREFIX) ? hash.slice(SHARE_HASH_PREFIX.length) : null
 }
 
-function findByVideoId(data: AppData, youtubeUrl: string): Exercise | undefined {
-  const videoId = parseYouTubeVideoId(youtubeUrl)
-  return data.exercises.find((e) => parseYouTubeVideoId(e.youtubeUrl) === videoId)
+/**
+ * L'esercizio già presente con lo STESSO media: il video YouTube (per id, non per forma del
+ * link) o, per le voci senza video (M16), la GIF del catalogo.
+ */
+function findBySameMedia(data: AppData, shared: SharedExercise): Exercise | undefined {
+  const videoId = parseYouTubeVideoId(shared.youtubeUrl)
+  if (videoId) return data.exercises.find((e) => parseYouTubeVideoId(e.youtubeUrl) === videoId)
+  if (shared.gifUrl) return data.exercises.find((e) => e.gifUrl === shared.gifUrl)
+  return undefined
 }
 
 /**
- * Aggiunge l'esercizio condiviso, o riusa quello già presente con lo stesso video YouTube
+ * Aggiunge l'esercizio condiviso, o riusa quello già presente con lo stesso media
  * (dedup dell'issue #21): mai duplicare un esercizio che l'utente ha già.
  */
 function mergeSharedExercise(
   data: AppData,
   shared: SharedExercise,
 ): { data: AppData; exerciseId: string } {
-  const existing = findByVideoId(data, shared.youtubeUrl)
+  const existing = findBySameMedia(data, shared)
   if (existing) return { data, exerciseId: existing.id }
   const exercise: Exercise = {
     id: generateId(),
     name: shared.name.trim(),
     description: shared.description.trim(),
     youtubeUrl: shared.youtubeUrl.trim(),
+    ...(shared.gifUrl?.trim() ? { gifUrl: shared.gifUrl.trim() } : {}),
     // I codici generati prima di M14 portano il gruppo come testo libero: si normalizza
     // invece di rifiutare un codice che qualcuno si è già scambiato.
     muscleGroup: normalizeMuscleGroup(shared.muscleGroup),

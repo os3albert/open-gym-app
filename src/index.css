@@ -23,10 +23,13 @@
  */
 :root {
   --chart-accent: #6aa80e;
+  /* Seconda serie (reps) del grafico doppio: viola, distinto dal lime su entrambi i temi */
+  --chart-reps: #a78bfa;
 }
 
 :root[data-theme='light'] {
   --chart-accent: #4d7c0f;
+  --chart-reps: #7c3aed;
 }
 
 img {
@@ -209,6 +212,38 @@ img {
   }
 }
 
+/* --- GIF del catalogo (M16): 180×180 native, MAI ingrandite (vincolo di licenza) --- */
+
+.gif-media {
+  margin: 0;
+  display: grid;
+  place-items: center;
+  padding: 12px 12px 4px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.gif-media img {
+  display: block;
+  width: 180px;
+  height: 180px;
+  border-radius: 12px;
+}
+
+.gif-attribution {
+  padding: 2px 0 4px;
+  font-size: 0.68rem;
+}
+
+.gif-attribution a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.gif-attribution a:hover {
+  text-decoration: underline;
+}
+
 .video-frame {
   aspect-ratio: 16 / 9;
 }
@@ -255,8 +290,36 @@ img {
   stroke-width: 2;
 }
 
+.trend-line-reps {
+  stroke: var(--chart-reps);
+}
+
+.trend-marker-reps {
+  fill: var(--chart-reps);
+}
+
+.unit-weight {
+  fill: var(--chart-accent);
+  font-weight: 600;
+}
+
+.unit-reps {
+  fill: var(--chart-reps);
+  font-weight: 600;
+}
+
 .trend-hit {
   fill: transparent;
+}
+
+.week-bar {
+  fill: var(--chart-accent);
+  opacity: 0.85;
+}
+
+.weekday-today {
+  fill: var(--text);
+  font-weight: 700;
 }
 
 .axis-label {

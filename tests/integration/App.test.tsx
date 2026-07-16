@@ -10,7 +10,9 @@ import { INVALID_YOUTUBE_LINK_ERROR } from '../../src/domain/exercises'
 beforeEach(() => {
   localStorage.clear()
   // useFilters scrive la query string: va ripulita tra un test e l'altro
-  window.history.replaceState(null, '', '/')
+  // Questi test esercitano la lista della community: ci si porta lì dalla query string,
+  // che è il meccanismo dell'app (da M16 l'atterraggio nudo è la Home)
+  window.history.replaceState(null, '', '/?vista=community')
 })
 
 /** Il form di proposta vive in un modale (M12): si apre dal FAB «Nuova proposta». No-op se è già aperto. */
@@ -63,7 +65,7 @@ describe('proposta di un esercizio', () => {
     expect(screen.queryByRole('heading', { name: 'Squat' })).not.toBeInTheDocument()
   })
 
-  it('il form di proposta è chiuso di partenza: si atterra sulla lista della community', () => {
+  it('il form di proposta è chiuso di partenza sulla lista della community', () => {
     render(<App />)
     expect(screen.queryByLabelText('Nome esercizio')).not.toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Esercizi della community' })).toBeInTheDocument()
@@ -71,6 +73,17 @@ describe('proposta di un esercizio', () => {
       'aria-expanded',
       'false',
     )
+  })
+
+  it('senza parametri si atterra sulla HOME: progresso settimanale e giorni della scheda (M16)', () => {
+    window.history.replaceState(null, '', '/')
+    render(<App />)
+    expect(screen.getByRole('heading', { name: 'Progresso settimanale' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'I giorni della tua scheda' })).toBeInTheDocument()
+    // La lista della community non è qui: è nella sua tab
+    expect(
+      screen.queryByRole('heading', { name: 'Esercizi della community' }),
+    ).not.toBeInTheDocument()
   })
 
   it('il FAB apre il form in un modale, e a salvataggio riuscito si richiude (M12)', async () => {

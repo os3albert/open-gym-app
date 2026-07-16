@@ -38,6 +38,7 @@ function isExercise(value: unknown): value is Exercise {
     typeof value.name === 'string' &&
     typeof value.description === 'string' &&
     typeof value.youtubeUrl === 'string' &&
+    (value.gifUrl === undefined || typeof value.gifUrl === 'string') &&
     isMuscleGroup(value.muscleGroup) &&
     // Dopo la migrazione c'è sempre: i backup v3 la ricevono come «media»
     isDifficulty(value.difficulty) &&
@@ -150,19 +151,27 @@ export function mergeData(local: AppData, backup: AppData): AppData {
     return id
   }
 
-  // Esercizi: stesso video YouTube = stesso esercizio, si riusa quello locale
+  // Esercizi: stesso video YouTube = stesso esercizio, si riusa quello locale.
+  // Le voci senza video (GIF del catalogo, M16) si riconoscono dalla GIF: stessa regola.
   const byVideoId = new Map(
     local.exercises.flatMap((e) => {
       const videoId = parseYouTubeVideoId(e.youtubeUrl)
       return videoId ? [[videoId, e.id] as const] : []
     }),
   )
+  const byGifUrl = new Map(
+    local.exercises.flatMap((e) => (e.gifUrl ? [[e.gifUrl, e.id] as const] : [])),
+  )
   const exerciseIdMap = new Map<string, string>()
   const addedExerciseIds = new Set<string>()
   const exercises = [...local.exercises]
   for (const incoming of backup.exercises) {
     const videoId = parseYouTubeVideoId(incoming.youtubeUrl)
-    const existingId = videoId ? byVideoId.get(videoId) : undefined
+    const existingId = videoId
+      ? byVideoId.get(videoId)
+      : incoming.gifUrl
+        ? byGifUrl.get(incoming.gifUrl)
+        : undefined
     if (existingId) {
       exerciseIdMap.set(incoming.id, existingId)
       continue
@@ -172,6 +181,7 @@ export function mergeData(local: AppData, backup: AppData): AppData {
     addedExerciseIds.add(id)
     exercises.push({ ...incoming, id })
     if (videoId) byVideoId.set(videoId, id)
+    else if (incoming.gifUrl) byGifUrl.set(incoming.gifUrl, id)
   }
 
   // Schede: una scheda con lo stesso nome esiste già → si tiene quella locale

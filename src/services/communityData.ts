@@ -38,6 +38,10 @@ export interface CommunityExercise {
   name: string
   description: string
   youtubeUrl: string
+  /** Media alternativo (M16): la GIF delle voci del catalogo Gym visual, senza video. */
+  gifUrl?: string
+  /** Copyright del media («© Gym visual — …»), da mostrare accanto alla GIF: è un obbligo. */
+  attribution?: string
   /** Testo libero nelle voci pubblicate prima di M14: l'app lo normalizza a runtime. */
   muscleGroup: string
   /** Opzionale nel TIPO, non nella validazione: le voci pubblicate prima di M13 non ce l'hanno. */

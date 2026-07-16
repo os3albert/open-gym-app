@@ -12,17 +12,18 @@ import Chip from '@mui/material/Chip'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { exerciseHistory, filterByPeriod } from '../domain/activity'
 import { activePlan, dayForDate, nextScheduledDay, planUsesWeekdays } from '../domain/plans'
 import type { AppData, Exercise, PlanEntry, WorkoutSet } from '../domain/types'
 import { translateError } from '../i18n'
 import { useT } from '../i18n/context'
 import { suggestNextWeight } from '../services/weightSuggestion'
-import { parseYouTubeVideoId } from '../services/youtube'
+import { DualTrendChart } from './DualTrendChart'
+import { ExerciseMedia } from './ExerciseMedia'
 import { formatDateIt } from '../utils/date'
 import { range } from '../utils/number'
 import { NumberField } from './NumberField'
 import { SelectField } from './SelectField'
-import { YouTubePlayer } from './YouTubePlayer'
 
 const WEIGHTS = range(0, 300, 2.5)
 const REPS = range(1, 30)
@@ -30,6 +31,12 @@ const REPS = range(1, 30)
 interface Props {
   data: AppData
   today: string
+  /**
+   * Giorno scelto da fuori (?giorno=, dalla Home): VINCE sul giorno della settimana — chi
+   * clicca «Giorno B» di martedì vuole il Giorno B, non il martedì. Null = decide il calendario.
+   */
+  selectedDay: string | null
+  onSelectDay: (day: string | null) => void
   /** Registra UNA serie: il set log è fatto di righe, e una riga è una serie. */
   onRecordSet: (exerciseId: string, set: WorkoutSet) => void
   onRemoveSet: (recordId: string, setIndex: number) => void
@@ -47,9 +54,16 @@ interface Props {
  * Se oggi non c'è nulla in programma — nessuna scheda attiva, o giorno di riposo — si mostra il
  * `fallback`: senza, chi non ha ancora una scheda troverebbe una vista che non fa niente.
  */
-export function TodayWorkout({ data, today, onRecordSet, onRemoveSet, fallback }: Props) {
+export function TodayWorkout({
+  data,
+  today,
+  selectedDay,
+  onSelectDay,
+  onRecordSet,
+  onRemoveSet,
+  fallback,
+}: Props) {
   const t = useT()
-  const [manualDayName, setManualDayName] = useState('')
   const carouselRef = useRef<HTMLDivElement>(null)
   const plan = activePlan(data)
 
@@ -82,8 +96,11 @@ export function TodayWorkout({ data, today, onRecordSet, onRemoveSet, fallback }
   if (!plan || plan.days.length === 0) return <>{fallback}</>
 
   const autoDay = dayForDate(plan, today)
-  const day = autoDay ?? plan.days.find((d) => d.name === manualDayName) ?? null
-  const restDay = !autoDay && planUsesWeekdays(plan)
+  // Il giorno scelto (dalla Home o dal menu qui sotto) vince sul calendario; un nome che
+  // non esiste nella scheda attiva si ignora, come se non ci fosse
+  const chosenDay = selectedDay ? (plan.days.find((d) => d.name === selectedDay) ?? null) : null
+  const day = chosenDay ?? autoDay ?? null
+  const restDay = !autoDay && !chosenDay && planUsesWeekdays(plan)
   const next = restDay ? nextScheduledDay(plan, today) : null
 
   return (
@@ -105,15 +122,17 @@ export function TodayWorkout({ data, today, onRecordSet, onRemoveSet, fallback }
           </Typography>
         )}
 
-        {!autoDay && (
+        {/* Il menu si vede anche quando un giorno è già scelto da fuori: per cambiarlo,
+            o per tornare al giorno del calendario (la voce vuota azzera ?giorno=) */}
+        {(!autoDay || chosenDay) && (
           <SelectField
             label={restDay ? t('today.chooseDayAnyway') : t('today.whichDay')}
-            value={manualDayName}
-            onChange={setManualDayName}
+            value={chosenDay?.name ?? ''}
+            onChange={(value) => onSelectDay(value === '' ? null : value)}
             dataCy="today-day-select"
             sx={{ minWidth: 260 }}
             options={[
-              { value: '', label: t('today.choose') },
+              { value: '', label: autoDay ? t('today.backToToday') : t('today.choose') },
               ...plan.days.map((d) => ({ value: d.name, label: d.name })),
             ]}
           />
@@ -224,9 +243,21 @@ function ExerciseCard({
 
   if (!exercise) return null
 
-  const videoId = parseYouTubeVideoId(exercise.youtubeUrl)
   // Le righe previste dalla scheda, più le serie in più (fatte o chieste a mano)
   const rows = Math.max(entry.sets, done.length) + extra
+
+  // Le statistiche sotto il set log (M16): pesi e ripetizioni INSIEME, ultimi 30 giorni.
+  // Registrare una serie le aggiorna in diretta: activity cambia, il grafico pure.
+  const historyWeight = filterByPeriod(
+    exerciseHistory(data.activity, entry.exerciseId, 'maxWeight'),
+    30,
+    today,
+  )
+  const historyReps = filterByPeriod(
+    exerciseHistory(data.activity, entry.exerciseId, 'totalReps'),
+    30,
+    today,
+  )
 
   function registra() {
     try {
@@ -251,7 +282,8 @@ function ExerciseCard({
         maxWidth: '100%',
       }}
     >
-      {videoId && <YouTubePlayer videoId={videoId} title={exercise.name} />}
+      {/* Video, o GIF animata del catalogo: com'è fatto l'esercizio si vede da qui */}
+      <ExerciseMedia exercise={exercise} />
       <CardContent>
         <Stack
           direction="row"
@@ -400,6 +432,15 @@ function ExerciseCard({
         >
           {t('today.addSet')}
         </Button>
+
+        {historyWeight.length > 0 && (
+          <Box data-cy="today-stats" sx={{ mt: 1.5 }}>
+            <Typography variant="h3" component="h4" sx={{ mb: 1 }}>
+              {t('today.stats')}
+            </Typography>
+            <DualTrendChart weight={historyWeight} reps={historyReps} />
+          </Box>
+        )}
       </CardContent>
     </Card>
   )

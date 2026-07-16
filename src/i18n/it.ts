@@ -66,8 +66,26 @@ export const it = {
   'settings.themeDark': 'Scuro',
   'settings.language': 'Lingua',
 
+  // Home (M16)
+  'home.weeklyProgress': 'Progresso settimanale',
+  'home.thisWeek': 'Questa settimana',
+  'home.volumeAndIntensity': 'Volume e intensità, giorno per giorno',
+  'home.weekChartLabel': (p: { days: number; volume: number }) =>
+    `Progresso della settimana: ${p.days} ${p.days === 1 ? 'giorno' : 'giorni'} di allenamento, volume totale ${p.volume} kg×reps`,
+  'home.emptyWeek': 'Questa settimana non hai ancora registrato allenamenti.',
+  'home.yourDays': 'I giorni della tua scheda',
+  'home.noPlan': 'Non hai ancora una scheda attiva: creane una e attivala.',
+  'home.goToPlans': 'Vai alle schede',
+  'home.planWithoutDays': (p: { name: string }) =>
+    `La scheda «${p.name}» non ha ancora giorni: aggiungili da Schede → Modifica.`,
+  'home.openDay': (p: { day: string }) => `Apri l'allenamento di ${p.day}`,
+  'home.dayEmpty': 'Nessun esercizio in questo giorno',
+  'home.exerciseCount': (p: { count: number }) =>
+    p.count === 1 ? '1 esercizio' : `${p.count} esercizi`,
+
   // Navigazione
   'nav.label': "Sezioni dell'app",
+  'nav.home': 'Home',
   'nav.community': 'Community',
   'nav.plans': 'Schede',
   'nav.workout': 'Allenamento',
@@ -129,6 +147,8 @@ export const it = {
   'list.edit': 'Modifica',
   'list.share': 'Condividi',
   'list.addToPlan': 'Aggiungi alla scheda',
+  'list.showMore': 'Mostra altri',
+  'list.shownCount': (p: { shown: number; total: number }) => `${p.shown} di ${p.total} esercizi`,
   'list.delete': 'Elimina',
   'list.confirmDelete': 'Conferma eliminazione',
   'list.cancel': 'Annulla',
@@ -166,6 +186,8 @@ export const it = {
   'filters.staturePlaceholder': 'es. 180',
   'filters.save': 'Salva',
   'filters.suitableForMe': 'Adatti a me',
+  'filters.search': 'Cerca per nome',
+  'filters.searchPlaceholder': 'es. panca, squat…',
   'filters.muscleGroup': 'Filtra per gruppo muscolare',
   'filters.all': 'Tutti',
   'filters.sortBy': 'Ordina per',
@@ -197,6 +219,7 @@ export const it = {
   'today.chooseDayAnyway': 'Ti alleni lo stesso? Scegli il giorno',
   'today.whichDay': 'Che giorno della scheda fai oggi?',
   'today.choose': 'Scegli…',
+  'today.backToToday': 'Giorno di oggi',
   'today.dayHint': (p: { name: string }) =>
     `${p.name} — spunta gli esercizi man mano che li completi.`,
   'today.dayEmpty': 'Questo giorno non ha esercizi: aggiungili dalla scheda.',
@@ -204,6 +227,7 @@ export const it = {
   'today.setNumber': 'Serie',
   'today.status': 'Stato',
   'today.addSet': '+ Aggiungi serie',
+  'today.stats': 'Statistiche',
   'today.position': (p: { position: number; total: number }) => `${p.position} di ${p.total}`,
   'today.prevExercise': 'Esercizio precedente',
   'today.nextExercise': 'Esercizio successivo',
@@ -238,11 +262,23 @@ export const it = {
   'chart.maxReps': 'Andamento delle ripetizioni massime',
   'chart.volume': 'Andamento del volume',
   'chart.empty': 'Nessuna sessione registrata per questo esercizio.',
+  // Contratto dei test come l'aria-label del carico: il prefisso non si cambia
+  'chart.dualLabel': (p: {
+    weightFrom: number
+    weightTo: number
+    repsFrom: number
+    repsTo: number
+    from: string
+    to: string
+  }) =>
+    `Andamento di peso e ripetizioni: peso da ${p.weightFrom} a ${p.weightTo} kg, ` +
+    `ripetizioni da ${p.repsFrom} a ${p.repsTo} (dal ${p.from} al ${p.to})`,
 
   // Video
   'video.play': (p: { title: string }) => `Riproduci il video di ${p.title}`,
   'video.thumbnailAlt': (p: { title: string }) => `Anteprima video di ${p.title}`,
   'video.offline': 'Video non disponibile senza connessione',
+  'video.gifAlt': (p: { title: string }) => `Dimostrazione animata di ${p.title}`,
 
   // Backup
   'backup.title': 'Backup dei dati',
