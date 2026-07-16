@@ -9,6 +9,7 @@ App: **https://os3albert.github.io/open-gym-app/**
 
 ## Indice
 
+- [La Home](#la-home)
 - [Proporre un esercizio](#proporre-un-esercizio)
 - [Votare e filtrare gli esercizi](#votare-e-filtrare-gli-esercizi)
 - [Registrare gli allenamenti (tracking pesi)](#registrare-gli-allenamenti-tracking-pesi)
@@ -17,6 +18,13 @@ App: **https://os3albert.github.io/open-gym-app/**
 - [Backup dei dati](#backup-dei-dati)
 - [Tema e installazione come app](#tema-e-installazione-come-app)
 - [Privacy e statistiche d'uso](#privacy-e-statistiche-duso)
+
+## La Home
+
+Aprendo l'app atterri sulla **Home**: il **progresso settimanale** (volume e intensità
+giorno per giorno, da lunedì a domenica) e i **giorni della tua scheda attiva**. Tocca un
+giorno e sei nell'allenamento **di quel giorno**, anche se il calendario direbbe altro —
+per tornare al giorno del calendario scegli «Giorno di oggi» dal menu.
 
 ## Proporre un esercizio
 
@@ -37,8 +45,14 @@ risponde, l'esercizio resta comunque salvato da te.
 
 ## Votare e filtrare gli esercizi
 
+- La Community arriva **già piena**: oltre 1.300 esercizi dal catalogo
+  [Gym visual](https://gymvisual.com/) con la **GIF animata** dell'esecuzione, le istruzioni
+  in italiano e il gruppo muscolare assegnato (le GIF sono © Gym visual, come indicato sotto
+  ogni animazione). Si votano e si mettono in scheda come le proposte degli utenti.
 - La lista mostra i tuoi esercizi e quelli della community (badge **community**): questi
   ultimi si votano e si condividono, ma non si modificano né si eliminano.
+- Con tante voci si **cerca per nome** (senza badare a maiuscole e accenti) e la lista va a
+  pagine: **Mostra altri** ne carica 24 alla volta.
 - Vota con la freccia **▲** come su Reddit: un voto per dispositivo, ripremi per toglierlo.
   I voti degli esercizi della community sono condivisi con tutti.
 - Imposta la tua **statura** nella barra dei filtri e attiva «Adatti a me» per vedere solo
@@ -153,8 +167,10 @@ per scriverlo.
 
 Se hai una scheda attiva, la scheda **Allenamento** mostra gli esercizi di oggi **uno per
 schermata**: scorri con il dito per passare al successivo. Ogni card ha il **video** dell'esercizio
-e il **log delle serie**: peso e ripetizioni sono già proposti in base all'ultima volta, e la spunta
-a destra registra la serie. «+ Aggiungi serie» ne aggiunge una oltre a quelle previste.
+(o la **GIF animata**, per gli esercizi del catalogo) e il **log delle serie**: peso e ripetizioni
+sono già proposti in base all'ultima volta, e la spunta a destra registra la serie.
+«+ Aggiungi serie» ne aggiunge una oltre a quelle previste. Sotto il log, le **Statistiche**:
+pesi alzati e ripetizioni fatte **insieme**, ultimi 30 giorni, aggiornate a ogni serie.
 
 Senza scheda attiva (o nei giorni di riposo) resta la **registrazione libera**, per loggare qualsiasi
 esercizio al volo.

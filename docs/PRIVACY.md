@@ -13,7 +13,9 @@ Le uniche cose che escono dal dispositivo, e solo se le chiedi tu:
 - un **voto** su un esercizio della community (nel repository finisce un hash anonimo del tuo
   dispositivo, mai un identificativo tuo: serve solo a evitare che una persona voti due volte);
 - il **video YouTube** che apri (caricato solo quando premi play, dal dominio senza cookie
-  `youtube-nocookie.com`).
+  `youtube-nocookie.com`);
+- le **GIF degli esercizi del catalogo** (caricate da `raw.githubusercontent.com`, lo stesso
+  dominio GitHub da cui arriva il catalogo della community: nessun cookie, nessun tracciamento).
 
 ## Statistiche d'uso (Umami)
 

@@ -2,6 +2,36 @@
 
 Tutte le modifiche rilevanti del progetto, per release.
 
+## 1.8.0 — 2026-07-16
+
+Un catalogo di 1.324 esercizi con GIF, la Home come atterraggio e le statistiche
+nel carosello (milestone M16).
+
+### Catalogo (M16)
+
+- La Community arriva **piena**: 1.324 esercizi dal dataset
+  [Gym visual](https://github.com/hasaneyldrm/exercises-dataset), con **GIF animata**
+  dell'esecuzione (© Gym visual, attribuzione su ogni card), istruzioni in italiano e
+  gruppo muscolare già assegnato. Sono **votabili come le proposte** e si mettono in scheda
+  con «Aggiungi alla scheda».
+- Con 1.300 voci la lista **si cerca** (campo «Cerca per nome», senza badare a maiuscole e
+  accenti) e va **a pagine**: 24 card per volta con «Mostra altri».
+- Schema **v6**: un esercizio può avere la GIF al posto del video YouTube. I backup
+  precedenti si importano come sempre.
+
+### Allenamento (M16)
+
+- Nel carosello ogni esercizio mostra la **GIF animata** (o il video, se ce l'ha) e, sotto il
+  set log, le **Statistiche**: pesi alzati e ripetizioni fatte **insieme** in un grafico a due
+  assi, ultimi 30 giorni, aggiornato a ogni serie registrata.
+
+### Home (M16)
+
+- L'app si apre su una **Home** nuova: il **progresso settimanale** (volume e intensità,
+  giorno per giorno, con la striscia Lun–Dom) e i **giorni della scheda attiva** — un tocco su
+  un giorno apre l'allenamento **con quel giorno già scelto**, anche se il calendario direbbe
+  altro. «Giorno di oggi» nel menu riporta al calendario.
+
 ## 1.7.0 — 2026-07-16
 
 Community, schede più veloci da comporre e una barra che ci sta (milestone M15).
