@@ -2,6 +2,32 @@
 
 Tutte le modifiche rilevanti del progetto, per release.
 
+## 1.7.0 — 2026-07-16
+
+Community, schede più veloci da comporre e una barra che ci sta (milestone M15).
+
+### Community
+
+- La sezione **Esercizi** si chiama **Community**: è la lista della community, e ora lo dice.
+- Da ogni esercizio, **«Aggiungi alla scheda»**: scegli scheda (parte da quella attiva), giorno e
+  serie×reps senza uscire dalla lista. Vale anche per gli esercizi della community: te ne resta
+  una copia fra i tuoi, e se avevi già quel video **non viene duplicato**.
+
+### Schede
+
+- I **giorni** si scelgono da una **lista** (i sette della settimana e «Giorno A/B/C»), invece di
+  scriverli: un «lunedi» senza accento diventava un giorno che l'allenamento del giorno non
+  riconosceva. Un nome tuo («Petto e bicipiti») si scrive comunque, nel modale.
+- Il pannello di importazione si chiama **«Importa una scheda»**: gli esercizi hanno la Community,
+  le schede sono la cosa che ci si scambia per codice. Un codice di un singolo esercizio continua
+  a funzionare.
+
+### Rifiniture
+
+- Sui telefoni stretti (320 px) la scritta della sezione scelta — **«Allenamento»**,
+  «Impostazioni» — usciva dal suo tasto e finiva **sopra le icone vicine**. Ora la voce scelta si
+  prende lo spazio che le altre non usano, e la scritta ci sta intera.
+
 ## 1.6.0 — 2026-07-15
 
 Gruppi muscolari chiusi, spinner a modale, allenamento a carosello (milestone M14, issue #81–#85).

@@ -63,8 +63,11 @@ risponde, l'esercizio resta comunque salvato da te.
 ## Schede di allenamento
 
 1. In **Schede** crea una scheda (es. «Full Body 3x») e aprila con **Modifica**.
-2. Aggiungi i giorni: usa i giorni della settimana («Lunedì») oppure nomi generici
-   («Giorno A»). Per ogni giorno scegli gli esercizi con il target serie×ripetizioni (es. 3×8).
+2. Aggiungi i giorni: **Nuovo giorno** apre una lista con i giorni della settimana («Lunedì») e
+   i generici («Giorno A»); se vuoi un nome tuo («Petto e bicipiti») lo scrivi nello stesso
+   riquadro. Per ogni giorno scegli gli esercizi con il target serie×ripetizioni (es. 3×8).
+   - Scorciatoia: dalla **Community**, il pulsante **Aggiungi alla scheda** su un esercizio fa
+     la stessa cosa senza farti cambiare sezione — sceglie da sé la tua scheda attiva.
 3. Premi **Attiva** sulla scheda che stai seguendo: è una sola alla volta.
 4. Da quel momento la scheda **Allenamento** ti propone l'allenamento del giorno:
    - se il giorno di scheda ha il nome del giorno della settimana, l'app lo trova da sola;
