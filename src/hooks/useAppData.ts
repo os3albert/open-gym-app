@@ -18,11 +18,11 @@ import {
   renamePlan,
   setActivePlan,
 } from '../domain/plans'
-import type { PlanEntry, WorkoutSet } from '../domain/types'
+import type { Exercise, PlanEntry, WorkoutSet } from '../domain/types'
 import { setStature } from '../domain/profile'
 import type { AppData } from '../domain/types'
 import { exportBackupJson, importFromJson, mergeData } from '../services/importExport'
-import { applySharedPayload, type SharePayload } from '../services/share'
+import { applySharedPayload, ensureLocalExercise, type SharePayload } from '../services/share'
 import { loadDataResult, saveData } from '../services/storage'
 
 /**
@@ -77,6 +77,21 @@ export function useAppData() {
     removePlanDay: (planId: string, dayName: string) => commit(removeDay(data, planId, dayName)),
     addPlanEntry: (planId: string, dayName: string, entry: PlanEntry) =>
       commit(addEntry(data, planId, dayName, entry)),
+    /**
+     * Mette nella scheda un esercizio scelto dalla Community (M15). Quelle voci vengono dal
+     * catalogo pubblico e non sono fra i miei: prima se ne assicura una copia locale (riusando
+     * quella che ha già lo stesso video), poi la si aggiunge al giorno. Se `addEntry` lancia,
+     * lancia PRIMA del commit: nessun esercizio resta appeso senza la sua entry.
+     */
+    addExerciseToPlan: (
+      exercise: Exercise,
+      planId: string,
+      dayName: string,
+      target: { sets: number; reps: number },
+    ) => {
+      const { data: withExercise, exerciseId } = ensureLocalExercise(data, exercise)
+      commit(addEntry(withExercise, planId, dayName, { exerciseId, ...target }))
+    },
     removePlanEntry: (planId: string, dayName: string, exerciseId: string) =>
       commit(removeEntry(data, planId, dayName, exerciseId)),
     movePlanEntry: (planId: string, dayName: string, exerciseId: string, direction: -1 | 1) =>

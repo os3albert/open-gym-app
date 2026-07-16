@@ -132,6 +132,7 @@ export default function App() {
     addPlanDay,
     removePlanDay,
     addPlanEntry,
+    addExerciseToPlan,
     removePlanEntry,
     movePlanEntry,
     importShared,
@@ -312,6 +313,8 @@ export default function App() {
                   exercises={visibleExercises}
                   totalCount={allExercises.length}
                   votedIds={votedIds}
+                  plans={data.plans}
+                  activePlanId={data.activePlanId}
                   // Il voto di un esercizio della community passa dal worker, quello locale dal dominio
                   onToggleVote={(id) =>
                     communityIds.has(id) ? void community.toggleVote(id) : vote(id)
@@ -322,6 +325,7 @@ export default function App() {
                     setFormOpen(true)
                   }}
                   onDelete={removeExercise}
+                  onAddToPlan={addExerciseToPlan}
                 />
               </section>
             )}

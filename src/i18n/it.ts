@@ -128,6 +128,7 @@ export const it = {
   'list.removeVote': (p: { name: string }) => `Rimuovi il voto a ${p.name}`,
   'list.edit': 'Modifica',
   'list.share': 'Condividi',
+  'list.addToPlan': 'Aggiungi alla scheda',
   'list.delete': 'Elimina',
   'list.confirmDelete': 'Conferma eliminazione',
   'list.cancel': 'Annulla',
@@ -288,6 +289,16 @@ export const it = {
   'planEditor.removeEntry': (p: { name: string; day: string }) => `Rimuovi ${p.name} da ${p.day}`,
   'planEditor.sets': 'Serie',
   'planEditor.add': 'Aggiungi',
+
+  // Aggiungi alla scheda, dalla lista della Community (M15)
+  'addToPlan.plan': 'Scheda',
+  'addToPlan.day': 'Giorno',
+  'addToPlan.add': 'Aggiungi',
+  'addToPlan.noPlans': 'Non hai ancora una scheda: creane una dalla sezione Schede.',
+  'addToPlan.noDays':
+    'Questa scheda non ha ancora giorni: aggiungine uno da «Modifica», nella sezione Schede.',
+  'addToPlan.done': (p: { name: string; plan: string; day: string }) =>
+    `«${p.name}» è ora in ${p.plan} — ${p.day}.`,
 
   // Importazione di un codice condiviso. Il pannello vive nella sezione Schede e di schede
   // parla: gli esercizi hanno la Community, le schede no — sono la cosa che si scambia per

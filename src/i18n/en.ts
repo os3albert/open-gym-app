@@ -111,6 +111,7 @@ export const en: Dictionary = {
   'list.removeVote': (p) => `Remove your vote from ${p.name}`,
   'list.edit': 'Edit',
   'list.share': 'Share',
+  'list.addToPlan': 'Add to plan',
   'list.delete': 'Delete',
   'list.confirmDelete': 'Confirm deletion',
   'list.cancel': 'Cancel',
@@ -254,6 +255,13 @@ export const en: Dictionary = {
   'planEditor.removeEntry': (p) => `Remove ${p.name} from ${p.day}`,
   'planEditor.sets': 'Sets',
   'planEditor.add': 'Add',
+
+  'addToPlan.plan': 'Plan',
+  'addToPlan.day': 'Day',
+  'addToPlan.add': 'Add',
+  'addToPlan.noPlans': 'You have no plan yet: create one from the Plans section.',
+  'addToPlan.noDays': 'This plan has no days yet: add one from «Edit», in the Plans section.',
+  'addToPlan.done': (p) => `“${p.name}” is now in ${p.plan} — ${p.day}.`,
 
   'import.title': 'Import a plan',
   'import.explanation':

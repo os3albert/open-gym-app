@@ -198,6 +198,22 @@ function mergeSharedExercise(
   return { data: { ...data, exercises: [...data.exercises, exercise] }, exerciseId: exercise.id }
 }
 
+/**
+ * Assicura che un esercizio sia fra i miei e ne restituisce l'id locale, riusando quello che ha
+ * già lo stesso video (issue #21).
+ *
+ * Serve a chi arriva dalla Community: quelle voci vengono dal catalogo pubblico e NON stanno in
+ * `data.exercises`, mentre una scheda può puntare solo a esercizi miei — `addEntry` rifiuta un
+ * id che non conosce. È lo stesso identico problema dell'import di una scheda condivisa, quindi
+ * è la stessa identica regola: mai duplicare un esercizio che l'utente ha già.
+ */
+export function ensureLocalExercise(
+  data: AppData,
+  exercise: Exercise,
+): { data: AppData; exerciseId: string } {
+  return mergeSharedExercise(data, toSharedExercise(exercise))
+}
+
 export interface ShareImportResult {
   data: AppData
   /** Presente se il codice era una scheda: l'id per «Prova questa scheda». */
