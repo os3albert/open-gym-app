@@ -61,7 +61,7 @@ describe('Schede di allenamento (M4)', () => {
     cy.get('[data-cy=plan-item]').should('contain.text', 'Full Body 3x')
 
     cy.get('[data-cy=plan-edit]').click()
-    cy.get('[data-cy=day-name-input]').type('Lunedì')
+    cy.scegliGiorno('Lunedì')
     cy.get('[data-cy=add-day]').click()
     cy.get('[data-cy=plan-day-name]').should('have.text', 'Lunedì')
 

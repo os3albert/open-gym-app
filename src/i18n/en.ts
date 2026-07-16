@@ -240,6 +240,8 @@ export const en: Dictionary = {
   'planEditor.planName': 'Plan name',
   'planEditor.rename': 'Rename',
   'planEditor.newDay': 'New day',
+  'planEditor.chooseDay': 'Choose the day',
+  'planEditor.customDay': 'Custom name',
   'planEditor.newDayExample': 'Monday, Day A…',
   'planEditor.addDay': 'Add day',
   'planEditor.close': 'Close editor',

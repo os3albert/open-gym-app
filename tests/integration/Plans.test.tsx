@@ -11,7 +11,7 @@ import type { AppData } from '../../src/domain/types'
 import { INVALID_SHARE_CODE_ERROR } from '../../src/services/share'
 import { emptyData, saveData } from '../../src/services/storage'
 import { addDaysIso, todayIso, weekdayNameIt } from '../../src/utils/date'
-import { scegliOpzione } from './helpers'
+import { digitaGiorno, scegliGiorno, scegliOpzione } from './helpers'
 
 beforeEach(() => {
   localStorage.clear()
@@ -48,7 +48,7 @@ describe('creazione e gestione delle schede (issue #18)', () => {
     await user.click(screen.getByRole('button', { name: 'Crea scheda' }))
     await user.click(screen.getByRole('button', { name: 'Modifica' }))
 
-    await user.type(screen.getByLabelText('Nuovo giorno'), 'Lunedì')
+    await scegliGiorno(user, 'Lunedì')
     await user.click(screen.getByRole('button', { name: 'Aggiungi giorno' }))
 
     await scegliOpzione(user, 'Esercizio', 'Panca piana')
@@ -56,6 +56,23 @@ describe('creazione e gestione delle schede (issue #18)', () => {
 
     const day = screen.getByRole('heading', { name: 'Lunedì' }).closest('[data-cy=plan-day]')!
     expect(within(day as HTMLElement).getByText('Panca piana — 3×8')).toBeInTheDocument()
+  })
+
+  it('un giorno con un nome fuori lista si scrive nel modale (M15)', async () => {
+    const user = userEvent.setup()
+    saveData(withExercises('Panca piana'))
+    render(<App />)
+    await openTab(user, 'Schede')
+
+    await user.type(screen.getByLabelText('Nuova scheda'), 'Push Pull Legs')
+    await user.click(screen.getByRole('button', { name: 'Crea scheda' }))
+    await user.click(screen.getByRole('button', { name: 'Modifica' }))
+
+    // Nessuna lista può prevederlo: il campo libero del modale resta la via d'uscita
+    await digitaGiorno(user, 'Petto e bicipiti')
+    await user.click(screen.getByRole('button', { name: 'Aggiungi giorno' }))
+
+    expect(screen.getByRole('heading', { name: 'Petto e bicipiti' })).toBeInTheDocument()
   })
 
   it("con due schede, quella attivata guida l'allenamento del giorno", async () => {

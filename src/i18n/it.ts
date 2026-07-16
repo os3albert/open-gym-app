@@ -274,6 +274,9 @@ export const it = {
   'planEditor.rename': 'Rinomina',
   'planEditor.newDay': 'Nuovo giorno',
   'planEditor.newDayExample': 'Lunedì, Giorno A…',
+  'planEditor.chooseDay': 'Scegli il giorno',
+  // I nomi dei giorni non si traducono (sono dati): si traduce l'invito a scriverne uno tuo
+  'planEditor.customDay': 'Nome libero',
   'planEditor.addDay': 'Aggiungi giorno',
   'planEditor.close': 'Chiudi editor',
   'planEditor.noDays': 'Nessun giorno: aggiungi «Lunedì» o «Giorno A» per iniziare.',
