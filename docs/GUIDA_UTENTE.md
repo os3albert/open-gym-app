@@ -20,7 +20,7 @@ App: **https://os3albert.github.io/open-gym-app/**
 
 ## Proporre un esercizio
 
-1. Apri la scheda **Esercizi**: atterri sulla lista della community. Premi il pulsante
+1. Apri la scheda **Community**: atterri sulla lista della community. Premi il pulsante
    flottante **Nuova proposta**: il modulo si apre in una finestra. Compila nome e descrizione, e
    scegli il **gruppo muscolare** da una lista (è obbligatorio: così i filtri non si riempiono di
    doppioni fra «Petto», «petto» e «PETTO»).

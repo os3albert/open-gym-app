@@ -68,7 +68,7 @@ export const it = {
 
   // Navigazione
   'nav.label': "Sezioni dell'app",
-  'nav.exercises': 'Esercizi',
+  'nav.community': 'Community',
   'nav.plans': 'Schede',
   'nav.workout': 'Allenamento',
   'nav.history': 'Storico',

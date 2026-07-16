@@ -141,7 +141,7 @@ export default function App() {
   } = useAppData()
   const [initialShareCode] = useState(consumeShareCodeFromUrl)
   // Chi apre un link di condivisione atterra direttamente sulla vista Schede
-  const [view, setView] = useView(initialShareCode ? 'schede' : 'esercizi')
+  const [view, setView] = useView(initialShareCode ? 'schede' : 'community')
   const [filters, setFilters] = useFilters()
   const [theme, setTheme, resolvedTheme] = useTheme()
   const [language, setLanguage] = useLanguage()
@@ -283,7 +283,7 @@ export default function App() {
             className="view-enter"
             sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
           >
-            {view === 'esercizi' && (
+            {view === 'community' && (
               <section>
                 <Typography variant="h2" sx={{ mb: 2 }}>
                   {t('app.communityExercises')}
@@ -407,7 +407,7 @@ export default function App() {
             />
           )}
         </Container>
-        {view === 'esercizi' && (
+        {view === 'community' && (
           <Box
             sx={{
               position: 'fixed',

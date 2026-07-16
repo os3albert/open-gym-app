@@ -38,10 +38,12 @@ describe('scelta della lingua (issue #63)', () => {
     expect(document.documentElement.lang).toBe('en')
     expect(localStorage.getItem(LANGUAGE_STORAGE_KEY)).toBe('en')
 
-    // «Riavvio»: la lingua viene riletta dal dispositivo, non ridedotta dal browser
+    // «Riavvio»: la lingua viene riletta dal dispositivo, non ridedotta dal browser.
+    // Si guarda «Settings» e non «Community»: quest'ultima si scrive uguale nelle due
+    // lingue, e trovarla non proverebbe niente.
     first.unmount()
     render(<App />)
-    expect(screen.getByRole('button', { name: 'Exercises' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Settings' })).toBeInTheDocument()
   })
 
   it('gli errori di dominio parlano la lingua scelta, non quella del codice', async () => {
@@ -50,7 +52,7 @@ describe('scelta della lingua (issue #63)', () => {
     await apriImpostazioni(user)
     await scegliOpzione(user, 'Lingua', 'English')
 
-    await user.click(screen.getByRole('button', { name: 'Exercises' }))
+    await user.click(screen.getByRole('button', { name: 'Community' }))
     await user.click(screen.getByRole('button', { name: 'New proposal' }))
     await user.click(await screen.findByRole('button', { name: 'Propose exercise' }))
 

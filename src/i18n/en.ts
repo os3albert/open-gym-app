@@ -56,7 +56,7 @@ export const en: Dictionary = {
   'settings.language': 'Language',
 
   'nav.label': 'App sections',
-  'nav.exercises': 'Exercises',
+  'nav.community': 'Community',
   'nav.plans': 'Plans',
   'nav.workout': 'Workout',
   'nav.history': 'History',

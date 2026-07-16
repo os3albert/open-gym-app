@@ -12,7 +12,7 @@ import { useT } from '../i18n/context'
 import type { TextKey } from '../i18n'
 
 const TABS: Array<{ view: AppView; label: TextKey; icon: React.ReactNode }> = [
-  { view: 'esercizi', label: 'nav.exercises', icon: <ExploreOutlinedIcon /> },
+  { view: 'community', label: 'nav.community', icon: <ExploreOutlinedIcon /> },
   { view: 'schede', label: 'nav.plans', icon: <CalendarMonthOutlinedIcon /> },
   { view: 'allenamento', label: 'nav.workout', icon: <FitnessCenterIcon /> },
   { view: 'storico', label: 'nav.history', icon: <ShowChartIcon /> },

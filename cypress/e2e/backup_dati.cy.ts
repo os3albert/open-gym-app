@@ -26,7 +26,7 @@ describe('Backup dei dati', () => {
     cy.get('[data-cy=backup-message]').should('contain.text', 'importato correttamente')
 
     // Il backup vive in Impostazioni: la lista si guarda tornando sulla sua vista
-    cy.get('[data-cy=tab-esercizi]').click()
+    cy.get('[data-cy=tab-community]').click()
     cy.get('[data-cy=exercise-item]').should('have.length', 1).and('contain.text', 'Military press')
   })
 
@@ -64,7 +64,7 @@ describe('Backup dei dati', () => {
     // Stesso video: resta il solo esercizio locale
 
     // Il backup vive in Impostazioni: la lista si guarda tornando sulla sua vista
-    cy.get('[data-cy=tab-esercizi]').click()
+    cy.get('[data-cy=tab-community]').click()
     cy.get('[data-cy=exercise-item]').should('have.length', 1).and('contain.text', 'Lento avanti')
   })
 
@@ -78,7 +78,7 @@ describe('Backup dei dati', () => {
     cy.get('[data-cy=import-choice]').should('not.exist')
 
     // Il backup vive in Impostazioni: la lista si guarda tornando sulla sua vista
-    cy.get('[data-cy=tab-esercizi]').click()
+    cy.get('[data-cy=tab-community]').click()
     cy.get('[data-cy=exercise-item]').should('not.exist')
   })
 
