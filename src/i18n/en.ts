@@ -213,6 +213,7 @@ export const en: Dictionary = {
   'video.play': (p) => `Play the video of ${p.title}`,
   'video.thumbnailAlt': (p) => `Video thumbnail of ${p.title}`,
   'video.offline': 'Video unavailable while offline',
+  'video.gifAlt': (p) => `Animated demonstration of ${p.title}`,
 
   'backup.title': 'Data backup',
   'backup.explanation':

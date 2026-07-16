@@ -12,10 +12,9 @@ import type { Difficulty, Exercise, WorkoutPlan } from '../domain/types'
 import { useT } from '../i18n/context'
 import type { DisplayExercise } from '../services/community'
 import { encodeExerciseShare } from '../services/share'
-import { parseYouTubeVideoId } from '../services/youtube'
+import { ExerciseMedia } from './ExerciseMedia'
 import { AddToPlanDialog, type AddToPlanTarget } from './AddToPlanDialog'
 import { ShareCodeBox } from './ShareCodeBox'
-import { YouTubePlayer } from './YouTubePlayer'
 
 interface Props {
   /** Esercizi già filtrati e ordinati dal chiamante (locali e/o della community). */
@@ -113,7 +112,6 @@ export function ExerciseList({
         }}
       >
         {exercises.map((exercise) => {
-          const videoId = parseYouTubeVideoId(exercise.youtubeUrl)
           const voted = votedIds.has(exercise.id)
           const confirming = confirmingDeleteId === exercise.id
           return (
@@ -123,7 +121,7 @@ export function ExerciseList({
               data-cy="exercise-item"
               className="exercise-card"
             >
-              {videoId && <YouTubePlayer videoId={videoId} title={exercise.name} />}
+              <ExerciseMedia exercise={exercise} />
               <CardContent sx={{ pb: 0 }}>
                 <Stack
                   direction="row"

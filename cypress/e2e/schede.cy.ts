@@ -80,6 +80,43 @@ describe('Schede di allenamento (M4)', () => {
     cy.get('[data-cy=active-badge]').should('be.visible')
   })
 
+  it("un esercizio del catalogo (GIF, senza video) si vede animato nel carosello con l'attribuzione (M16)", () => {
+    // GIF in data: URI: il test resta offline, e la CSP della build la ammette (img-src data:)
+    const gif = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+    const oggi = WEEKDAYS_BY_GETDAY[new Date().getDay()]
+    cy.visitWithData({
+      ...seed,
+      schemaVersion: 6,
+      exercises: [
+        {
+          id: 'ex-gif',
+          name: 'Military press',
+          description: 'Dal catalogo',
+          youtubeUrl: '',
+          gifUrl: gif,
+          muscleGroup: 'shoulders',
+          difficulty: 'medium',
+          faceBlurConfirmed: false,
+          votes: 0,
+          createdAt: '2026-07-01T10:00:00.000Z',
+        },
+      ],
+      plans: [
+        {
+          id: 'p1',
+          name: 'Full Body',
+          days: [{ name: oggi, entries: [{ exerciseId: 'ex-gif', sets: 3, reps: 8 }] }],
+          votes: 0,
+        },
+      ],
+      activePlanId: 'p1',
+    })
+
+    cy.get('[data-cy=tab-allenamento]').click()
+    cy.get('[data-cy=gif-media] img').should('have.attr', 'src', gif).and('be.visible')
+    cy.get('[data-cy=gif-media]').should('contain.text', '© Gym visual')
+  })
+
   it('un esercizio si aggiunge alla scheda dalla Community, senza cambiare vista (M15)', () => {
     cy.visitWithData({
       ...seed,

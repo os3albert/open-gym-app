@@ -50,7 +50,8 @@ function cspPlugin(): Plugin {
         `script-src 'self'${umami ? ` ${umami}` : ''}`,
         "style-src 'self' 'unsafe-inline'",
         "font-src 'self'",
-        "img-src 'self' data: https://i.ytimg.com",
+        // raw.githubusercontent: le GIF del catalogo Gym visual, linkate dal repo del dataset
+        "img-src 'self' data: https://i.ytimg.com https://raw.githubusercontent.com",
         // Le miniature YouTube, il catalogo della community e (se configurati) worker e Umami
         `connect-src 'self' https://raw.githubusercontent.com${worker ? ` ${worker}` : ''}${umami ? ` ${umami}` : ''}`,
         'frame-src https://www.youtube-nocookie.com',

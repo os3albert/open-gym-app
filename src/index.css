@@ -209,6 +209,38 @@ img {
   }
 }
 
+/* --- GIF del catalogo (M16): 180×180 native, MAI ingrandite (vincolo di licenza) --- */
+
+.gif-media {
+  margin: 0;
+  display: grid;
+  place-items: center;
+  padding: 12px 12px 4px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.gif-media img {
+  display: block;
+  width: 180px;
+  height: 180px;
+  border-radius: 12px;
+}
+
+.gif-attribution {
+  padding: 2px 0 4px;
+  font-size: 0.68rem;
+}
+
+.gif-attribution a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.gif-attribution a:hover {
+  text-decoration: underline;
+}
+
 .video-frame {
   aspect-ratio: 16 / 9;
 }

@@ -17,12 +17,11 @@ import type { AppData, Exercise, PlanEntry, WorkoutSet } from '../domain/types'
 import { translateError } from '../i18n'
 import { useT } from '../i18n/context'
 import { suggestNextWeight } from '../services/weightSuggestion'
-import { parseYouTubeVideoId } from '../services/youtube'
+import { ExerciseMedia } from './ExerciseMedia'
 import { formatDateIt } from '../utils/date'
 import { range } from '../utils/number'
 import { NumberField } from './NumberField'
 import { SelectField } from './SelectField'
-import { YouTubePlayer } from './YouTubePlayer'
 
 const WEIGHTS = range(0, 300, 2.5)
 const REPS = range(1, 30)
@@ -224,7 +223,6 @@ function ExerciseCard({
 
   if (!exercise) return null
 
-  const videoId = parseYouTubeVideoId(exercise.youtubeUrl)
   // Le righe previste dalla scheda, più le serie in più (fatte o chieste a mano)
   const rows = Math.max(entry.sets, done.length) + extra
 
@@ -251,7 +249,8 @@ function ExerciseCard({
         maxWidth: '100%',
       }}
     >
-      {videoId && <YouTubePlayer videoId={videoId} title={exercise.name} />}
+      {/* Video, o GIF animata del catalogo: com'è fatto l'esercizio si vede da qui */}
+      <ExerciseMedia exercise={exercise} />
       <CardContent>
         <Stack
           direction="row"

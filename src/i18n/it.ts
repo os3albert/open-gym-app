@@ -243,6 +243,7 @@ export const it = {
   'video.play': (p: { title: string }) => `Riproduci il video di ${p.title}`,
   'video.thumbnailAlt': (p: { title: string }) => `Anteprima video di ${p.title}`,
   'video.offline': 'Video non disponibile senza connessione',
+  'video.gifAlt': (p: { title: string }) => `Dimostrazione animata di ${p.title}`,
 
   // Backup
   'backup.title': 'Backup dei dati',
