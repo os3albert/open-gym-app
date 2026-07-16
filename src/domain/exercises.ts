@@ -23,6 +23,8 @@ export interface NewExercise {
   name: string
   description: string
   youtubeUrl: string
+  /** GIF del catalogo, alternativa al video: il form utente non la chiede mai. */
+  gifUrl?: string
   muscleGroup: MuscleGroup
   difficulty: Difficulty
   stature?: StatureRange
@@ -41,7 +43,12 @@ function isValidStatureRange(range: StatureRange): boolean {
 
 function validate(input: NewExercise): void {
   if (!input.name.trim()) throw new Error(EMPTY_NAME_ERROR)
-  if (!isValidYouTubeUrl(input.youtubeUrl)) throw new Error(INVALID_YOUTUBE_LINK_ERROR)
+  // Almeno un media: il video YouTube o la GIF del catalogo (M16). Un link SCRITTO ma non
+  // valido resta rifiutato anche con la GIF: è un refuso, non un'alternativa.
+  const senzaVideo = input.youtubeUrl.trim() === '' && Boolean(input.gifUrl?.trim())
+  if (!senzaVideo && !isValidYouTubeUrl(input.youtubeUrl)) {
+    throw new Error(INVALID_YOUTUBE_LINK_ERROR)
+  }
   if (!isDifficulty(input.difficulty)) throw new Error(MISSING_DIFFICULTY_ERROR)
   if (!isMuscleGroup(input.muscleGroup)) throw new Error(MISSING_MUSCLE_GROUP_ERROR)
   if (input.stature && !isValidStatureRange(input.stature)) {
@@ -57,6 +64,7 @@ export function createExercise(input: NewExercise, now: Date = new Date()): Exer
     name: input.name.trim(),
     description: input.description.trim(),
     youtubeUrl: input.youtubeUrl.trim(),
+    ...(input.gifUrl?.trim() ? { gifUrl: input.gifUrl.trim() } : {}),
     muscleGroup: input.muscleGroup,
     difficulty: input.difficulty,
     ...(input.stature ? { stature: input.stature } : {}),
@@ -72,18 +80,24 @@ export function addExercise(data: AppData, input: NewExercise): AppData {
 
 /** Aggiorna un esercizio esistente rivalidando i campi; voti, id e data restano invariati. */
 export function updateExercise(data: AppData, exerciseId: string, input: NewExercise): AppData {
-  validate(input)
+  // Il form di modifica non conosce la GIF: se l'esercizio ce l'ha e l'input non la rimpiazza,
+  // resta quella — e vale anche come media per la validazione (una copia dal catalogo si può
+  // modificare senza doverle inventare un link YouTube).
+  const existing = data.exercises.find((e) => e.id === exerciseId)
+  const effective = { ...input, gifUrl: input.gifUrl ?? existing?.gifUrl }
+  validate(effective)
   return {
     ...data,
     exercises: data.exercises.map((e) => {
       if (e.id !== exerciseId) return e
       // Niente chiavi undefined: romperebbero il round-trip del backup JSON
-      const { stature: _removed, ...rest } = e
+      const { stature: _removed, gifUrl: _removedGif, ...rest } = e
       return {
         ...rest,
         name: input.name.trim(),
         description: input.description.trim(),
         youtubeUrl: input.youtubeUrl.trim(),
+        ...(effective.gifUrl?.trim() ? { gifUrl: effective.gifUrl.trim() } : {}),
         muscleGroup: input.muscleGroup,
         difficulty: input.difficulty,
         ...(input.stature ? { stature: input.stature } : {}),

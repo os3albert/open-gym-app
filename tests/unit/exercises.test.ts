@@ -46,6 +46,29 @@ describe('createExercise', () => {
     )
   })
 
+  it('accetta un esercizio del catalogo: GIF senza video (M16)', () => {
+    const exercise = createExercise({
+      ...validInput,
+      youtubeUrl: '',
+      gifUrl: 'https://raw.githubusercontent.com/x/y/main/videos/0001.gif',
+    })
+    expect(exercise.gifUrl).to.equal('https://raw.githubusercontent.com/x/y/main/videos/0001.gif')
+    expect(exercise.youtubeUrl).to.equal('')
+  })
+
+  it('senza NESSUN media rifiuta; e un link scritto male resta un refuso anche con la GIF (M16)', () => {
+    expect(() => createExercise({ ...validInput, youtubeUrl: '' })).to.throw(
+      INVALID_YOUTUBE_LINK_ERROR,
+    )
+    expect(() =>
+      createExercise({
+        ...validInput,
+        youtubeUrl: 'https://vimeo.com/1',
+        gifUrl: 'https://raw.githubusercontent.com/x/y/main/videos/0001.gif',
+      }),
+    ).to.throw(INVALID_YOUTUBE_LINK_ERROR)
+  })
+
   it('rifiuta la proposta senza grado di difficoltà (M13)', () => {
     const { difficulty: _senza, ...senzaDifficolta } = validInput
     expect(() => createExercise(senzaDifficolta as typeof validInput)).to.throw(

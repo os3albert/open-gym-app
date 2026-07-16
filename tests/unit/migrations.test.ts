@@ -38,7 +38,7 @@ describe('migrazione degli schemi precedenti', () => {
   it('migra un backup v1 alla versione corrente senza perdite', () => {
     const data = importFromJson(JSON.stringify(v1Backup))
 
-    expect(data.schemaVersion).to.equal(5)
+    expect(data.schemaVersion).to.equal(6)
     expect(data.exercises).to.have.lengthOf(1)
     expect(data.exercises[0].name).to.equal('Military press')
     expect(data.exercises[0].votes).to.equal(3)
@@ -53,7 +53,7 @@ describe('migrazione degli schemi precedenti', () => {
   it('migra un backup v2: i giorni delle schede passano a entries con target 3×8', () => {
     const data = importFromJson(JSON.stringify(v2Backup))
 
-    expect(data.schemaVersion).to.equal(5)
+    expect(data.schemaVersion).to.equal(6)
     expect(data.activePlanId).to.equal(null)
     expect(data.plans[0].days[0].name).to.equal('Lunedì')
     expect(data.plans[0].days[0].entries).to.deep.equal([
@@ -94,7 +94,7 @@ describe('v3 → v4: il grado di difficoltà (M13)', () => {
 
     const data = importFromJson(JSON.stringify(v3))
 
-    expect(data.schemaVersion).to.equal(5)
+    expect(data.schemaVersion).to.equal(6)
     expect(data.exercises[0].difficulty).to.equal('medium')
     // Il resto dell'esercizio non viene toccato
     expect(data.exercises[0].votes).to.equal(2)
@@ -164,10 +164,42 @@ describe('v4 → v5: il gruppo muscolare passa a codice (M14)', () => {
 
     const data = importFromJson(JSON.stringify(v4))
 
-    expect(data.schemaVersion).to.equal(5)
+    expect(data.schemaVersion).to.equal(6)
     expect(data.exercises[0].muscleGroup).to.equal('chest')
     expect(data.exercises[0].votes).to.equal(3)
     // Un gruppo irriconoscibile non fa fallire l'import: finisce su «altro»
     expect(data.exercises[1].muscleGroup).to.equal('other')
+  })
+})
+
+describe('v5 → v6: nasce il media alternativo gifUrl (M16)', () => {
+  it('un backup v5 si importa identico: gifUrl è opzionale e nessuno ce l’ha', () => {
+    const v5 = {
+      schemaVersion: 5,
+      exercises: [
+        {
+          id: 'e1',
+          name: 'Panca',
+          description: '',
+          youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
+          muscleGroup: 'chest',
+          difficulty: 'medium',
+          faceBlurConfirmed: true,
+          votes: 3,
+          createdAt: '2026-01-01T00:00:00.000Z',
+        },
+      ],
+      plans: [],
+      activePlanId: null,
+      activity: [],
+      profile: { statureCm: null },
+      votedExerciseIds: [],
+    }
+
+    const data = importFromJson(JSON.stringify(v5))
+
+    expect(data.schemaVersion).to.equal(6)
+    expect(data.exercises[0].name).to.equal('Panca')
+    expect(data.exercises[0]).to.not.have.property('gifUrl')
   })
 })

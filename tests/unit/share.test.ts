@@ -83,6 +83,22 @@ describe('copia locale di un esercizio della community (M15)', () => {
     expect(exerciseId).to.equal(mio.exercises[0].id)
     expect(data.exercises[0].name).to.equal('Trazioni')
   })
+
+  it('una voce del catalogo (GIF senza video) si copia con la GIF, e la seconda volta si riusa (M16)', () => {
+    const gif = 'https://raw.githubusercontent.com/x/y/main/videos/0042.gif'
+    const dalCatalogo = {
+      ...dallaCommunity,
+      youtubeUrl: '',
+      gifUrl: gif,
+    }
+    const prima = ensureLocalExercise(emptyData(), dalCatalogo)
+    expect(prima.data.exercises[0].gifUrl).to.equal(gif)
+
+    // Riaggiungerla non duplica: stessa GIF, stesso esercizio
+    const seconda = ensureLocalExercise(prima.data, dalCatalogo)
+    expect(seconda.data.exercises).to.have.lengthOf(1)
+    expect(seconda.exerciseId).to.equal(prima.exerciseId)
+  })
 })
 
 describe('condivisione di un esercizio (issue #20)', () => {

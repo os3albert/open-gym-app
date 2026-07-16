@@ -28,13 +28,25 @@ describe('export del backup (issue #23)', () => {
     const data = withExercise('Trazioni', 'https://youtu.be/dQw4w9WgXcQ')
     const parsed = JSON.parse(exportBackupJson(data, new Date('2026-07-11T10:30:00Z')))
 
-    expect(parsed.schemaVersion).to.equal(5)
+    expect(parsed.schemaVersion).to.equal(6)
     expect(parsed.exportedAt).to.equal('2026-07-11T10:30:00.000Z')
     expect(parsed.exercises).to.have.lengthOf(1)
   })
 
   it('exportedAt non inquina il reimport: il round-trip restituisce gli stessi dati', () => {
     const data = withExercise('Trazioni', 'https://youtu.be/dQw4w9WgXcQ')
+    expect(importFromJson(exportBackupJson(data))).to.deep.equal(data)
+  })
+
+  it('un esercizio del catalogo (GIF, senza video) sopravvive identico al round-trip (M16)', () => {
+    const data = addExercise(emptyData(), {
+      name: 'Military press',
+      description: 'Dal catalogo',
+      youtubeUrl: '',
+      gifUrl: 'https://raw.githubusercontent.com/x/y/main/videos/0001.gif',
+      muscleGroup: 'shoulders',
+      difficulty: 'medium',
+    })
     expect(importFromJson(exportBackupJson(data))).to.deep.equal(data)
   })
 
@@ -116,5 +128,24 @@ describe('unione del backup ai dati presenti (issue #24)', () => {
   it("l'unione con un backup vuoto non cambia nulla", () => {
     const local = localData()
     expect(mergeData(local, emptyData())).to.deep.equal(local)
+  })
+
+  it('gli esercizi del catalogo (senza video) non si duplicano: stessa GIF, stesso esercizio (M16)', () => {
+    const gif = 'https://raw.githubusercontent.com/x/y/main/videos/0007.gif'
+    const catalogo = {
+      name: 'Military press',
+      description: '',
+      youtubeUrl: '',
+      gifUrl: gif,
+      muscleGroup: 'shoulders',
+      difficulty: 'medium',
+    } as const
+    const local = addExercise(emptyData(), { ...catalogo })
+    const backup = addExercise(emptyData(), { ...catalogo, name: 'Lento avanti' })
+
+    const merged = mergeData(local, backup)
+
+    expect(merged.exercises).to.have.lengthOf(1)
+    expect(merged.exercises[0].name).to.equal('Military press')
   })
 })

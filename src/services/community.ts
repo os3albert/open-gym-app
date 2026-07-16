@@ -96,7 +96,7 @@ export async function sendCommunityVote(
 }
 
 /** Un esercizio mostrato in lista: quelli della community non si modificano né si eliminano. */
-export type DisplayExercise = Exercise & { fromCommunity?: boolean }
+export type DisplayExercise = Exercise & { fromCommunity?: boolean; attribution?: string }
 
 /**
  * Unisce catalogo community ed esercizi locali per la visualizzazione.
@@ -120,9 +120,15 @@ export function mergeForDisplay(
       .map((e) => parseYouTubeVideoId(e.youtubeUrl))
       .filter((id): id is string => id !== null),
   )
+  // Le voci del catalogo senza video (M16) si riconoscono dalla GIF: senza questo dedup, la
+  // copia locale creata da «Aggiungi alla scheda» apparirebbe in lista accanto all'originale.
+  const communityGifUrls = new Set(
+    community.map((e) => e.gifUrl).filter((url): url is string => Boolean(url)),
+  )
   const onlyLocal = local.filter((e) => {
     const videoId = parseYouTubeVideoId(e.youtubeUrl)
-    return videoId === null || !communityVideoIds.has(videoId)
+    if (videoId !== null) return !communityVideoIds.has(videoId)
+    return !e.gifUrl || !communityGifUrls.has(e.gifUrl)
   })
   const fromCommunity: DisplayExercise[] = community.map((e) => ({
     ...e,

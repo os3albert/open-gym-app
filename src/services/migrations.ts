@@ -12,7 +12,16 @@ export function migrateToCurrentSchema(parsed: Record<string, unknown>): Record<
   if (data.schemaVersion === 2) data = migrateV2toV3(data)
   if (data.schemaVersion === 3) data = migrateV3toV4(data)
   if (data.schemaVersion === 4) data = migrateV4toV5(data)
+  if (data.schemaVersion === 5) data = migrateV5toV6(data)
   return data
+}
+
+/**
+ * v5 → v6: nasce `gifUrl`, il media alternativo del catalogo (M16). È opzionale e i dati
+ * esistenti non ne hanno: la migrazione è il solo salto di versione.
+ */
+function migrateV5toV6(v5: Record<string, unknown>): Record<string, unknown> {
+  return { ...v5, schemaVersion: 6 }
 }
 
 /**
