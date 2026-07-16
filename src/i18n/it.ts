@@ -289,10 +289,14 @@ export const it = {
   'planEditor.sets': 'Serie',
   'planEditor.add': 'Aggiungi',
 
-  // Importazione di un codice condiviso
-  'import.title': 'Importa da un altro utente',
+  // Importazione di un codice condiviso. Il pannello vive nella sezione Schede e di schede
+  // parla: gli esercizi hanno la Community, le schede no — sono la cosa che si scambia per
+  // codice. Un codice di un singolo esercizio resta comunque accettato: chi ce l'ha in mano
+  // non deve trovarsi la porta chiusa.
+  'import.title': 'Importa una scheda',
   'import.explanation':
-    "Incolla il codice di condivisione ricevuto: vedrai un'anteprima prima di aggiungere.",
+    "Incolla il codice che ti hanno mandato: vedrai un'anteprima prima di aggiungere. " +
+    'Vale anche per il codice di un singolo esercizio.',
   'import.codeLabel': 'Codice ricevuto',
   'import.preview': 'Anteprima',
   'import.exerciseLabel': (p: { name: string }) => `Esercizio: ${p.name}`,

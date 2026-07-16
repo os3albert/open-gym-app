@@ -255,8 +255,10 @@ export const en: Dictionary = {
   'planEditor.sets': 'Sets',
   'planEditor.add': 'Add',
 
-  'import.title': 'Import from another user',
-  'import.explanation': 'Paste the share code you received: you will see a preview before adding.',
+  'import.title': 'Import a plan',
+  'import.explanation':
+    'Paste the code you were sent: you will see a preview before adding. ' +
+    'It also works for a single exercise code.',
   'import.codeLabel': 'Code received',
   'import.preview': 'Preview',
   'import.exerciseLabel': (p) => `Exercise: ${p.name}`,

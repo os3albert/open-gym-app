@@ -79,7 +79,7 @@ risponde, l'esercizio resta comunque salvato da te.
 - Premi **Condividi** su un esercizio o su una scheda: ottieni un **codice** (e un link)
   da inviare su qualsiasi canale. La scheda condivisa contiene anche gli esercizi:
   chi la riceve ha tutto.
-- Per importare: scheda **Schede → Importa da un altro utente**, incolla il codice e premi
+- Per importare: scheda **Schede → Importa una scheda**, incolla il codice e premi
   **Anteprima**. Vedi giorni ed esercizi prima di confermare con **Aggiungi ai miei**;
   con **Prova questa scheda** diventa subito la tua scheda attiva.
 - Un esercizio che hai già (stesso video YouTube) **non viene duplicato**.
