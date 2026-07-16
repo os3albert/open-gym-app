@@ -45,3 +45,25 @@ export async function scegliGruppo(user: UserEvent, etichetta: string) {
   const dialog = await screen.findByRole('dialog', { name: 'Scegli il gruppo muscolare' })
   await user.click(within(dialog).getByRole('button', { name: etichetta }))
 }
+
+/**
+ * Sceglie un giorno dalla lista del modale (M15): il campo «Nuovo giorno» non si digita più.
+ */
+export async function scegliGiorno(user: UserEvent, giorno: string) {
+  await user.click(screen.getByLabelText('Nuovo giorno'))
+  const dialog = await screen.findByRole('dialog', { name: 'Scegli il giorno' })
+  await user.click(within(dialog).getByRole('button', { name: giorno }))
+}
+
+/**
+ * Scrive un nome di giorno che non è in lista («Petto e bicipiti») e conferma: il modale ha un
+ * campo libero, come lo spinner ce l'ha per i carichi fuori scala.
+ */
+export async function digitaGiorno(user: UserEvent, giorno: string) {
+  await user.click(screen.getByLabelText('Nuovo giorno'))
+  const dialog = await screen.findByRole('dialog', { name: 'Scegli il giorno' })
+  const campo = within(dialog).getByRole('textbox', { name: 'Nome libero' })
+  await user.clear(campo)
+  await user.type(campo, giorno)
+  await user.click(within(dialog).getByRole('button', { name: 'Conferma' }))
+}

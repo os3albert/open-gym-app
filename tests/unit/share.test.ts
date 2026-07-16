@@ -8,6 +8,7 @@ import {
   decodeShare,
   encodeExerciseShare,
   encodePlanShare,
+  ensureLocalExercise,
   INVALID_SHARE_CODE_ERROR,
   shareCodeFromHash,
 } from '../../src/services/share'
@@ -44,6 +45,45 @@ function dataWithSharablePlan(): AppData {
   data = addEntry(data, planId, 'Giovedì', { exerciseId: data.exercises[1].id, sets: 5, reps: 5 })
   return data
 }
+
+describe('copia locale di un esercizio della community (M15)', () => {
+  /** Come arriva dal catalogo pubblico: id suo, e NON è fra i miei esercizi. */
+  const dallaCommunity = {
+    id: 'id-del-catalogo',
+    name: 'Military press',
+    description: 'Spinta sopra la testa',
+    youtubeUrl: 'https://youtu.be/CCCCCCCCCCC',
+    muscleGroup: 'shoulders',
+    difficulty: 'medium',
+    faceBlurConfirmed: true,
+    votes: 42,
+    createdAt: '2026-07-01T10:00:00.000Z',
+  } as const
+
+  it('chi non ho lo aggiunge ai miei, con un id mio e i voti azzerati', () => {
+    const prima = emptyData()
+    const { data, exerciseId } = ensureLocalExercise(prima, dallaCommunity)
+
+    expect(data.exercises).to.have.lengthOf(1)
+    expect(data.exercises[0].name).to.equal('Military press')
+    // L'id del catalogo è di chi lo pubblica: il mio è nuovo, o due dispositivi collidono
+    expect(exerciseId).to.not.equal('id-del-catalogo')
+    expect(data.exercises[0].id).to.equal(exerciseId)
+    // I voti sono della community, non miei: la copia parte da zero
+    expect(data.exercises[0].votes).to.equal(0)
+    expect(prima.exercises).to.have.lengthOf(0)
+  })
+
+  it('chi ho già, stesso video, riusa il mio e non lo duplica', () => {
+    const mio = dataWithExercise('https://youtu.be/CCCCCCCCCCC')
+    const { data, exerciseId } = ensureLocalExercise(mio, dallaCommunity)
+
+    expect(data.exercises).to.have.lengthOf(1)
+    // È il MIO, con il mio nome: la scheda punterà lì
+    expect(exerciseId).to.equal(mio.exercises[0].id)
+    expect(data.exercises[0].name).to.equal('Trazioni')
+  })
+})
 
 describe('condivisione di un esercizio (issue #20)', () => {
   it('il codice fa il round-trip completo: titolo, fascia di statura e link YouTube', () => {

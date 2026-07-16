@@ -23,6 +23,10 @@ declare global {
       digitaNumero(dataCy: string, valore: string): Chainable<void>
       /** Sceglie il gruppo muscolare dal modale (M14): il campo non si digita più. */
       scegliGruppo(codice: string): Chainable<void>
+      /** Sceglie un giorno dalla lista del modale (M15): il campo non si digita più. */
+      scegliGiorno(giorno: string): Chainable<void>
+      /** Scrive nel modale un nome di giorno che non è in lista, e conferma. */
+      digitaGiorno(giorno: string): Chainable<void>
     }
   }
 }
@@ -57,6 +61,21 @@ Cypress.Commands.add('scegliGruppo', (codice: string) => {
   cy.get('[data-cy=exercise-muscle]').click()
   cy.get(`[data-cy=muscle-option-${codice}]`).click()
   cy.get('[data-cy=exercise-muscle-options]').should('not.exist')
+})
+
+Cypress.Commands.add('scegliGiorno', (giorno: string) => {
+  cy.get('[data-cy=day-name-input]').click()
+  // Per testo: i giorni sono nomi italiani con gli accenti, non codici come i gruppi muscolari
+  cy.get('[data-cy=day-name-input-options]').contains('button', giorno).click()
+  cy.get('[data-cy=day-name-input-options]').should('not.exist')
+})
+
+Cypress.Commands.add('digitaGiorno', (giorno: string) => {
+  cy.get('[data-cy=day-name-input]').click()
+  cy.get('[data-cy=day-name-input-input]').clear()
+  cy.get('[data-cy=day-name-input-input]').type(giorno)
+  cy.get('[data-cy=day-name-input-confirm]').click()
+  cy.get('[data-cy=day-name-input-options]').should('not.exist')
 })
 
 Cypress.Commands.add('apriImpostazioni', () => {

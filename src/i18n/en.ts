@@ -56,7 +56,7 @@ export const en: Dictionary = {
   'settings.language': 'Language',
 
   'nav.label': 'App sections',
-  'nav.exercises': 'Exercises',
+  'nav.community': 'Community',
   'nav.plans': 'Plans',
   'nav.workout': 'Workout',
   'nav.history': 'History',
@@ -111,6 +111,7 @@ export const en: Dictionary = {
   'list.removeVote': (p) => `Remove your vote from ${p.name}`,
   'list.edit': 'Edit',
   'list.share': 'Share',
+  'list.addToPlan': 'Add to plan',
   'list.delete': 'Delete',
   'list.confirmDelete': 'Confirm deletion',
   'list.cancel': 'Cancel',
@@ -240,6 +241,8 @@ export const en: Dictionary = {
   'planEditor.planName': 'Plan name',
   'planEditor.rename': 'Rename',
   'planEditor.newDay': 'New day',
+  'planEditor.chooseDay': 'Choose the day',
+  'planEditor.customDay': 'Custom name',
   'planEditor.newDayExample': 'Monday, Day A…',
   'planEditor.addDay': 'Add day',
   'planEditor.close': 'Close editor',
@@ -253,8 +256,17 @@ export const en: Dictionary = {
   'planEditor.sets': 'Sets',
   'planEditor.add': 'Add',
 
-  'import.title': 'Import from another user',
-  'import.explanation': 'Paste the share code you received: you will see a preview before adding.',
+  'addToPlan.plan': 'Plan',
+  'addToPlan.day': 'Day',
+  'addToPlan.add': 'Add',
+  'addToPlan.noPlans': 'You have no plan yet: create one from the Plans section.',
+  'addToPlan.noDays': 'This plan has no days yet: add one from «Edit», in the Plans section.',
+  'addToPlan.done': (p) => `“${p.name}” is now in ${p.plan} — ${p.day}.`,
+
+  'import.title': 'Import a plan',
+  'import.explanation':
+    'Paste the code you were sent: you will see a preview before adding. ' +
+    'It also works for a single exercise code.',
   'import.codeLabel': 'Code received',
   'import.preview': 'Preview',
   'import.exerciseLabel': (p) => `Exercise: ${p.name}`,

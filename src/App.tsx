@@ -132,6 +132,7 @@ export default function App() {
     addPlanDay,
     removePlanDay,
     addPlanEntry,
+    addExerciseToPlan,
     removePlanEntry,
     movePlanEntry,
     importShared,
@@ -141,7 +142,7 @@ export default function App() {
   } = useAppData()
   const [initialShareCode] = useState(consumeShareCodeFromUrl)
   // Chi apre un link di condivisione atterra direttamente sulla vista Schede
-  const [view, setView] = useView(initialShareCode ? 'schede' : 'esercizi')
+  const [view, setView] = useView(initialShareCode ? 'schede' : 'community')
   const [filters, setFilters] = useFilters()
   const [theme, setTheme, resolvedTheme] = useTheme()
   const [language, setLanguage] = useLanguage()
@@ -283,7 +284,7 @@ export default function App() {
             className="view-enter"
             sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
           >
-            {view === 'esercizi' && (
+            {view === 'community' && (
               <section>
                 <Typography variant="h2" sx={{ mb: 2 }}>
                   {t('app.communityExercises')}
@@ -312,6 +313,8 @@ export default function App() {
                   exercises={visibleExercises}
                   totalCount={allExercises.length}
                   votedIds={votedIds}
+                  plans={data.plans}
+                  activePlanId={data.activePlanId}
                   // Il voto di un esercizio della community passa dal worker, quello locale dal dominio
                   onToggleVote={(id) =>
                     communityIds.has(id) ? void community.toggleVote(id) : vote(id)
@@ -322,6 +325,7 @@ export default function App() {
                     setFormOpen(true)
                   }}
                   onDelete={removeExercise}
+                  onAddToPlan={addExerciseToPlan}
                 />
               </section>
             )}
@@ -407,7 +411,7 @@ export default function App() {
             />
           )}
         </Container>
-        {view === 'esercizi' && (
+        {view === 'community' && (
           <Box
             sx={{
               position: 'fixed',

@@ -14,8 +14,8 @@ import Typography from '@mui/material/Typography'
 import { translateError } from '../i18n'
 import { useT } from '../i18n/context'
 import type { Exercise, PlanEntry, WorkoutDay, WorkoutPlan } from '../domain/types'
-import { WEEKDAYS_IT } from '../utils/date'
 import { range } from '../utils/number'
+import { DayField } from './DayField'
 import { NumberField } from './NumberField'
 import { SelectField } from './SelectField'
 
@@ -34,8 +34,6 @@ interface Props {
   actions: PlanEditorActions
   onClose: () => void
 }
-
-const DAY_SUGGESTIONS = [...WEEKDAYS_IT, 'Giorno A', 'Giorno B', 'Giorno C']
 
 const SETS = range(1, 10)
 const REPS = range(1, 30)
@@ -92,18 +90,7 @@ export function PlanEditor({ plan, exercises, actions, onClose }: Props) {
           useFlexGap
           sx={{ flexWrap: 'wrap', alignItems: 'center', mb: 2 }}
         >
-          <TextField
-            label={t('planEditor.newDay')}
-            placeholder={t('planEditor.newDayExample')}
-            value={dayName}
-            onChange={(e) => setDayName(e.target.value)}
-            slotProps={{ htmlInput: { 'data-cy': 'day-name-input', list: 'day-suggestions' } }}
-          />
-          <datalist id="day-suggestions">
-            {DAY_SUGGESTIONS.map((suggestion) => (
-              <option key={suggestion} value={suggestion} />
-            ))}
-          </datalist>
+          <DayField value={dayName} onChange={setDayName} dataCy="day-name-input" />
           <Button
             variant="contained"
             data-cy="add-day"

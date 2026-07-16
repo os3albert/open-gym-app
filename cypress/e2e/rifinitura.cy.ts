@@ -46,7 +46,7 @@ describe('Rifinitura UX (M5)', () => {
     cy.visitWithData(seed)
 
     for (const tab of [
-      'tab-esercizi',
+      'tab-community',
       'tab-schede',
       'tab-allenamento',
       'tab-storico',
@@ -60,6 +60,28 @@ describe('Rifinitura UX (M5)', () => {
     cy.get('[data-cy=tab-schede]').click()
     cy.get('[data-cy=plan-edit]').click()
     assertNoHorizontalScroll()
+  })
+
+  it("a 320 px l'etichetta della voce scelta ci sta intera, nel suo tasto (M15)", () => {
+    // Lo schermo più stretto in circolazione. Le etichette più lunghe dell'app: se una non
+    // entra, sono queste. Sbordavano DENTRO la pillola (che ritaglia), quindi senza scroll
+    // orizzontale: il test qui sopra non le avrebbe mai viste.
+    cy.viewport(320, 568)
+    cy.visitWithData(seed)
+
+    for (const tab of ['tab-allenamento', 'tab-impostazioni']) {
+      cy.get(`[data-cy=${tab}]`).click()
+      cy.get(`[data-cy=${tab}]`).then(($tab) => {
+        const tasto = $tab[0].getBoundingClientRect()
+        const el = $tab.find('.MuiBottomNavigationAction-label')[0]
+        const etichetta = el.getBoundingClientRect()
+        // Dentro il suo tasto: mai più a cavallo delle icone vicine
+        expect(etichetta.left, `${tab}: bordo sinistro`).to.be.at.least(tasto.left)
+        expect(etichetta.right, `${tab}: bordo destro`).to.be.at.most(tasto.right)
+        // E per intero: il tema si tiene l'ellissi come rete, ma qui non deve servire
+        expect(el.scrollWidth, `${tab}: larghezza del testo`).to.be.at.most(el.clientWidth)
+      })
+    }
   })
 
   it('il tema si può forzare e sopravvive al ricaricamento', () => {

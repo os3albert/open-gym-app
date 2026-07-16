@@ -12,7 +12,7 @@ import { useT } from '../i18n/context'
 import type { TextKey } from '../i18n'
 
 const TABS: Array<{ view: AppView; label: TextKey; icon: React.ReactNode }> = [
-  { view: 'esercizi', label: 'nav.exercises', icon: <ExploreOutlinedIcon /> },
+  { view: 'community', label: 'nav.community', icon: <ExploreOutlinedIcon /> },
   { view: 'schede', label: 'nav.plans', icon: <CalendarMonthOutlinedIcon /> },
   { view: 'allenamento', label: 'nav.workout', icon: <FitnessCenterIcon /> },
   { view: 'storico', label: 'nav.history', icon: <ShowChartIcon /> },
@@ -66,9 +66,12 @@ export function TabNav({ view, onChange }: Props) {
           overflow: 'hidden',
         }}
       >
-        {/* Niente showLabels: MUI mostra l'etichetta SOLO sulla voce selezionata e le allarga la
-            pillola; le altre restano icona. L'aria-label la tiene comunque raggiungibile per nome
-            (i test cercano i tab per nome, non per icona). */}
+        {/* Niente showLabels: la scritta sta SOLO sulla voce scelta, le altre restano icona.
+            L'aria-label la tiene comunque raggiungibile per nome (i test cercano i tab per
+            nome, non per icona), ed è per questo che toglierla dalle non scelte non costa
+            nulla: senza, il loro span occupa comunque la larghezza del testo e MUI divide la
+            pillola in cinque parti uguali — a 320px ne restano 59 e «Allenamento» (85) usciva
+            dal suo tasto, finendo sopra le icone vicine. */}
         <BottomNavigation
           value={view}
           onChange={(_event, next: AppView) => onChange(next)}
@@ -78,7 +81,7 @@ export function TabNav({ view, onChange }: Props) {
             <BottomNavigationAction
               key={tab.view}
               value={tab.view}
-              label={t(tab.label)}
+              label={view === tab.view ? t(tab.label) : undefined}
               aria-label={t(tab.label)}
               icon={tab.icon}
               data-cy={`tab-${tab.view}`}

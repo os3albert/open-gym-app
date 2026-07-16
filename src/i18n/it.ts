@@ -68,7 +68,7 @@ export const it = {
 
   // Navigazione
   'nav.label': "Sezioni dell'app",
-  'nav.exercises': 'Esercizi',
+  'nav.community': 'Community',
   'nav.plans': 'Schede',
   'nav.workout': 'Allenamento',
   'nav.history': 'Storico',
@@ -128,6 +128,7 @@ export const it = {
   'list.removeVote': (p: { name: string }) => `Rimuovi il voto a ${p.name}`,
   'list.edit': 'Modifica',
   'list.share': 'Condividi',
+  'list.addToPlan': 'Aggiungi alla scheda',
   'list.delete': 'Elimina',
   'list.confirmDelete': 'Conferma eliminazione',
   'list.cancel': 'Annulla',
@@ -274,6 +275,9 @@ export const it = {
   'planEditor.rename': 'Rinomina',
   'planEditor.newDay': 'Nuovo giorno',
   'planEditor.newDayExample': 'Lunedì, Giorno A…',
+  'planEditor.chooseDay': 'Scegli il giorno',
+  // I nomi dei giorni non si traducono (sono dati): si traduce l'invito a scriverne uno tuo
+  'planEditor.customDay': 'Nome libero',
   'planEditor.addDay': 'Aggiungi giorno',
   'planEditor.close': 'Chiudi editor',
   'planEditor.noDays': 'Nessun giorno: aggiungi «Lunedì» o «Giorno A» per iniziare.',
@@ -286,10 +290,24 @@ export const it = {
   'planEditor.sets': 'Serie',
   'planEditor.add': 'Aggiungi',
 
-  // Importazione di un codice condiviso
-  'import.title': 'Importa da un altro utente',
+  // Aggiungi alla scheda, dalla lista della Community (M15)
+  'addToPlan.plan': 'Scheda',
+  'addToPlan.day': 'Giorno',
+  'addToPlan.add': 'Aggiungi',
+  'addToPlan.noPlans': 'Non hai ancora una scheda: creane una dalla sezione Schede.',
+  'addToPlan.noDays':
+    'Questa scheda non ha ancora giorni: aggiungine uno da «Modifica», nella sezione Schede.',
+  'addToPlan.done': (p: { name: string; plan: string; day: string }) =>
+    `«${p.name}» è ora in ${p.plan} — ${p.day}.`,
+
+  // Importazione di un codice condiviso. Il pannello vive nella sezione Schede e di schede
+  // parla: gli esercizi hanno la Community, le schede no — sono la cosa che si scambia per
+  // codice. Un codice di un singolo esercizio resta comunque accettato: chi ce l'ha in mano
+  // non deve trovarsi la porta chiusa.
+  'import.title': 'Importa una scheda',
   'import.explanation':
-    "Incolla il codice di condivisione ricevuto: vedrai un'anteprima prima di aggiungere.",
+    "Incolla il codice che ti hanno mandato: vedrai un'anteprima prima di aggiungere. " +
+    'Vale anche per il codice di un singolo esercizio.',
   'import.codeLabel': 'Codice ricevuto',
   'import.preview': 'Anteprima',
   'import.exerciseLabel': (p: { name: string }) => `Esercizio: ${p.name}`,

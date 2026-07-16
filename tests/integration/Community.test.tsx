@@ -4,7 +4,7 @@ import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '../../src/App'
 import type { CommunityExercise } from '../../src/services/communityData'
-import { scegliGruppo, scegliOpzione } from './helpers'
+import { scegliGiorno, scegliGruppo, scegliOpzione } from './helpers'
 
 const WORKER = 'https://worker.example'
 
@@ -176,5 +176,57 @@ describe('proposta alla community', () => {
     const vote = await waitFor(() => calls.find((c) => c.url.endsWith('/votes'))!)
     expect(vote.body).toEqual({ exerciseId: 'ex-accettato', action: 'add' })
     await waitFor(() => expect(within(item).getByText('3')).toBeInTheDocument())
+  })
+})
+
+describe('«Aggiungi alla scheda» dalla Community (M15)', () => {
+  it('un esercizio del catalogo entra nella scheda, e diventa anche un esercizio mio', async () => {
+    stubNetwork()
+    const user = userEvent.setup()
+    render(<App />)
+
+    // Prima serve una scheda con un giorno: la si crea dall'app, per non dover indovinare
+    // gli id generati
+    await user.click(screen.getByRole('button', { name: 'Schede' }))
+    await user.type(screen.getByLabelText('Nuova scheda'), 'Full Body')
+    await user.click(screen.getByRole('button', { name: 'Crea scheda' }))
+    await user.click(screen.getByRole('button', { name: 'Modifica' }))
+    await scegliGiorno(user, 'Lunedì')
+    await user.click(screen.getByRole('button', { name: 'Aggiungi giorno' }))
+    await user.click(screen.getByRole('button', { name: 'Attiva' }))
+
+    await user.click(screen.getByRole('button', { name: 'Community' }))
+    const card = (await screen.findByRole('heading', { name: 'Military press' })).closest('li')!
+    await user.click(within(card).getByRole('button', { name: 'Aggiungi alla scheda' }))
+
+    // La scheda attiva e il suo unico giorno sono già scelti: basta confermare
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByLabelText('Scheda')).toHaveTextContent('Full Body')
+    expect(within(dialog).getByLabelText('Giorno')).toHaveTextContent('Lunedì')
+    await user.click(within(dialog).getByRole('button', { name: 'Aggiungi' }))
+
+    // Il modale si chiude e la conferma è leggibile: dietro a un Dialog aperto la lista è
+    // aria-hidden, e nessuno leggerebbe niente
+    expect(screen.getByRole('status')).toHaveTextContent(
+      '«Military press» è ora in Full Body — Lunedì.',
+    )
+
+    // Nella scheda c'è davvero, col target scelto
+    await user.click(screen.getByRole('button', { name: 'Schede' }))
+    await user.click(screen.getByRole('button', { name: 'Modifica' }))
+    expect(screen.getByText('Military press — 3×8')).toBeInTheDocument()
+  })
+
+  it('senza nessuna scheda lo dice, invece di far premere un bottone che non farebbe nulla', async () => {
+    stubNetwork()
+    const user = userEvent.setup()
+    render(<App />)
+    const card = (await screen.findByRole('heading', { name: 'Military press' })).closest('li')!
+
+    await user.click(within(card).getByRole('button', { name: 'Aggiungi alla scheda' }))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByRole('status')).toHaveTextContent('Non hai ancora una scheda')
+    expect(within(dialog).getByRole('button', { name: 'Aggiungi' })).toBeDisabled()
   })
 })

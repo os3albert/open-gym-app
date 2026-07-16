@@ -225,10 +225,23 @@ export const theme = createTheme({
         root: ({ theme: t }) => ({
           // Non selezionata: solo icona, stretta. Selezionata: si apre e fa spazio all'etichetta,
           // che deve starci INTERA («Allenamento», «Impostazioni») senza andare a capo.
-          minWidth: 48,
+          //
+          // Perché serve dirlo con `flex`: di suo MUI usa `flex: 1`, cioè base 0 — le voci si
+          // spartiscono la barra in parti UGUALI e quel che mostrano non conta. A 320px la
+          // barra è larga 279: cinque parti fanno 56px a testa, e «Allenamento» (74) sbordava
+          // dal suo tasto finendo sopra le icone vicine. Qui la base è invece il CONTENUTO
+          // (`auto`): le non scelte partono dall'icona — TabNav non passa loro l'etichetta —
+          // la scelta parte dalla sua scritta, e lo spazio che avanza si divide fra tutte,
+          // così la barra resta piena e nessuna diventa un lozenge vuoto.
+          flex: '1 1 auto',
+          // Niente minWidth: quattro voci da 48 più i margini non lascerebbero spazio alla
+          // scritta. L'area di tocco resta comoda in altezza (la barra è alta 62).
+          minWidth: 0,
           maxWidth: 200,
           borderRadius: 999,
-          margin: 6,
+          marginBlock: 6,
+          // 3 e non 6: cinque coppie di margini valgono 60px su 279, e li servono all'etichetta
+          marginInline: 3,
           paddingInline: 6,
           transition: underTest
             ? 'none'
@@ -241,7 +254,10 @@ export const theme = createTheme({
           // Pill tonale sull'accento per la destinazione attiva (stile MD3), che si apre per fare
           // spazio all'etichetta
           '&.Mui-selected': {
-            paddingInline: 14,
+            // Cresce come le altre ma non si stringe MAI sotto la sua scritta: se lo schermo
+            // è strettissimo a cedere sono le icone, non l'etichetta
+            flex: '1 0 auto',
+            paddingInline: 10,
             backgroundColor: '#e7f6c8',
             color: '#365314',
             ...t.applyStyles('dark', { backgroundColor: '#33401a', color: '#d9f99d' }),
@@ -249,6 +265,11 @@ export const theme = createTheme({
         }),
         label: {
           whiteSpace: 'nowrap',
+          // Se un giorno una traduzione non entrasse comunque, che si tronchi: mai di nuovo
+          // una scritta a cavallo delle icone vicine. Il test E2E pretende che NON si tronchi.
+          maxWidth: '100%',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
           '&.Mui-selected': { fontWeight: 700, fontSize: '0.8125rem' },
         },
       },

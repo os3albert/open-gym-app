@@ -61,7 +61,7 @@ describe('Schede di allenamento (M4)', () => {
     cy.get('[data-cy=plan-item]').should('contain.text', 'Full Body 3x')
 
     cy.get('[data-cy=plan-edit]').click()
-    cy.get('[data-cy=day-name-input]').type('Lunedì')
+    cy.scegliGiorno('Lunedì')
     cy.get('[data-cy=add-day]').click()
     cy.get('[data-cy=plan-day-name]').should('have.text', 'Lunedì')
 
@@ -78,6 +78,34 @@ describe('Schede di allenamento (M4)', () => {
     cy.get('[data-cy=tab-schede]').click()
     cy.get('[data-cy=plan-item]').should('contain.text', 'Full Body 3x')
     cy.get('[data-cy=active-badge]').should('be.visible')
+  })
+
+  it('un esercizio si aggiunge alla scheda dalla Community, senza cambiare vista (M15)', () => {
+    cy.visitWithData({
+      ...seed,
+      plans: [{ id: 'p1', name: 'Full Body', days: [{ name: 'Lunedì', entries: [] }], votes: 0 }],
+      activePlanId: 'p1',
+    })
+
+    // Si parte dalla lista: è lì che si sfoglia e si decide
+    cy.get('[data-cy=exercise-item]')
+      .contains('[data-cy=exercise-item]', 'Squat')
+      .find('[data-cy=exercise-add-to-plan]')
+      .click()
+
+    // Scheda attiva e unico giorno già scelti: si cambia solo il target
+    cy.get('[data-cy=add-to-plan-plan]').should('have.text', 'Full Body')
+    cy.get('[data-cy=add-to-plan-day]').should('have.text', 'Lunedì')
+    cy.scegliNumero('add-to-plan-sets', '4')
+    cy.scegliNumero('add-to-plan-reps', '6')
+    cy.get('[data-cy=add-to-plan-confirm]').click()
+
+    cy.get('[data-cy=add-to-plan-success]').should('contain.text', 'è ora in Full Body — Lunedì')
+
+    // E nella scheda c'è per davvero
+    cy.get('[data-cy=tab-schede]').click()
+    cy.get('[data-cy=plan-edit]').click()
+    cy.get('[data-cy=plan-entry-text]').should('have.text', 'Squat — 4×6')
   })
 
   it("l'allenamento del giorno propone gli esercizi della scheda attiva con il peso suggerito", () => {
