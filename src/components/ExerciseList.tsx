@@ -66,6 +66,9 @@ function EmptyState({ dataCy, children }: { dataCy: string; children: React.Reac
   )
 }
 
+/** Card per pagina: col catalogo a 1.300 voci il DOM non regge la lista intera. */
+const PAGE_SIZE = 24
+
 export function ExerciseList({
   exercises,
   totalCount,
@@ -83,6 +86,8 @@ export function ExerciseList({
   const [addingTo, setAddingTo] = useState<Exercise | null>(null)
   // La conferma resta finché non si apre un altro modale: niente timer, come il resto dell'app
   const [addedMessage, setAddedMessage] = useState<string | null>(null)
+  // Si azzera al cambio dei filtri: App rimonta la lista con una key sui filtri
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
 
   if (totalCount === 0) {
     return <EmptyState dataCy="empty-state">{t('list.empty')}</EmptyState>
@@ -90,6 +95,8 @@ export function ExerciseList({
   if (exercises.length === 0) {
     return <EmptyState dataCy="no-results">{t('list.noResults')}</EmptyState>
   }
+
+  const visible = exercises.slice(0, visibleCount)
 
   return (
     <>
@@ -111,7 +118,7 @@ export function ExerciseList({
           alignItems: 'start',
         }}
       >
-        {exercises.map((exercise) => {
+        {visible.map((exercise) => {
           const voted = votedIds.has(exercise.id)
           const confirming = confirmingDeleteId === exercise.id
           return (
@@ -289,6 +296,20 @@ export function ExerciseList({
           )
         })}
       </Box>
+      {exercises.length > visibleCount && (
+        <Stack spacing={0.5} sx={{ mt: 2, alignItems: 'center' }}>
+          <Button
+            variant="outlined"
+            data-cy="show-more"
+            onClick={() => setVisibleCount((n) => n + PAGE_SIZE)}
+          >
+            {t('list.showMore')}
+          </Button>
+          <Typography variant="caption" color="text.secondary" data-cy="shown-count">
+            {t('list.shownCount', { shown: visible.length, total: exercises.length })}
+          </Typography>
+        </Stack>
+      )}
       {addingTo && (
         <AddToPlanDialog
           exercise={addingTo}

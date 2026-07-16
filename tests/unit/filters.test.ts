@@ -89,12 +89,23 @@ describe('applyFilters', () => {
     expect(names(data, { ...defaultFilters, sort: 'recent' })).to.deep.equal(['Nuovo', 'Vecchio'])
   })
 
+  it('la ricerca per nome non bada a maiuscole né ad accenti (M16)', () => {
+    let data = emptyData()
+    data = addExercise(data, input('Trazióni alla sbarra'))
+    data = addExercise(data, input('Panca piana'))
+
+    expect(names(data, { ...defaultFilters, text: 'TRAZIONI' })).to.deep.equal([
+      'Trazióni alla sbarra',
+    ])
+    expect(names(data, { ...defaultFilters, text: '  panca ' })).to.deep.equal(['Panca piana'])
+    expect(names(data, { ...defaultFilters, text: 'stacco' })).to.deep.equal([])
+  })
+
   it('combina statura, gruppo muscolare e ordinamento', () => {
     const visible = names(sampleData(), {
+      ...defaultFilters,
       suitableOnly: true,
       muscleGroup: 'chest',
-      difficulty: null,
-      sort: 'votes',
     })
     expect(visible).to.deep.equal(['Adatto'])
   })

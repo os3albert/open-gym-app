@@ -310,6 +310,9 @@ export default function App() {
                   requiresStature={suitabilityRequiresStature(filters, data)}
                 />
                 <ExerciseList
+                  // Al cambio dei filtri la lista rimonta: la paginazione riparte dalla prima
+                  // pagina senza effetti né reset manuali
+                  key={JSON.stringify(filters)}
                   exercises={visibleExercises}
                   totalCount={allExercises.length}
                   votedIds={votedIds}

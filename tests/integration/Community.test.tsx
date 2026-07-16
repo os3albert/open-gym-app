@@ -1,5 +1,7 @@
 // Integrazione della community (M8): catalogo condiviso, proposta e voto verso il worker.
 import '@testing-library/jest-dom/vitest'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '../../src/App'
@@ -176,6 +178,61 @@ describe('proposta alla community', () => {
     const vote = await waitFor(() => calls.find((c) => c.url.endsWith('/votes'))!)
     expect(vote.body).toEqual({ exerciseId: 'ex-accettato', action: 'add' })
     await waitFor(() => expect(within(item).getByText('3')).toBeInTheDocument())
+  })
+})
+
+describe('il catalogo Gym visual dentro la community (M16)', () => {
+  // Il file VERO generato dallo script: questo test tiene onesta l'intera filiera
+  // (fetch → merge → ricerca → paginazione → GIF con attribuzione) sui dati reali.
+  const catalogoReale = JSON.parse(
+    readFileSync(resolve(__dirname, '../../community/exercises.json'), 'utf8'),
+  ) as CommunityExercise[]
+
+  function stubCatalogoReale() {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: RequestInfo | URL) => {
+        const url = String(input)
+        if (url.endsWith('/exercises.json')) return Response.json(catalogoReale)
+        if (url.endsWith('/votes.json')) return Response.json({})
+        throw new Error(`URL non previsto nel test: ${url}`)
+      }),
+    )
+  }
+
+  it('si carica intero, ma in pagina va una pagina alla volta', async () => {
+    stubCatalogoReale()
+    render(<App />)
+
+    // La prima pagina: 24 card, non 1.300 — il DOM non reggerebbe
+    await waitFor(() =>
+      expect(document.querySelectorAll('[data-cy=exercise-item]')).toHaveLength(24),
+    )
+    expect(screen.getByText(`24 di ${catalogoReale.length} esercizi`)).toBeInTheDocument()
+
+    const user = userEvent.setup()
+    await user.click(screen.getByRole('button', { name: 'Mostra altri' }))
+    expect(document.querySelectorAll('[data-cy=exercise-item]')).toHaveLength(48)
+  })
+
+  it('la ricerca per nome restringe il catalogo, e la card ha GIF e attribuzione', async () => {
+    stubCatalogoReale()
+    const user = userEvent.setup()
+    render(<App />)
+    await waitFor(() =>
+      expect(document.querySelectorAll('[data-cy=exercise-item]').length).toBeGreaterThan(0),
+    )
+
+    await user.type(screen.getByLabelText('Cerca per nome'), '3/4 sit-up')
+
+    const cards = document.querySelectorAll('[data-cy=exercise-item]')
+    expect(cards.length).toBeGreaterThanOrEqual(1)
+    expect(cards.length).toBeLessThan(24)
+    const card = screen.getByRole('heading', { name: '3/4 sit-up' }).closest('li')!
+    expect(
+      within(card).getByRole('img', { name: 'Dimostrazione animata di 3/4 sit-up' }),
+    ).toBeInTheDocument()
+    expect(within(card).getByRole('link', { name: /© Gym visual/ })).toBeInTheDocument()
   })
 })
 
