@@ -201,6 +201,15 @@ export const en: Dictionary = {
   'today.status': 'Status',
   'today.addSet': '+ Add set',
   'today.stats': 'Statistics',
+  'today.confirmHistory': (p) =>
+    p.count === 1 ? 'Confirm 1 set into history' : `Confirm ${p.count} sets into history`,
+  'today.removeDraft': (p) => `Remove draft set ${p.set} of ${p.name}`,
+  'today.pendingBanner': (p) =>
+    p.count === 1
+      ? `You have 1 set from ${p.date} ticked but not saved into history.`
+      : `You have ${p.count} sets from ${p.date} ticked but not saved into history.`,
+  'today.pendingSave': 'Save into history',
+  'today.pendingDiscard': 'Discard',
   'today.position': (p) => `${p.position} of ${p.total}`,
   'today.prevExercise': 'Previous exercise',
   'today.nextExercise': 'Next exercise',

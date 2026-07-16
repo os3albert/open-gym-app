@@ -228,6 +228,17 @@ export const it = {
   'today.status': 'Stato',
   'today.addSet': '+ Aggiungi serie',
   'today.stats': 'Statistiche',
+  // Bozze e conferma nello storico (M17)
+  'today.confirmHistory': (p: { count: number }) =>
+    p.count === 1 ? 'Conferma 1 serie nello storico' : `Conferma ${p.count} serie nello storico`,
+  'today.removeDraft': (p: { set: number; name: string }) =>
+    `Togli dalla bozza la serie ${p.set} di ${p.name}`,
+  'today.pendingBanner': (p: { count: number; date: string }) =>
+    p.count === 1
+      ? `Hai 1 serie del ${p.date} spuntata ma non salvata nello storico.`
+      : `Hai ${p.count} serie del ${p.date} spuntate ma non salvate nello storico.`,
+  'today.pendingSave': 'Salva nello storico',
+  'today.pendingDiscard': 'Scarta',
   'today.position': (p: { position: number; total: number }) => `${p.position} di ${p.total}`,
   'today.prevExercise': 'Esercizio precedente',
   'today.nextExercise': 'Esercizio successivo',

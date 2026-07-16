@@ -5,7 +5,8 @@ import type { ActivityRecord, AppData, WorkoutSet } from './types'
 export const INVALID_SET_ERROR = 'INVALID_SET'
 export const EXERCISE_NOT_FOUND_ERROR = 'EXERCISE_NOT_FOUND'
 
-function isValidSet(set: WorkoutSet): boolean {
+/** Una serie plausibile: peso ≥ 0 e almeno 1 ripetizione intera. Lo usa anche la bozza (M17). */
+export function isValidSet(set: WorkoutSet): boolean {
   return (
     Number.isFinite(set.weightKg) &&
     set.weightKg >= 0 &&
