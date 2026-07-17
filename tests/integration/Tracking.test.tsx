@@ -6,9 +6,10 @@ import App from '../../src/App'
 import { INVALID_SET_ERROR, recordSet } from '../../src/domain/activity'
 import { it as itDict } from '../../src/i18n/it'
 import { addExercise } from '../../src/domain/exercises'
+import { addDay, addEntry, createPlan, setActivePlan } from '../../src/domain/plans'
 import type { AppData } from '../../src/domain/types'
 import { emptyData, saveData } from '../../src/services/storage'
-import { addDaysIso, formatDateIt, todayIso } from '../../src/utils/date'
+import { addDaysIso, todayIso, weekdayNameIt } from '../../src/utils/date'
 import { digitaNumero, scegliNumero, scegliOpzione } from './helpers'
 
 beforeEach(() => {
@@ -144,36 +145,40 @@ describe('registrazione della sessione (issue #14)', () => {
   })
 })
 
-describe('storico allenamenti (issue #15)', () => {
-  it("elenca le sessioni dalla più recente e mostra il grafico dell'andamento", async () => {
-    const user = userEvent.setup()
-    let data = seed({ history: { weightKg: 80, reps: 5 } })
-    data = recordSet(data, data.exercises[0].id, todayIso(), { weightKg: 85, reps: 5 })
-    saveData(data)
-    render(<App />)
-
-    await user.click(screen.getByRole('button', { name: 'Storico' }))
-
-    const dates = screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)
-    expect(dates[0]).toBe(formatDateIt(todayIso()))
-    expect(dates[1]).toBe(formatDateIt(addDaysIso(todayIso(), -1)))
-
-    await scegliOpzione(user, 'Esercizio', 'Squat')
-    expect(
-      screen.getByRole('img', { name: /Andamento del carico: da 80 kg .* a 85 kg/ }),
-    ).toBeInTheDocument()
-  })
-
-  it('la metrica cambia ciò che il grafico misura: peso, ripetizioni, volume (issue #38)', async () => {
-    const user = userEvent.setup()
+describe('i controlli del grafico sotto il carosello (M18, era lo Storico)', () => {
+  /** Scheda attiva con lo Squat previsto oggi: il carosello è dove vivono i grafici ora. */
+  function seedPlanWithHistory(): AppData {
     // Ieri 80 kg × 5; oggi due serie: 85×5 e 85×3 (8 reps totali, 680 kg×reps)
     let data = seed({ history: { weightKg: 80, reps: 5 } })
     data = recordSet(data, data.exercises[0].id, todayIso(), { weightKg: 85, reps: 5 })
     data = recordSet(data, data.exercises[0].id, todayIso(), { weightKg: 85, reps: 3 })
+    data = createPlan(data, 'Full Body')
+    const oggi = weekdayNameIt(todayIso())
+    data = addDay(data, data.plans[0].id, oggi)
+    data = addEntry(data, data.plans[0].id, oggi, {
+      exerciseId: data.exercises[0].id,
+      sets: 3,
+      reps: 8,
+    })
+    data = setActivePlan(data, data.plans[0].id)
     saveData(data)
+    return data
+  }
+
+  it('di default le card mostrano peso e ripetizioni insieme; la metrica le cambia TUTTE', async () => {
+    const user = userEvent.setup()
+    seedPlanWithHistory()
     render(<App />)
-    await user.click(screen.getByRole('button', { name: 'Storico' }))
-    await scegliOpzione(user, 'Esercizio', 'Squat')
+    await openTraining(user)
+
+    // Default: il grafico doppio, senza scegliere nessun esercizio
+    expect(screen.getByRole('img', { name: /Andamento di peso e ripetizioni/ })).toBeInTheDocument()
+
+    // La metrica singola porta nel carosello il grafico (e il contratto) dello Storico
+    await scegliOpzione(user, 'Metrica', 'Peso massimo')
+    expect(
+      screen.getByRole('img', { name: /Andamento del carico: da 80 kg .* a 85 kg/ }),
+    ).toBeInTheDocument()
 
     await scegliOpzione(user, 'Metrica', 'Ripetizioni totali')
     expect(
@@ -193,13 +198,48 @@ describe('storico allenamenti (issue #15)', () => {
     expect(
       screen.getByRole('img', { name: /Andamento del volume: da 400 kg×reps .* a 680 kg×reps/ }),
     ).toBeInTheDocument()
+
+    // E si torna al default
+    await scegliOpzione(user, 'Metrica', 'Peso e ripetizioni')
+    expect(screen.getByRole('img', { name: /Andamento di peso e ripetizioni/ })).toBeInTheDocument()
   })
 
-  it('senza sessioni mostra lo stato vuoto', async () => {
+  it('il periodo taglia i punti: «Tutto lo storico» li riprende', async () => {
     const user = userEvent.setup()
+    // La sessione vecchia è fuori dagli ultimi 30 giorni
+    let data = seed()
+    data = recordSet(data, data.exercises[0].id, addDaysIso(todayIso(), -60), {
+      weightKg: 70,
+      reps: 8,
+    })
+    data = recordSet(data, data.exercises[0].id, todayIso(), { weightKg: 85, reps: 5 })
+    data = createPlan(data, 'Full Body')
+    const oggi = weekdayNameIt(todayIso())
+    data = addDay(data, data.plans[0].id, oggi)
+    data = addEntry(data, data.plans[0].id, oggi, {
+      exerciseId: data.exercises[0].id,
+      sets: 3,
+      reps: 8,
+    })
+    saveData(setActivePlan(data, data.plans[0].id))
+    render(<App />)
+    await openTraining(user)
+    await scegliOpzione(user, 'Metrica', 'Peso massimo')
+
+    // Ultimi 30 giorni (default): solo il punto di oggi
+    expect(
+      screen.getByRole('img', { name: /Andamento del carico: da 85 kg .* a 85 kg/ }),
+    ).toBeInTheDocument()
+
+    await scegliOpzione(user, 'Periodo', 'Tutto lo storico')
+    expect(
+      screen.getByRole('img', { name: /Andamento del carico: da 70 kg .* a 85 kg/ }),
+    ).toBeInTheDocument()
+  })
+
+  it("la vista Storico non esiste più: la tab non c'è", () => {
     seed()
     render(<App />)
-    await user.click(screen.getByRole('button', { name: 'Storico' }))
-    expect(screen.getByText(/Nessuna sessione registrata/)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Storico' })).not.toBeInTheDocument()
   })
 })

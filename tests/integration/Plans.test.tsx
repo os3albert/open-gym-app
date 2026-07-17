@@ -173,9 +173,8 @@ describe('allenamento del giorno (issue #19)', () => {
       }),
     ).toBeInTheDocument()
 
-    await openTab(user, 'Storico')
-    // Due sessioni da 100×5: quella di ieri (seed) e quella appena confermata
-    expect(screen.getAllByText(/100 kg × 5/)).toHaveLength(2)
+    // Lo Storico come vista non esiste più (M18): la prova che la serie è salvata è il
+    // grafico qui sopra, che ha già i punti di ieri e di oggi
   })
 
   it("un esercizio del catalogo mostra la GIF animata nel carosello, con l'attribuzione (M16)", async () => {

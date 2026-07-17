@@ -7,7 +7,6 @@ import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter'
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
-import ShowChartIcon from '@mui/icons-material/ShowChart'
 import type { AppView } from '../hooks/useView'
 import { useT } from '../i18n/context'
 import type { TextKey } from '../i18n'
@@ -17,7 +16,6 @@ const TABS: Array<{ view: AppView; label: TextKey; icon: React.ReactNode }> = [
   { view: 'community', label: 'nav.community', icon: <ExploreOutlinedIcon /> },
   { view: 'schede', label: 'nav.plans', icon: <CalendarMonthOutlinedIcon /> },
   { view: 'allenamento', label: 'nav.workout', icon: <FitnessCenterIcon /> },
-  { view: 'storico', label: 'nav.history', icon: <ShowChartIcon /> },
   { view: 'impostazioni', label: 'nav.settings', icon: <SettingsOutlinedIcon /> },
 ]
 

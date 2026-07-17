@@ -75,7 +75,6 @@ export const en: Dictionary = {
   'nav.community': 'Community',
   'nav.plans': 'Plans',
   'nav.workout': 'Workout',
-  'nav.history': 'History',
   'nav.settings': 'Settings',
 
   'install.button': 'Install the app',
@@ -201,6 +200,7 @@ export const en: Dictionary = {
   'today.status': 'Status',
   'today.addSet': '+ Add set',
   'today.stats': 'Statistics',
+  'today.bothMetrics': 'Weight and reps',
   'today.confirmHistory': (p) =>
     p.count === 1 ? 'Confirm 1 set into history' : `Confirm ${p.count} sets into history`,
   'today.removeDraft': (p) => `Remove draft set ${p.set} of ${p.name}`,
@@ -221,10 +221,6 @@ export const en: Dictionary = {
   'today.complete': 'Done ✓',
   'today.skip': 'Skip',
 
-  'history.title': 'Workout history',
-  'history.empty': 'No session logged yet: start from the “Workout” tab.',
-  'history.trendTitle': 'Load trend',
-  'history.pickExercise': 'Choose an exercise to see how the weight changes over time.',
   'history.metric': 'Metric',
   'history.period': 'Period',
   'history.all': 'All history',

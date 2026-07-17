@@ -191,9 +191,8 @@ describe('Schede di allenamento (M4)', () => {
       .should('have.attr', 'aria-label')
       .and('match', /^Andamento di peso e ripetizioni: peso da 100 a 100 kg, ripetizioni da 5 a 5/)
 
-    // La serie finisce nello storico dei pesi
-    cy.get('[data-cy=tab-storico]').click()
-    cy.get('[data-cy=session-item]').should('have.length', 2)
+    // La prova che la serie è salvata è il grafico qui sopra (lo Storico come vista non
+    // esiste più, M18): ha già i punti di ieri e di oggi
   })
 
   it('il carosello raggiunge tutti gli esercizi con le frecce (M14)', () => {

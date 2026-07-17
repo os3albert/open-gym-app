@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-export type AppView = 'home' | 'community' | 'schede' | 'allenamento' | 'storico' | 'impostazioni'
+export type AppView = 'home' | 'community' | 'schede' | 'allenamento' | 'impostazioni'
 
-const VIEWS: AppView[] = ['home', 'community', 'schede', 'allenamento', 'storico', 'impostazioni']
+const VIEWS: AppView[] = ['home', 'community', 'schede', 'allenamento', 'impostazioni']
 
 function readViewFromUrl(): AppView | null {
   const value = new URLSearchParams(window.location.search).get('vista')

@@ -31,8 +31,42 @@ const seed = {
   votedExerciseIds: [],
 }
 
+const WEEKDAYS_BY_GETDAY = [
+  'Domenica',
+  'Lunedì',
+  'Martedì',
+  'Mercoledì',
+  'Giovedì',
+  'Venerdì',
+  'Sabato',
+]
+
+/**
+ * Il seed con la scheda attiva: da M18 i grafici vivono nel carosello dell'allenamento.
+ * In forma v6 GIÀ pronta: le migrazioni dei seed antichi riscrivono schede e scheda attiva.
+ */
+const seedConScheda = {
+  ...seed,
+  schemaVersion: 6,
+  exercises: seed.exercises.map((e) => ({ ...e, difficulty: 'medium' })),
+  plans: [
+    {
+      id: 'p1',
+      name: 'Full Body',
+      days: [
+        {
+          name: WEEKDAYS_BY_GETDAY[new Date().getDay()],
+          entries: [{ exerciseId: 'ex-stacco', sets: 3, reps: 8 }],
+        },
+      ],
+      votes: 0,
+    },
+  ],
+  activePlanId: 'p1',
+}
+
 describe('Tracking pesi (M3)', () => {
-  it('suggerisce il carico dallo storico e registra la nuova sessione', () => {
+  it('suggerisce il carico dallo storico e la sessione persiste fra ricarichi', () => {
     cy.visitWithData(seed)
 
     cy.get('[data-cy=tab-allenamento]').click()
@@ -45,23 +79,24 @@ describe('Tracking pesi (M3)', () => {
     cy.get('[data-cy=add-set]').click()
     cy.get('[data-cy=set-chip]').should('contain.text', '100 kg × 5')
 
-    // Lo storico mostra entrambe le sessioni e l'andamento
-    cy.get('[data-cy=tab-storico]').click()
-    cy.get('[data-cy=session-item]').should('have.length', 2)
-    cy.scegliOpzione('history-exercise-select', 'Stacco da terra')
-    cy.get('[data-cy=trend-chart]').should('be.visible')
-
-    // Persistenza fra ricarichi
+    // Persistenza fra ricarichi (lo Storico come vista non esiste più: fa fede la sessione)
     cy.reload()
-    cy.get('[data-cy=tab-storico]').click()
-    cy.get('[data-cy=session-item]').should('have.length', 2)
+    cy.get('[data-cy=tab-allenamento]').click()
+    cy.scegliOpzione('session-exercise-select', 'Stacco da terra')
+    cy.get('[data-cy=set-chip]').should('contain.text', '100 kg × 5')
   })
 
-  it('il grafico segue la metrica scelta: peso, ripetizioni, volume', () => {
-    cy.visitWithData(seed)
+  it('i controlli sotto il carosello cambiano metrica e periodo dei grafici (M18)', () => {
+    cy.visitWithData(seedConScheda)
+    cy.get('[data-cy=tab-allenamento]').click()
 
-    cy.get('[data-cy=tab-storico]').click()
-    cy.scegliOpzione('history-exercise-select', 'Stacco da terra')
+    // Default: peso e ripetizioni insieme, senza scegliere nessun esercizio
+    cy.get('[data-cy=dual-trend-chart]')
+      .should('have.attr', 'aria-label')
+      .and('include', 'Andamento di peso e ripetizioni')
+
+    // La metrica singola porta nel carosello il grafico (e il contratto) dello Storico
+    cy.scegliOpzione('metric-select', 'Peso massimo')
     cy.get('[data-cy=trend-chart]').should('have.attr', 'aria-label').and('include', 'del carico')
 
     cy.scegliOpzione('metric-select', 'Ripetizioni totali')
@@ -75,6 +110,13 @@ describe('Tracking pesi (M3)', () => {
       .should('have.attr', 'aria-label')
       .and('include', 'volume')
       .and('include', '500 kg×reps')
+
+    // Il periodo vale per gli stessi grafici: «Tutto lo storico» non perde il punto di ieri
+    cy.scegliOpzione('period-select', 'Tutto lo storico')
+    cy.get('[data-cy=trend-chart]').should('have.attr', 'aria-label').and('include', 'volume')
+
+    // E la tab Storico non esiste più
+    cy.get('[data-cy=tab-storico]').should('not.exist')
   })
 
   it('la rotella dei valori sceglie il carico senza digitare (M12)', () => {

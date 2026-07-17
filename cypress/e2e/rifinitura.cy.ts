@@ -46,10 +46,10 @@ describe('Rifinitura UX (M5)', () => {
     cy.visitWithData(seed)
 
     for (const tab of [
+      'tab-home',
       'tab-community',
       'tab-schede',
       'tab-allenamento',
-      'tab-storico',
       'tab-impostazioni',
     ]) {
       cy.get(`[data-cy=${tab}]`).click()

@@ -24,7 +24,6 @@ import { CollapsingFab } from './components/CollapsingFab'
 import { ExerciseForm } from './components/ExerciseForm'
 import { ExerciseList } from './components/ExerciseList'
 import { FilterBar } from './components/FilterBar'
-import { HistoryView } from './components/HistoryView'
 import { HomeView } from './components/HomeView'
 import { Logo } from './components/Logo'
 import { PlansView } from './components/PlansView'
@@ -341,7 +340,6 @@ export default function App() {
                 }
               />
             )}
-            {view === 'storico' && <HistoryView data={data} />}
             {/* Proposta e modifica passano dallo STESSO modale: un solo form, due modi di aprirlo */}
             <Dialog
               open={formOpen}

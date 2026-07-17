@@ -13,7 +13,13 @@ import Chip from '@mui/material/Chip'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { exerciseHistory, filterByPeriod, isValidSet, lastSession } from '../domain/activity'
+import {
+  exerciseHistory,
+  filterByPeriod,
+  isValidSet,
+  lastSession,
+  type TrendMetric,
+} from '../domain/activity'
 import { INVALID_SET_ERROR } from '../domain/activity'
 import { useSetDrafts } from '../hooks/useSetDrafts'
 import { activePlan, dayForDate, nextScheduledDay, planUsesWeekdays } from '../domain/plans'
@@ -23,6 +29,7 @@ import { useT } from '../i18n/context'
 import { suggestNextWeight } from '../services/weightSuggestion'
 import { DualTrendChart } from './DualTrendChart'
 import { ExerciseMedia } from './ExerciseMedia'
+import { TrendChart } from './TrendChart'
 import { formatDateIt } from '../utils/date'
 import { range } from '../utils/number'
 import { NumberField } from './NumberField'
@@ -30,6 +37,24 @@ import { SelectField } from './SelectField'
 
 const WEIGHTS = range(0, 300, 2.5)
 const REPS = range(1, 30)
+
+/** I periodi del grafico (erano dello Storico, ora vivono qui): 30 giorni è il default. */
+const CHART_PERIODS = [
+  { value: '30', label: 'history.last30', days: 30 },
+  { value: '90', label: 'history.last90', days: 90 },
+  { value: '', label: 'history.all', days: null },
+] as const
+
+/** Le metriche singole; la voce vuota è il default «peso e ripetizioni insieme». */
+const CHART_METRICS: ReadonlyArray<{
+  value: TrendMetric
+  label: 'history.maxWeight' | 'history.totalReps' | 'history.maxReps' | 'history.volume'
+}> = [
+  { value: 'maxWeight', label: 'history.maxWeight' },
+  { value: 'totalReps', label: 'history.totalReps' },
+  { value: 'maxReps', label: 'history.maxReps' },
+  { value: 'volume', label: 'history.volume' },
+]
 
 interface Props {
   data: AppData
@@ -72,6 +97,10 @@ export function TodayWorkout({
   const t = useT()
   const carouselRef = useRef<HTMLDivElement>(null)
   const drafts = useSetDrafts(today)
+  // I controlli di visualizzazione dei grafici (M18): valgono per TUTTE le card del giorno.
+  // '' = «peso e ripetizioni insieme» (il default), altrimenti una metrica singola.
+  const [chartMetric, setChartMetric] = useState<'' | TrendMetric>('')
+  const [chartPeriod, setChartPeriod] = useState<'' | '30' | '90'>('30')
   const plan = activePlan(data)
 
   /** Le bozze rimaste da un giorno passato si salvano NEL LORO giorno, mai in silenzio. */
@@ -263,9 +292,41 @@ export function TodayWorkout({
                   drafts.clearDrafts(entry.exerciseId)
                 }}
                 onRemoveSet={onRemoveSet}
+                chartMetric={chartMetric}
+                chartDays={CHART_PERIODS.find((p) => p.value === chartPeriod)?.days ?? null}
               />
             ))}
           </Box>
+
+          {/* I controlli dello Storico, ora sotto il carosello (M18): cambiarli aggiorna i
+              grafici DENTRO le card di tutti gli esercizi del giorno */}
+          <Stack
+            direction="row"
+            spacing={1.5}
+            useFlexGap
+            data-cy="today-chart-controls"
+            sx={{ flexWrap: 'wrap' }}
+          >
+            <SelectField
+              label={t('history.metric')}
+              value={chartMetric}
+              onChange={(value) => setChartMetric(value as '' | TrendMetric)}
+              dataCy="metric-select"
+              sx={{ minWidth: 220 }}
+              options={[
+                { value: '', label: t('today.bothMetrics') },
+                ...CHART_METRICS.map((m) => ({ value: m.value, label: t(m.label) })),
+              ]}
+            />
+            <SelectField
+              label={t('history.period')}
+              value={chartPeriod}
+              onChange={(value) => setChartPeriod(value as '' | '30' | '90')}
+              dataCy="period-select"
+              sx={{ minWidth: 180 }}
+              options={CHART_PERIODS.map((p) => ({ value: p.value, label: t(p.label) }))}
+            />
+          </Stack>
         </>
       )}
     </Stack>
@@ -285,6 +346,10 @@ interface CardProps {
   /** Il gesto esplicito: le bozze entrano nello storico. */
   onConfirm: () => void
   onRemoveSet: (recordId: string, setIndex: number) => void
+  /** Come mostrare le statistiche (M18): '' = peso e ripetizioni insieme. */
+  chartMetric: '' | TrendMetric
+  /** Periodo del grafico in giorni; null = tutto lo storico. */
+  chartDays: number | null
 }
 
 /** Una schermata del carosello: l'esercizio, il suo video e il log delle serie di oggi. */
@@ -299,6 +364,8 @@ function ExerciseCard({
   onRemoveDraft,
   onConfirm,
   onRemoveSet,
+  chartMetric,
+  chartDays,
 }: CardProps) {
   const t = useT()
   const exercise: Exercise | undefined = data.exercises.find((e) => e.id === entry.exerciseId)
@@ -322,18 +389,12 @@ function ExerciseCard({
   // Le righe previste dalla scheda, più le serie in più (fatte, in bozza o chieste a mano)
   const rows = Math.max(entry.sets, done.length + drafts.length) + extra
 
-  // Le statistiche sotto il set log (M16): pesi e ripetizioni INSIEME, ultimi 30 giorni.
-  // Registrare una serie le aggiorna in diretta: activity cambia, il grafico pure.
-  const historyWeight = filterByPeriod(
-    exerciseHistory(data.activity, entry.exerciseId, 'maxWeight'),
-    30,
-    today,
-  )
-  const historyReps = filterByPeriod(
-    exerciseHistory(data.activity, entry.exerciseId, 'totalReps'),
-    30,
-    today,
-  )
+  // Le statistiche sotto il set log (M16): metrica e periodo arrivano dai controlli sotto
+  // il carosello (M18) e valgono per tutte le card. Confermare le serie le aggiorna in
+  // diretta: activity cambia, il grafico pure.
+  const history = (metric: TrendMetric) =>
+    filterByPeriod(exerciseHistory(data.activity, entry.exerciseId, metric), chartDays, today)
+  const hasHistory = exerciseHistory(data.activity, entry.exerciseId).length > 0
 
   // Spuntare = mettere in BOZZA (M17): lo storico si tocca solo col pulsante di conferma.
   // La validazione è la stessa del dominio, ma qui, prima che la serie entri in bozza.
@@ -548,12 +609,24 @@ function ExerciseCard({
           {t('today.addSet')}
         </Button>
 
-        {historyWeight.length > 0 && (
+        {hasHistory && (
           <Box data-cy="today-stats" sx={{ mt: 1.5 }}>
             <Typography variant="h3" component="h4" sx={{ mb: 1 }}>
               {t('today.stats')}
             </Typography>
-            <DualTrendChart weight={historyWeight} reps={historyReps} />
+            {chartMetric === '' ? (
+              history('maxWeight').length > 0 ? (
+                <DualTrendChart weight={history('maxWeight')} reps={history('totalReps')} />
+              ) : (
+                // Il periodo scelto taglia fuori tutto: lo si dice, come fa TrendChart
+                <Typography variant="body2" color="text.secondary" data-cy="trend-empty">
+                  {t('chart.empty')}
+                </Typography>
+              )
+            ) : (
+              // Metrica singola: il grafico dello Storico, con la SUA aria-label (contratto)
+              <TrendChart points={history(chartMetric)} metric={chartMetric} />
+            )}
           </Box>
         )}
       </CardContent>
