@@ -2,27 +2,9 @@
   {
     "id": "70eba042-0f62-4fdd-8889-ab621e837598",
     "name": "affondi",
-    "description": "",
-    "youtubeUrl": "https://youtube.com/shorts/mJilHWIBWO8?si=fkFAfJoQfOjUNVWW",
-    "muscleGroup": "",
-    "faceBlurConfirmed": true,
-    "createdAt": "2026-07-13T21:09:38.773Z"
-  },
-  {
-    "id": "dececac9-f6e8-4f9a-8a74-dfc8b2e36637",
-    "name": "Petto",
-    "description": "",
-    "youtubeUrl": "https://youtube.com/shorts/SOu-3_YyX2c?is=V5_7jnT5gfhOS-dd",
-    "muscleGroup": "Petto",
-    "faceBlurConfirmed": true,
-    "createdAt": "2026-07-14T06:11:49.481Z"
-  },
-  {
-    "id": "70eba042-0f62-4fdd-8889-ab621e837598",
-    "name": "affondi",
     "description": "Ottimi per riattivare la muscolatura delle gambe a corpo libero. Scendi controllando il ginocchio e mantieni il busto dritto.",
     "youtubeUrl": "https://youtube.com/shorts/mJilHWIBWO8?si=fkFAfJoQfOjUNVWW",
-    "muscleGroup": "Gambe (Quadricipiti, Glutei)",
+    "muscleGroup": "legs",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-13T21:09:38.773Z"
   },
@@ -31,79 +13,25 @@
     "name": "Petto",
     "description": "Movimento di spinta di base per il petto. Concentrati sulla contrazione del muscolo durante l'esecuzione.",
     "youtubeUrl": "https://youtube.com/shorts/SOu-3_YyX2c?is=V5_7jnT5gfhOS-dd",
-    "muscleGroup": "Petto",
+    "muscleGroup": "chest",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-14T06:11:49.481Z"
-  },
-  {
-    "id": "e4b2d8f1-8a99-4c55-b21a-6d45e99f1101",
-    "name": "Goblet Squat (Kettlebell)",
-    "description": "Ideale per costruire massa sulle gambe. Tieni il kettlebell al petto, questo ti aiuterà a mantenere la schiena dritta e a scendere in sicurezza.",
-    "youtubeUrl": "https://youtube.com/shorts/SqT_1xYyZ3a",
-    "muscleGroup": "Gambe e Glutei",
-    "faceBlurConfirmed": true,
-    "createdAt": "2026-07-17T16:08:04.000Z"
-  },
-  {
-    "id": "18f9c2d3-1e5f-4a8b-9d43-2c77f88e1002",
-    "name": "Rematore Singolo (Kettlebell)",
-    "description": "Appoggiati a un piano o a una sedia per stabilizzarti. Tira il kettlebell verso l'anca tenendo il gomito stretto per massimizzare il lavoro sul dorso.",
-    "youtubeUrl": "https://youtube.com/shorts/RmB_2yXxW4b",
-    "muscleGroup": "Dorso e Bicipiti",
-    "faceBlurConfirmed": true,
-    "createdAt": "2026-07-17T16:08:04.000Z"
-  },
-  {
-    "id": "9b3e1a6c-5f4d-4b8c-a123-d987e654f003",
-    "name": "Piegamenti sulle ginocchia",
-    "description": "Variante a corpo libero per ricominciare. Mantieni l'allineamento tra testa, spalle e bacino scendendo in modo controllato.",
-    "youtubeUrl": "https://youtube.com/shorts/PgK_3zWvU5c",
-    "muscleGroup": "Petto, Spalle, Tricipiti",
-    "faceBlurConfirmed": true,
-    "createdAt": "2026-07-17T16:08:04.000Z"
-  },
-  {
-    "id": "f5d7c3b1-9a22-4c33-b123-e456f789a004",
-    "name": "Kettlebell Swing",
-    "description": "Movimento esplosivo di bacino (hip hinge). La forza deve derivare dalla spinta dei glutei, non usare le braccia per sollevare il peso.",
-    "youtubeUrl": "https://youtube.com/shorts/KbS_4aVuT6d",
-    "muscleGroup": "Glutei e Femorali",
-    "faceBlurConfirmed": true,
-    "createdAt": "2026-07-17T16:08:04.000Z"
-  },
-  {
-    "id": "c1a2b3d4-e5f6-4a7b-8c9d-1234567890ab",
-    "name": "Stacco Romeno con Kettlebell",
-    "description": "Con le gambe solo leggermente piegate, spingi indietro i glutei. Senti allungare la parte posteriore della coscia, poi torna su contraendo forte i glutei.",
-    "youtubeUrl": "https://youtube.com/shorts/StR_5bUtS7e",
-    "muscleGroup": "Femorali e Bassa Schiena",
-    "faceBlurConfirmed": true,
-    "createdAt": "2026-07-17T16:08:04.000Z"
-  },
-  {
-    "id": "d2f3e4a5-b6c7-4d8e-9f0a-2345678901bc",
-    "name": "Plank",
-    "description": "Esercizio isometrico fondamentale per la stabilità a corpo libero. Appoggiati sugli avambracci e contrai attivamente addome e glutei senza cedere con la zona lombare.",
-    "youtubeUrl": "https://youtube.com/shorts/PlK_6cTsR8f",
-    "muscleGroup": "Core",
-    "faceBlurConfirmed": true,
-    "createdAt": "2026-07-17T16:08:04.000Z"
   },
   {
     "id": "60e27033-3c68-49aa-9085-d456ea1957fe",
     "name": "Piegamenti classici",
     "description": "Movimento base per l'upper body. Tieni il core contratto.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+piegamenti+classici",
-    "muscleGroup": "Petto / Spalle / Tricipiti",
+    "muscleGroup": "chest",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
   {
     "id": "36a0c9d0-ea2b-4f4e-bc92-361dec223de4",
     "name": "Piegamenti sulle ginocchia",
-    "description": "Variante facilitata per riprendere forza.",
+    "description": "Variante a corpo libero per ricominciare. Mantieni l'allineamento tra testa, spalle e bacino scendendo in modo controllato.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+piegamenti+sulle+ginocchia",
-    "muscleGroup": "Petto / Spalle / Tricipiti",
+    "muscleGroup": "chest",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
@@ -112,7 +40,7 @@
     "name": "Piegamenti inclinati (su sedia)",
     "description": "Mani su un rialzo per facilitare l'esecuzione.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+piegamenti+inclinati+(su+sedia)",
-    "muscleGroup": "Petto inferiore",
+    "muscleGroup": "chest",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
@@ -121,7 +49,7 @@
     "name": "Piegamenti declinati (piedi su sedia)",
     "description": "Piedi su un rialzo, maggiore carico su petto e spalle.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+piegamenti+declinati+(piedi+su+sedia)",
-    "muscleGroup": "Petto superiore",
+    "muscleGroup": "chest",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
@@ -130,7 +58,7 @@
     "name": "Piegamenti a diamante",
     "description": "Mani vicine sotto il petto a formare un diamante.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+piegamenti+a+diamante",
-    "muscleGroup": "Tricipiti / Petto interno",
+    "muscleGroup": "arms",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
@@ -139,7 +67,7 @@
     "name": "Piegamenti larghi",
     "description": "Mani più larghe delle spalle per isolare il petto.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+piegamenti+larghi",
-    "muscleGroup": "Petto esterno",
+    "muscleGroup": "chest",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
@@ -148,25 +76,27 @@
     "name": "Pike Push-ups",
     "description": "Corpo a V rovesciata, spingi per far lavorare i deltoidi.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+pike+push-ups",
-    "muscleGroup": "Spalle",
+    "muscleGroup": "shoulders",
     "faceBlurConfirmed": true,
-    "createdAt": "2026-07-17T16:15:02.305Z"
+    "createdAt": "2026-07-17T16:15:02.305Z",
+    "difficulty": "hard"
   },
   {
     "id": "48a0a38a-6e36-4bd2-8405-66a9415fe724",
     "name": "Dips su sedia",
     "description": "Usa una sedia robusta, scendi con i glutei vicini al bordo.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+dips+su+sedia",
-    "muscleGroup": "Tricipiti / Petto",
+    "muscleGroup": "arms",
     "faceBlurConfirmed": true,
-    "createdAt": "2026-07-17T16:15:02.305Z"
+    "createdAt": "2026-07-17T16:15:02.305Z",
+    "difficulty": "easy"
   },
   {
     "id": "d7489353-7d29-4458-8b62-b6f2e0a696c2",
     "name": "Squat a corpo libero",
     "description": "Scendi fino a rompere il parallelo se la mobilità lo permette.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+squat+a+corpo+libero",
-    "muscleGroup": "Quadricipiti / Glutei",
+    "muscleGroup": "legs",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
@@ -175,7 +105,7 @@
     "name": "Affondi frontali",
     "description": "Fai un passo avanti e scendi piegando entrambe le ginocchia a 90 gradi.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+affondi+frontali",
-    "muscleGroup": "Quadricipiti / Glutei",
+    "muscleGroup": "legs",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
@@ -184,7 +114,7 @@
     "name": "Affondi inversi",
     "description": "Passo all'indietro, meno stress sulle ginocchia rispetto a quelli frontali.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+affondi+inversi",
-    "muscleGroup": "Glutei / Femorali",
+    "muscleGroup": "glutes",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
@@ -193,7 +123,7 @@
     "name": "Affondi laterali",
     "description": "Passo laterale, mantieni dritta la gamba opposta.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+affondi+laterali",
-    "muscleGroup": "Adduttori / Glutei",
+    "muscleGroup": "legs",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
@@ -202,7 +132,7 @@
     "name": "Affondi incrociati (Curtsy Lunges)",
     "description": "Passo incrociato all'indietro per colpire il medio gluteo.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+affondi+incrociati+(curtsy+lunges)",
-    "muscleGroup": "Glutei",
+    "muscleGroup": "glutes",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
@@ -211,16 +141,17 @@
     "name": "Squat bulgaro (piede su sedia)",
     "description": "Esercizio unilaterale molto intenso per le gambe.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+squat+bulgaro+(piede+su+sedia)",
-    "muscleGroup": "Quadricipiti / Glutei",
+    "muscleGroup": "legs",
     "faceBlurConfirmed": true,
-    "createdAt": "2026-07-17T16:15:02.305Z"
+    "createdAt": "2026-07-17T16:15:02.305Z",
+    "difficulty": "hard"
   },
   {
     "id": "45387887-65ca-4a87-b486-4e7933c9b4f1",
     "name": "Ponte per i glutei (Glute Bridge)",
     "description": "Supino, spingi il bacino verso l'alto contraendo i glutei.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+ponte+per+i+glutei+(glute+bridge)",
-    "muscleGroup": "Glutei / Femorali",
+    "muscleGroup": "glutes",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
@@ -229,7 +160,7 @@
     "name": "Ponte per i glutei a una gamba",
     "description": "Variante unilaterale per maggiore intensità.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+ponte+per+i+glutei+a+una+gamba",
-    "muscleGroup": "Glutei",
+    "muscleGroup": "glutes",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
@@ -238,25 +169,26 @@
     "name": "Calf raises a corpo libero",
     "description": "Sollevamenti sulle punte dei piedi. Puoi usare uno scalino.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+calf+raises+a+corpo+libero",
-    "muscleGroup": "Polpacci",
+    "muscleGroup": "calves",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
   {
     "id": "ef4c3bf0-a392-4365-9923-33e18440ac64",
     "name": "Plank",
-    "description": "In appoggio sugli avambracci, tieni la linea del corpo dritta.",
+    "description": "Esercizio isometrico fondamentale per la stabilità a corpo libero. Appoggiati sugli avambracci e contrai attivamente addome e glutei senza cedere con la zona lombare.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+plank",
-    "muscleGroup": "Core",
+    "muscleGroup": "core",
     "faceBlurConfirmed": true,
-    "createdAt": "2026-07-17T16:15:02.305Z"
+    "createdAt": "2026-07-17T16:15:02.305Z",
+    "difficulty": "easy"
   },
   {
     "id": "5b0660b0-496d-49be-8bb9-89273c94d0ba",
     "name": "Plank laterale (destro)",
     "description": "In appoggio sull'avambraccio destro, solleva il bacino.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+plank+laterale+(destro)",
-    "muscleGroup": "Obliqui",
+    "muscleGroup": "core",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
@@ -265,7 +197,7 @@
     "name": "Plank laterale (sinistro)",
     "description": "In appoggio sull'avambraccio sinistro, solleva il bacino.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+plank+laterale+(sinistro)",
-    "muscleGroup": "Obliqui",
+    "muscleGroup": "core",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
@@ -274,7 +206,7 @@
     "name": "Crunch",
     "description": "Solleva solo le spalle da terra, non tirare il collo.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+crunch",
-    "muscleGroup": "Addominali alti",
+    "muscleGroup": "core",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
@@ -283,7 +215,7 @@
     "name": "Crunch inverso",
     "description": "Gambe a 90 gradi, porta le ginocchia verso il petto.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+crunch+inverso",
-    "muscleGroup": "Addominali bassi",
+    "muscleGroup": "core",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
@@ -292,16 +224,17 @@
     "name": "Bicicletta (Bicycle Crunch)",
     "description": "Tocca il ginocchio con il gomito opposto alternando.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+bicicletta+(bicycle+crunch)",
-    "muscleGroup": "Addominali / Obliqui",
+    "muscleGroup": "core",
     "faceBlurConfirmed": true,
-    "createdAt": "2026-07-17T16:15:02.305Z"
+    "createdAt": "2026-07-17T16:15:02.305Z",
+    "difficulty": "easy"
   },
   {
     "id": "6bc8b933-a2da-47b1-abd3-7ea8bd75a9b9",
     "name": "Mountain Climbers",
     "description": "Dalla posizione di plank, porta le ginocchia al petto alternandole velocemente.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+mountain+climbers",
-    "muscleGroup": "Core / Cardio",
+    "muscleGroup": "core",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
@@ -310,7 +243,7 @@
     "name": "Superman",
     "description": "Prono, solleva contemporaneamente braccia e gambe da terra.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+superman",
-    "muscleGroup": "Lombari / Catena posteriore",
+    "muscleGroup": "back",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
@@ -319,7 +252,7 @@
     "name": "Bird-Dog",
     "description": "A quattro zampe, stendi braccio e gamba opposti.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+bird-dog",
-    "muscleGroup": "Core / Stabilizzatori",
+    "muscleGroup": "core",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.305Z"
   },
@@ -328,7 +261,7 @@
     "name": "Hollow Body Hold",
     "description": "Supino, solleva gambe e spalle tenendo la zona lombare a terra.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+hollow+body+hold",
-    "muscleGroup": "Core",
+    "muscleGroup": "core",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.306Z"
   },
@@ -337,7 +270,7 @@
     "name": "Dead Bug",
     "description": "Supino, braccia in alto, stendi braccio e gamba opposti mantenendo la schiena piatta.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+dead+bug",
-    "muscleGroup": "Core",
+    "muscleGroup": "core",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.306Z"
   },
@@ -346,7 +279,7 @@
     "name": "Plank con tocco spalle",
     "description": "Plank a braccia tese, tocca la spalla opposta alternando le mani.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+plank+con+tocco+spalle",
-    "muscleGroup": "Core / Spalle",
+    "muscleGroup": "core",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.306Z"
   },
@@ -355,43 +288,43 @@
     "name": "Burpees senza salto",
     "description": "Vai in squat, lancia i piedi indietro in plank, torna in squat e alzati.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+burpees+senza+salto",
-    "muscleGroup": "Total Body",
+    "muscleGroup": "fullBody",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.306Z"
   },
   {
     "id": "8a07048d-ef3e-49c2-b5b3-9281044cd037",
     "name": "Goblet Squat",
-    "description": "Tieni il KB al petto per favorire una postura corretta della schiena.",
+    "description": "Ideale per costruire massa sulle gambe. Tieni il kettlebell al petto, questo ti aiuterà a mantenere la schiena dritta e a scendere in sicurezza.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+goblet+squat",
-    "muscleGroup": "Quadricipiti / Glutei",
+    "muscleGroup": "legs",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.306Z"
   },
   {
     "id": "f55949da-90a5-4898-9a60-fc2528457931",
     "name": "Kettlebell Swing",
-    "description": "Movimento di bacino, non di braccia. Genera potenza dai fianchi.",
+    "description": "Movimento esplosivo di bacino (hip hinge). La forza deve derivare dalla spinta dei glutei, non usare le braccia per sollevare il peso.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+kettlebell+swing",
-    "muscleGroup": "Catena posteriore / Glutei",
+    "muscleGroup": "glutes",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.306Z"
   },
   {
     "id": "82719d58-c4fb-4be8-8dae-99b6a845733e",
     "name": "Stacco Romeno (RDL)",
-    "description": "Gambe semi-tese, spingi il bacino indietro sentendo tirare i femorali.",
+    "description": "Con le gambe solo leggermente piegate, spingi indietro i glutei. Senti allungare la parte posteriore della coscia, poi torna su contraendo forte i glutei.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+stacco+romeno+(rdl)",
-    "muscleGroup": "Femorali / Glutei",
+    "muscleGroup": "legs",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.306Z"
   },
   {
     "id": "f6f07012-450e-4b2c-905f-92f8eef2fd8b",
     "name": "Rematore singolo",
-    "description": "Busto flesso, tira il KB verso l'anca.",
+    "description": "Appoggiati a un piano o a una sedia per stabilizzarti. Tira il kettlebell verso l'anca tenendo il gomito stretto per massimizzare il lavoro sul dorso.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+rematore+singolo",
-    "muscleGroup": "Dorsali / Bicipiti",
+    "muscleGroup": "back",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.306Z"
   },
@@ -400,7 +333,7 @@
     "name": "Kettlebell Press (Lento Avanti)",
     "description": "Spinta verticale sopra la testa, mantieni il core saldo.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+kettlebell+press+(lento+avanti)",
-    "muscleGroup": "Spalle / Tricipiti",
+    "muscleGroup": "shoulders",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.306Z"
   },
@@ -409,7 +342,7 @@
     "name": "Halo con Kettlebell",
     "description": "Fai ruotare il KB attorno alla testa in entrambi i sensi per mobilità e forza.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+halo+con+kettlebell",
-    "muscleGroup": "Spalle / Core",
+    "muscleGroup": "shoulders",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.306Z"
   },
@@ -418,7 +351,7 @@
     "name": "Affondi con Kettlebell (in mano)",
     "description": "Tieni il KB al petto o lungo i fianchi per sovraccaricare le gambe.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+affondi+con+kettlebell+(in+mano)",
-    "muscleGroup": "Gambe / Glutei",
+    "muscleGroup": "legs",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.306Z"
   },
@@ -427,7 +360,7 @@
     "name": "Farmer's Walk",
     "description": "Cammina tenendo il KB lungo il fianco. Ottimo per la presa e gli obliqui.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+farmer's+walk",
-    "muscleGroup": "Core / Avambracci",
+    "muscleGroup": "core",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.306Z"
   },
@@ -436,7 +369,7 @@
     "name": "Kettlebell Floor Press",
     "description": "Sdraiato a terra, spingi il KB verso l'alto (come una panca piana a terra).",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+kettlebell+floor+press",
-    "muscleGroup": "Petto / Tricipiti",
+    "muscleGroup": "chest",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.306Z"
   },
@@ -445,7 +378,7 @@
     "name": "Estensioni per tricipiti (Dietro nuca)",
     "description": "In piedi, tieni il KB con due mani e stendi le braccia sopra la testa.",
     "youtubeUrl": "https://youtube.com/results?search_query=deltabolic+estensioni+per+tricipiti+(dietro+nuca)",
-    "muscleGroup": "Tricipiti",
+    "muscleGroup": "arms",
     "faceBlurConfirmed": true,
     "createdAt": "2026-07-17T16:15:02.306Z"
   }
