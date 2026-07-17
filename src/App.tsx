@@ -194,6 +194,12 @@ export default function App() {
             backdropFilter: 'blur(12px)',
             borderBottom: 1,
             borderColor: 'divider',
+            // Safe area iPhone (M18): con la status bar translucida il contenuto finirebbe
+            // sotto l'orologio/notch. Il viewport ha già viewport-fit=cover (index.html),
+            // qui si spinge il Toolbar sotto la zona sicura; i lati coprono il landscape.
+            pt: 'env(safe-area-inset-top)',
+            pl: 'env(safe-area-inset-left)',
+            pr: 'env(safe-area-inset-right)',
           }}
         >
           <Toolbar sx={{ gap: 2 }}>
@@ -206,7 +212,17 @@ export default function App() {
         <Container
           component="main"
           maxWidth="md"
-          sx={{ py: 3, pb: 16, display: 'flex', flexDirection: 'column', gap: 3 }}
+          sx={{
+            py: 3,
+            pb: 16,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 3,
+            // In landscape il notch mangia i lati: il padding del Container non scende mai
+            // sotto la zona sicura (i 16/24px di suo restano il minimo sui telefoni normali)
+            pl: 'max(16px, env(safe-area-inset-left))',
+            pr: 'max(16px, env(safe-area-inset-right))',
+          }}
         >
           <UpdateBanner />
           {corruptedAtStartup && (
@@ -379,7 +395,7 @@ export default function App() {
           <Box
             sx={{
               position: 'fixed',
-              right: 16,
+              right: 'max(16px, env(safe-area-inset-right))',
               // Sopra la TabNav flottante (62px + il suo margine e il notch dei telefoni)
               bottom: 'calc(88px + env(safe-area-inset-bottom))',
               zIndex: (t) => t.zIndex.appBar - 1,
@@ -405,7 +421,7 @@ export default function App() {
             spacing={1}
             sx={{
               position: 'fixed',
-              right: 16,
+              right: 'max(16px, env(safe-area-inset-right))',
               bottom: 'calc(88px + env(safe-area-inset-bottom))',
               zIndex: (t) => t.zIndex.appBar - 1,
               alignItems: 'center',

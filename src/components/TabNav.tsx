@@ -42,7 +42,9 @@ export function TabNav({ view, onChange }: Props) {
         zIndex: (t) => t.zIndex.appBar,
         display: 'flex',
         justifyContent: 'center',
-        px: 1.5,
+        // In landscape il notch mangia i lati: mai sotto la zona sicura (12px il minimo)
+        pl: 'max(12px, env(safe-area-inset-left))',
+        pr: 'max(12px, env(safe-area-inset-right))',
         pt: 1,
         // La barra "galleggia": sotto resta il margine di sicurezza dei telefoni con notch
         pb: 'calc(12px + env(safe-area-inset-bottom))',
