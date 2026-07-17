@@ -2,6 +2,32 @@
 
 Tutte le modifiche rilevanti del progetto, per release.
 
+## 1.10.0 — 2026-07-17
+
+Grafici nel carosello coi loro controlli, Impostazioni che raccoglie la presentazione,
+safe area iPhone (milestone M18).
+
+### Allenamento (M18)
+
+- I menu **Metrica** e **Periodo** (erano dello Storico) ora stanno **sotto il carosello**,
+  senza scegliere l'esercizio: cambiarli aggiorna i grafici **dentro le card di tutti gli
+  esercizi** del giorno. Il default resta **«Peso e ripetizioni»** insieme; le metriche
+  singole mostrano il grafico classico dell'andamento.
+- La pagina **Storico non esiste più**: i dati non si toccano (sessioni, backup e contatori
+  restano identici), sparisce solo la vista in sola lettura. La barra torna a cinque sezioni.
+
+### Impostazioni (M18)
+
+- La presentazione («Open source · Nessuna registrazione», i tre contatori, **Installa
+  l'app**) e le **Statistiche d'uso** ora vivono SOLO in Impostazioni: prima stavano sopra
+  ogni vista.
+
+### iPhone (M18)
+
+- L'app rispetta la **safe area**: l'header non finisce più sotto la status bar o il notch,
+  e in orizzontale contenuto, barra e pulsanti flottanti non scendono mai sotto gli inset
+  laterali.
+
 ## 1.9.0 — 2026-07-17
 
 Il set log con la conferma esplicita (milestone M17).
