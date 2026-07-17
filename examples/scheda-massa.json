@@ -1,0 +1,217 @@
+{
+  "version": 1,
+  "kind": "plan",
+  "plan": {
+    "name": "Ipertrofia Massiccia - Bear Mode 4 Giorni",
+    "days": [
+      {
+        "name": "Lunedì (Upper Body - Spessore & Spinta)",
+        "entries": [
+          {
+            "exercise": {
+              "name": "Kettlebell Floor Press",
+              "description": "Sdraiato a terra, spingi il KB verso l'alto (come una panca piana a terra).",
+              "youtubeUrl": "https://youtu.be/dQw4w9WgXcQ",
+              "muscleGroup": "chest",
+              "difficulty": "medium",
+              "faceBlurConfirmed": true
+            },
+            "sets": 4,
+            "reps": 8
+          },
+          {
+            "exercise": {
+              "name": "Rematore singolo",
+              "description": "Busto flesso, tira il KB verso l'anca.",
+              "youtubeUrl": "https://youtu.be/9bZkp7q19f0",
+              "muscleGroup": "back",
+              "difficulty": "medium",
+              "faceBlurConfirmed": true
+            },
+            "sets": 4,
+            "reps": 8
+          },
+          {
+            "exercise": {
+              "name": "Piegamenti declinati (piedi su sedia)",
+              "description": "Piedi su un rialzo, maggiore carico su petto e spalle.",
+              "youtubeUrl": "https://youtu.be/kJQP7kiw5Fk",
+              "muscleGroup": "chest",
+              "difficulty": "medium",
+              "faceBlurConfirmed": true
+            },
+            "sets": 3,
+            "reps": 12
+          },
+          {
+            "exercise": {
+              "name": "Farmer's Walk",
+              "description": "Cammina tenendo il KB lungo il fianco. Ottimo per la presa, trapezi e gli obliqui.",
+              "youtubeUrl": "https://youtu.be/JGwWNGJdvx8",
+              "muscleGroup": "core",
+              "difficulty": "medium",
+              "faceBlurConfirmed": true
+            },
+            "sets": 4,
+            "reps": 40
+          }
+        ]
+      },
+      {
+        "name": "Martedì (Lower Body - Costruzione Gambe & Core)",
+        "entries": [
+          {
+            "exercise": {
+              "name": "Goblet Squat (Kettlebell)",
+              "description": "Ideale per costruire massa sulle gambe. Tieni il kettlebell al petto, questo ti aiuterà a mantenere la schiena dritta e a scendere in sicurezza.",
+              "youtubeUrl": "https://youtube.com/shorts/SqT_1xYyZ3a",
+              "muscleGroup": "legs",
+              "difficulty": "medium",
+              "stature": {
+                "minCm": 175,
+                "maxCm": 200
+              },
+              "faceBlurConfirmed": true
+            },
+            "sets": 4,
+            "reps": 10
+          },
+          {
+            "exercise": {
+              "name": "Squat bulgaro (piede su sedia)",
+              "description": "Esercizio unilaterale molto intenso per le gambe.",
+              "youtubeUrl": "https://youtu.be/OPf0YbXqDm0",
+              "muscleGroup": "legs",
+              "difficulty": "hard",
+              "faceBlurConfirmed": true
+            },
+            "sets": 3,
+            "reps": 10
+          },
+          {
+            "exercise": {
+              "name": "Plank",
+              "description": "In appoggio sugli avambracci, tieni la linea del corpo dritta.",
+              "youtubeUrl": "https://youtu.be/fJ9rUzIMcZQ",
+              "muscleGroup": "core",
+              "difficulty": "easy",
+              "faceBlurConfirmed": true
+            },
+            "sets": 3,
+            "reps": 60
+          }
+        ]
+      },
+      {
+        "name": "Giovedì (Upper Body - Spalle & Costruzione Massiccia)",
+        "entries": [
+          {
+            "exercise": {
+              "name": "Kettlebell Press (Lento Avanti)",
+              "description": "Spinta verticale sopra la testa, mantieni il core saldo.",
+              "youtubeUrl": "https://youtu.be/hTWKbfoikeg",
+              "muscleGroup": "shoulders",
+              "difficulty": "medium",
+              "faceBlurConfirmed": true
+            },
+            "sets": 4,
+            "reps": 8
+          },
+          {
+            "exercise": {
+              "name": "Pike Push-ups",
+              "description": "Corpo a V rovesciata, spingi per far lavorare i deltoidi.",
+              "youtubeUrl": "https://youtu.be/YQHsXMglC9A",
+              "muscleGroup": "shoulders",
+              "difficulty": "hard",
+              "faceBlurConfirmed": true
+            },
+            "sets": 3,
+            "reps": 10
+          },
+          {
+            "exercise": {
+              "name": "Piegamenti larghi",
+              "description": "Mani più larghe delle spalle per isolare il petto.",
+              "youtubeUrl": "https://youtu.be/CevxZvSJLk8",
+              "muscleGroup": "chest",
+              "difficulty": "medium",
+              "faceBlurConfirmed": true
+            },
+            "sets": 3,
+            "reps": 12
+          },
+          {
+            "exercise": {
+              "name": "Dips su sedia",
+              "description": "Usa una sedia robusta, scendi con i glutei vicini al bordo.",
+              "youtubeUrl": "https://youtu.be/09R8_2nJtjg",
+              "muscleGroup": "arms",
+              "difficulty": "easy",
+              "faceBlurConfirmed": true
+            },
+            "sets": 3,
+            "reps": 12
+          }
+        ]
+      },
+      {
+        "name": "Venerdì (Lower Body - Catena Posteriore & Spessore)",
+        "entries": [
+          {
+            "exercise": {
+              "name": "Stacco Romeno (RDL)",
+              "description": "Gambe semi-tese, spingi il bacino indietro sentendo tirare i femorali.",
+              "youtubeUrl": "https://youtu.be/RgKAFK5djSk",
+              "muscleGroup": "legs",
+              "difficulty": "medium",
+              "stature": {
+                "minCm": 175,
+                "maxCm": 200
+              },
+              "faceBlurConfirmed": true
+            },
+            "sets": 4,
+            "reps": 10
+          },
+          {
+            "exercise": {
+              "name": "Kettlebell Swing",
+              "description": "Movimento di bacino, non di braccia. Genera potenza dai fianchi.",
+              "youtubeUrl": "https://youtu.be/uelHwf8o7_U",
+              "muscleGroup": "glutes",
+              "difficulty": "medium",
+              "faceBlurConfirmed": true
+            },
+            "sets": 4,
+            "reps": 15
+          },
+          {
+            "exercise": {
+              "name": "Farmer's Walk",
+              "description": "Cammina tenendo il KB lungo il fianco. Ottimo per la presa e gli obliqui.",
+              "youtubeUrl": "https://youtu.be/JGwWNGJdvx8",
+              "muscleGroup": "core",
+              "difficulty": "medium",
+              "faceBlurConfirmed": true
+            },
+            "sets": 4,
+            "reps": 40
+          },
+          {
+            "exercise": {
+              "name": "Bicicletta (Bicycle Crunch)",
+              "description": "Tocca il ginocchio con il gomito opposto alternando.",
+              "youtubeUrl": "https://youtu.be/pRpeEdMmmQ0",
+              "muscleGroup": "core",
+              "difficulty": "easy",
+              "faceBlurConfirmed": true
+            },
+            "sets": 3,
+            "reps": 20
+          }
+        ]
+      }
+    ]
+  }
+}
