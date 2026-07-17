@@ -45,12 +45,10 @@ risponde, l'esercizio resta comunque salvato da te.
 
 ## Votare e filtrare gli esercizi
 
-- La Community arriva **già piena**: oltre 1.300 esercizi dal catalogo
-  [Gym visual](https://gymvisual.com/) con la **GIF animata** dell'esecuzione, le istruzioni
-  in italiano e il gruppo muscolare assegnato (le GIF sono © Gym visual, come indicato sotto
-  ogni animazione). Si votano e si mettono in scheda come le proposte degli utenti.
 - La lista mostra i tuoi esercizi e quelli della community (badge **community**): questi
-  ultimi si votano e si condividono, ma non si modificano né si eliminano.
+  ultimi si votano e si condividono, ma non si modificano né si eliminano. Alcune voci
+  possono avere una **GIF animata** al posto del video: in quel caso l'attribuzione
+  (es. © [Gym visual](https://gymvisual.com/)) compare sempre sotto l'animazione.
 - Con tante voci si **cerca per nome** (senza badare a maiuscole e accenti) e la lista va a
   pagine: **Mostra altri** ne carica 24 alla volta.
 - Vota con la freccia **▲** come su Reddit: un voto per dispositivo, ripremi per toglierlo.
