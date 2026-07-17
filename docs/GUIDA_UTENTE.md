@@ -168,9 +168,11 @@ per scriverlo.
 Se hai una scheda attiva, la scheda **Allenamento** mostra gli esercizi di oggi **uno per
 schermata**: scorri con il dito per passare al successivo. Ogni card ha il **video** dell'esercizio
 (o la **GIF animata**, per gli esercizi del catalogo) e il **log delle serie**: peso e ripetizioni
-sono già proposti in base all'ultima volta, e la spunta a destra registra la serie.
-«+ Aggiungi serie» ne aggiunge una oltre a quelle previste. Sotto il log, le **Statistiche**:
-pesi alzati e ripetizioni fatte **insieme**, ultimi 30 giorni, aggiornate a ogni serie.
+sono già proposti **dall'ultima sessione** di quell'esercizio. La spunta a destra mette la serie
+**in bozza** (sopravvive anche se chiudi l'app); lo storico si aggiorna solo quando premi
+**«Conferma N serie nello storico»** — e se ti restano bozze di ieri, un avviso te le fa salvare
+nel loro giorno o scartare. «+ Aggiungi serie» aggiunge una riga oltre a quelle previste.
+Sotto il log, le **Statistiche**: pesi alzati e ripetizioni fatte **insieme**, ultimi 30 giorni.
 
 Senza scheda attiva (o nei giorni di riposo) resta la **registrazione libera**, per loggare qualsiasi
 esercizio al volo.

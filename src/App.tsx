@@ -126,6 +126,7 @@ export default function App() {
     vote,
     saveStature,
     addSet,
+    confirmSets,
     deleteSet,
     createPlan,
     renamePlan,
@@ -372,7 +373,10 @@ export default function App() {
                 today={todayIso()}
                 selectedDay={workoutDay}
                 onSelectDay={setWorkoutDay}
-                onRecordSet={recordSetForToday}
+                // La pausa del timer parte quando SPUNTI la serie (il gesto fisico), non
+                // quando la confermi nello storico
+                onSetDrafted={() => timer.onSetRecorded()}
+                onConfirmSets={confirmSets}
                 onRemoveSet={deleteSet}
                 // Senza scheda attiva (o di riposo) resta la registrazione libera: altrimenti
                 // chi non ha ancora una scheda troverebbe una vista che non fa niente

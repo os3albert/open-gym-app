@@ -2,6 +2,22 @@
 
 Tutte le modifiche rilevanti del progetto, per release.
 
+## 1.9.0 — 2026-07-17
+
+Il set log con la conferma esplicita (milestone M17).
+
+### Set log (M17)
+
+- Spuntare una serie la mette **in bozza**: lo storico si tocca solo premendo
+  **«Conferma N serie nello storico»** — l'inserimento è un gesto visibile, non un effetto
+  collaterale. Le bozze **sopravvivono al ricaricamento** (in palestra il telefono si chiude
+  di continuo) e la pausa del timer parte comunque alla spunta.
+- Le bozze di un **giorno passato** non si perdono mai in silenzio: un avviso le fa salvare
+  **nel loro giorno** o scartare.
+- Peso **e ripetizioni** sono precompilati **dall'ultima sessione registrata** di
+  quell'esercizio (il peso segue il suggerimento del carico: +2,5 kg se l'ultima volta hai
+  chiuso tutte le serie a 8+); senza storico resta il target della scheda.
+
 ## 1.8.0 — 2026-07-16
 
 Un catalogo di 1.324 esercizi con GIF, la Home come atterraggio e le statistiche

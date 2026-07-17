@@ -140,9 +140,10 @@ describe('allenamento del giorno (issue #19)', () => {
     await openTab(user, 'Allenamento')
 
     const card = screen.getByRole('heading', { name: 'Squat' }).closest('li, div[class*=Card]')!
-    // Ieri 100 kg × 5 (sotto l'obiettivo): si ripropone lo stesso carico, reps dal target
+    // Ieri 100 kg × 5 (sotto l'obiettivo): si ripropongono il carico E le ripetizioni
+    // dell'ultima sessione (M17), non più il target della scheda
     expect(screen.getByLabelText('Peso (kg)')).toHaveValue('100')
-    expect(screen.getByLabelText('Ripetizioni')).toHaveValue('8')
+    expect(screen.getByLabelText('Ripetizioni')).toHaveValue('5')
 
     // Il set log ha una riga per ogni serie prevista dalla scheda (3×8)
     expect(within(card as HTMLElement).getAllByRole('row')).toHaveLength(4) // intestazione + 3
@@ -151,21 +152,30 @@ describe('allenamento del giorno (issue #19)', () => {
     await user.click(screen.getByRole('button', { name: 'Esercizio successivo' }))
     await user.click(screen.getByRole('button', { name: 'Esercizio precedente' }))
 
-    // La spunta della prima riga registra QUELLA serie: una riga, una serie
+    // La spunta mette la serie in BOZZA (M17): lo storico non è ancora stato toccato
     await user.click(screen.getByRole('button', { name: 'Registra la serie 1 di Squat' }))
+    expect(
+      screen.getByRole('button', { name: 'Togli dalla bozza la serie 1 di Squat' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: 'Annulla la serie 1 di Squat' }),
+    ).not.toBeInTheDocument()
 
+    // Il gesto esplicito: la conferma porta la bozza nello storico
+    await user.click(screen.getByRole('button', { name: 'Conferma 1 serie nello storico' }))
     expect(screen.getByRole('button', { name: 'Annulla la serie 1 di Squat' })).toBeInTheDocument()
 
     // Le statistiche vivono nella card, sotto il set log: pesi e ripetizioni INSIEME (M16).
-    // Ieri 100×5, oggi la serie appena registrata (100×8): il grafico è già aggiornato.
+    // Ieri 100×5, oggi la serie appena confermata (100×5): il grafico è aggiornato.
     expect(
       screen.getByRole('img', {
-        name: /Andamento di peso e ripetizioni: peso da 100 a 100 kg, ripetizioni da 5 a 8/,
+        name: /Andamento di peso e ripetizioni: peso da 100 a 100 kg, ripetizioni da 5 a 5/,
       }),
     ).toBeInTheDocument()
 
     await openTab(user, 'Storico')
-    expect(screen.getByText(/100 kg × 8/)).toBeInTheDocument()
+    // Due sessioni da 100×5: quella di ieri (seed) e quella appena confermata
+    expect(screen.getAllByText(/100 kg × 5/)).toHaveLength(2)
   })
 
   it("un esercizio del catalogo mostra la GIF animata nel carosello, con l'attribuzione (M16)", async () => {

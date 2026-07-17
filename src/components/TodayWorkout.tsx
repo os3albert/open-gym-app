@@ -1,5 +1,6 @@
 import { useRef, useState, type ReactNode } from 'react'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
@@ -12,7 +13,9 @@ import Chip from '@mui/material/Chip'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { exerciseHistory, filterByPeriod } from '../domain/activity'
+import { exerciseHistory, filterByPeriod, isValidSet, lastSession } from '../domain/activity'
+import { INVALID_SET_ERROR } from '../domain/activity'
+import { useSetDrafts } from '../hooks/useSetDrafts'
 import { activePlan, dayForDate, nextScheduledDay, planUsesWeekdays } from '../domain/plans'
 import type { AppData, Exercise, PlanEntry, WorkoutSet } from '../domain/types'
 import { translateError } from '../i18n'
@@ -37,8 +40,10 @@ interface Props {
    */
   selectedDay: string | null
   onSelectDay: (day: string | null) => void
-  /** Registra UNA serie: il set log è fatto di righe, e una riga è una serie. */
-  onRecordSet: (exerciseId: string, set: WorkoutSet) => void
+  /** Una serie è stata SPUNTATA (bozza): è il gesto fisico — parte la pausa del timer. */
+  onSetDrafted: () => void
+  /** Conferma nello storico le serie in bozza, nel giorno indicato: UN commit solo (M17). */
+  onConfirmSets: (date: string, entries: Array<{ exerciseId: string; sets: WorkoutSet[] }>) => void
   onRemoveSet: (recordId: string, setIndex: number) => void
   /** Cosa mostrare quando oggi non c'è nulla in programma: la registrazione libera. */
   fallback: ReactNode
@@ -59,13 +64,28 @@ export function TodayWorkout({
   today,
   selectedDay,
   onSelectDay,
-  onRecordSet,
+  onSetDrafted,
+  onConfirmSets,
   onRemoveSet,
   fallback,
 }: Props) {
   const t = useT()
   const carouselRef = useRef<HTMLDivElement>(null)
+  const drafts = useSetDrafts(today)
   const plan = activePlan(data)
+
+  /** Le bozze rimaste da un giorno passato si salvano NEL LORO giorno, mai in silenzio. */
+  function salvaPending() {
+    if (!drafts.pending) return
+    const entries = Object.entries(drafts.pending.byExercise)
+      // Un esercizio eliminato nel frattempo non deve far fallire il resto
+      .filter(
+        ([exerciseId, sets]) => sets.length > 0 && data.exercises.some((e) => e.id === exerciseId),
+      )
+      .map(([exerciseId, sets]) => ({ exerciseId, sets }))
+    if (entries.length > 0) onConfirmSets(drafts.pending.date, entries)
+    drafts.clearPending(drafts.pending.date)
+  }
 
   /**
    * Porta il carosello alla card accanto. Lo swipe da solo non basta: con lo snap «mandatory»
@@ -109,6 +129,37 @@ export function TodayWorkout({
         <Typography variant="h2" gutterBottom>
           {t('today.yourPlan', { name: plan.name })}
         </Typography>
+
+        {/* Bozze di un giorno passato: spuntate ma mai confermate. Si decide, non si perde. */}
+        {drafts.pending && (
+          <Alert severity="warning" role="status" data-cy="pending-drafts" sx={{ mb: 2 }}>
+            {t('today.pendingBanner', {
+              count: Object.values(drafts.pending.byExercise).reduce(
+                (sum, sets) => sum + sets.length,
+                0,
+              ),
+              date: formatDateIt(drafts.pending.date),
+            })}
+            <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+              <Button
+                size="small"
+                variant="contained"
+                data-cy="pending-save"
+                onClick={salvaPending}
+              >
+                {t('today.pendingSave')}
+              </Button>
+              <Button
+                size="small"
+                color="inherit"
+                data-cy="pending-discard"
+                onClick={() => drafts.pending && drafts.clearPending(drafts.pending.date)}
+              >
+                {t('today.pendingDiscard')}
+              </Button>
+            </Stack>
+          </Alert>
+        )}
 
         {restDay && !day && (
           <Typography data-cy="rest-day" sx={{ mb: 2 }}>
@@ -199,7 +250,18 @@ export function TodayWorkout({
                 entry={entry}
                 position={index + 1}
                 total={day.entries.length}
-                onRecordSet={onRecordSet}
+                drafts={drafts.draftsFor(entry.exerciseId)}
+                onAddDraft={(set) => {
+                  drafts.addDraft(entry.exerciseId, set)
+                  onSetDrafted()
+                }}
+                onRemoveDraft={(i) => drafts.removeDraft(entry.exerciseId, i)}
+                onConfirm={() => {
+                  onConfirmSets(today, [
+                    { exerciseId: entry.exerciseId, sets: drafts.draftsFor(entry.exerciseId) },
+                  ])
+                  drafts.clearDrafts(entry.exerciseId)
+                }}
                 onRemoveSet={onRemoveSet}
               />
             ))}
@@ -216,7 +278,12 @@ interface CardProps {
   entry: PlanEntry
   position: number
   total: number
-  onRecordSet: (exerciseId: string, set: WorkoutSet) => void
+  /** Serie spuntate ma non ancora confermate nello storico (M17). */
+  drafts: WorkoutSet[]
+  onAddDraft: (set: WorkoutSet) => void
+  onRemoveDraft: (index: number) => void
+  /** Il gesto esplicito: le bozze entrano nello storico. */
+  onConfirm: () => void
   onRemoveSet: (recordId: string, setIndex: number) => void
 }
 
@@ -227,7 +294,10 @@ function ExerciseCard({
   entry,
   position,
   total,
-  onRecordSet,
+  drafts,
+  onAddDraft,
+  onRemoveDraft,
+  onConfirm,
   onRemoveSet,
 }: CardProps) {
   const t = useT()
@@ -235,16 +305,22 @@ function ExerciseCard({
   const record = data.activity.find((a) => a.exerciseId === entry.exerciseId && a.date === today)
   const done = record?.sets ?? []
 
+  // Prefill dall'ULTIMA SESSIONE registrata (M17): il peso dal suggerimento del carico
+  // (che è l'ultimo peso, +2,5 kg se l'ultima volta hai fatto 8+ reps ovunque), le
+  // ripetizioni dall'ultima serie di quella sessione; senza storico, il target della scheda.
   const suggested = suggestNextWeight(data.activity, entry.exerciseId)
+  const last = lastSession(data.activity, entry.exerciseId)
   const [weight, setWeight] = useState(suggested === null ? '' : String(suggested))
-  const [reps, setReps] = useState(String(entry.reps))
+  const [reps, setReps] = useState(
+    last ? String(last.sets[last.sets.length - 1].reps) : String(entry.reps),
+  )
   const [extra, setExtra] = useState(0)
   const [error, setError] = useState<string | null>(null)
 
   if (!exercise) return null
 
-  // Le righe previste dalla scheda, più le serie in più (fatte o chieste a mano)
-  const rows = Math.max(entry.sets, done.length) + extra
+  // Le righe previste dalla scheda, più le serie in più (fatte, in bozza o chieste a mano)
+  const rows = Math.max(entry.sets, done.length + drafts.length) + extra
 
   // Le statistiche sotto il set log (M16): pesi e ripetizioni INSIEME, ultimi 30 giorni.
   // Registrare una serie le aggiorna in diretta: activity cambia, il grafico pure.
@@ -259,13 +335,16 @@ function ExerciseCard({
     today,
   )
 
-  function registra() {
-    try {
-      onRecordSet(entry.exerciseId, { weightKg: Number(weight), reps: Number(reps) })
-      setError(null)
-    } catch (err) {
-      setError(translateError(t, err))
+  // Spuntare = mettere in BOZZA (M17): lo storico si tocca solo col pulsante di conferma.
+  // La validazione è la stessa del dominio, ma qui, prima che la serie entri in bozza.
+  function spunta() {
+    const set = { weightKg: Number(weight), reps: Number(reps) }
+    if (!isValidSet(set)) {
+      setError(translateError(t, new Error(INVALID_SET_ERROR)))
+      return
     }
+    setError(null)
+    onAddDraft(set)
   }
 
   return (
@@ -330,9 +409,11 @@ function ExerciseCard({
           <Box component="tbody">
             {Array.from({ length: rows }, (_, i) => {
               const fatta = done[i]
-              // Solo la prima riga non ancora fatta si registra: le serie si appendono in ordine,
+              // Dopo le confermate vengono le BOZZE (M17): spuntate, in attesa di conferma
+              const bozza = fatta ? undefined : drafts[i - done.length]
+              // Solo la prima riga libera si spunta: le serie si appendono in ordine,
               // e registrare la terza prima della seconda le scambierebbe di posto.
-              const isNext = i === done.length
+              const isNext = i === done.length + drafts.length
               return (
                 <Box
                   component="tr"
@@ -360,6 +441,27 @@ function ExerciseCard({
                           onClick={() => record && onRemoveSet(record.id, i)}
                         >
                           <CheckCircleIcon />
+                        </IconButton>
+                      </Box>
+                    </>
+                  ) : bozza ? (
+                    // In bozza: spuntata ma non ancora nello storico — si vede, e si può togliere
+                    <>
+                      <Box component="td" data-cy="set-row-draft-weight">
+                        {bozza.weightKg}
+                      </Box>
+                      <Box component="td" data-cy="set-row-draft-reps">
+                        {bozza.reps}
+                      </Box>
+                      <Box component="td">
+                        <IconButton
+                          size="small"
+                          color="warning"
+                          data-cy="set-row-draft"
+                          aria-label={t('today.removeDraft', { set: i + 1, name: exercise.name })}
+                          onClick={() => onRemoveDraft(i - done.length)}
+                        >
+                          <CheckCircleOutlinedIcon />
                         </IconButton>
                       </Box>
                     </>
@@ -391,7 +493,7 @@ function ExerciseCard({
                           color="primary"
                           data-cy="set-row-record"
                           aria-label={t('today.recordSet', { set: i + 1, name: exercise.name })}
-                          onClick={registra}
+                          onClick={spunta}
                         >
                           <RadioButtonUncheckedIcon />
                         </IconButton>
@@ -421,6 +523,19 @@ function ExerciseCard({
           <Alert severity="error" role="alert" data-cy="session-error" sx={{ mt: 1.5 }}>
             {error}
           </Alert>
+        )}
+
+        {/* Il gesto ESPLICITO chiesto in M17: finché non lo premi, lo storico non si tocca */}
+        {drafts.length > 0 && (
+          <Button
+            fullWidth
+            variant="contained"
+            data-cy="today-confirm-history"
+            onClick={onConfirm}
+            sx={{ mt: 1.5 }}
+          >
+            {t('today.confirmHistory', { count: drafts.length })}
+          </Button>
         )}
 
         <Button

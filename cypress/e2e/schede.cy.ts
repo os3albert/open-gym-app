@@ -172,19 +172,24 @@ describe('Schede di allenamento (M4)', () => {
 
     cy.get('[data-cy=tab-allenamento]').click()
     cy.get('[data-cy=today-workout]').should('contain.text', 'Full Body')
+    // Prefill dall'ULTIMA sessione (M17): 100 kg × 5, non più il target della scheda
     cy.get('[data-cy=today-weight]').should('have.value', '100')
-    cy.get('[data-cy=today-reps]').should('have.value', '8')
+    cy.get('[data-cy=today-reps]').should('have.value', '5')
 
-    // Il set log ha una riga per serie prevista (3×8); la prima si registra dalla sua spunta
+    // La spunta mette in BOZZA (M17); lo storico si tocca solo con la conferma esplicita
     cy.get('[data-cy=set-row]').should('have.length', 3)
     cy.get('[data-cy=set-row-record]').first().click()
+    cy.get('[data-cy=set-row-draft]').should('have.length', 1)
+    cy.get('[data-cy=set-row-done]').should('not.exist')
+    cy.get('[data-cy=today-confirm-history]').click()
     cy.get('[data-cy=set-row-done]').should('have.length', 1)
     cy.get('[data-cy=set-row-weight]').first().should('contain.text', '100')
 
-    // Sotto il set log, le statistiche: pesi e ripetizioni insieme, aggiornate in diretta (M16)
+    // Sotto il set log, le statistiche: pesi e ripetizioni insieme, aggiornate alla conferma
+    // (ieri 100×5, oggi la serie confermata 100×5 — reps precompilate dall'ultima sessione)
     cy.get('[data-cy=dual-trend-chart]')
       .should('have.attr', 'aria-label')
-      .and('match', /^Andamento di peso e ripetizioni: peso da 100 a 100 kg, ripetizioni da 5 a 8/)
+      .and('match', /^Andamento di peso e ripetizioni: peso da 100 a 100 kg, ripetizioni da 5 a 5/)
 
     // La serie finisce nello storico dei pesi
     cy.get('[data-cy=tab-storico]').click()

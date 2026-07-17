@@ -62,6 +62,18 @@ export function useAppData() {
     saveStature: (statureCm: number) => commit(setStature(data, statureCm)),
     addSet: (exerciseId: string, date: string, set: WorkoutSet) =>
       commit(recordSet(data, exerciseId, date, set)),
+    /**
+     * Conferma nello storico le serie in bozza (M17): l'inserimento nello storico è un gesto
+     * ESPLICITO, non un effetto collaterale del tick. Più esercizi in UN SOLO commit: due
+     * chiamate consecutive partirebbero dallo stesso `data` e si sovrascriverebbero.
+     */
+    confirmSets: (date: string, entries: Array<{ exerciseId: string; sets: WorkoutSet[] }>) => {
+      let next = data
+      for (const { exerciseId, sets } of entries) {
+        for (const set of sets) next = recordSet(next, exerciseId, date, set)
+      }
+      commit(next)
+    },
     deleteSet: (recordId: string, setIndex: number) => commit(removeSet(data, recordId, setIndex)),
     /** Registra in un colpo solo le N serie di un esercizio della scheda («Fatto ✓»). */
     completeEntry: (exerciseId: string, date: string, sets: number, set: WorkoutSet) => {
