@@ -1,7 +1,5 @@
 // Integrazione della community (M8): catalogo condiviso, proposta e voto verso il worker.
 import '@testing-library/jest-dom/vitest'
-import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '../../src/App'
@@ -182,19 +180,30 @@ describe('proposta alla community', () => {
   })
 })
 
-describe('il catalogo Gym visual dentro la community (M16)', () => {
-  // Il file VERO generato dallo script: questo test tiene onesta l'intera filiera
-  // (fetch → merge → ricerca → paginazione → GIF con attribuzione) sui dati reali.
-  const catalogoReale = JSON.parse(
-    readFileSync(resolve(__dirname, '../../community/exercises.json'), 'utf8'),
-  ) as CommunityExercise[]
+describe('un catalogo grande dentro la community (M16)', () => {
+  // Catalogo sintetico nella forma delle voci del dataset (GIF, niente video, niente
+  // difficoltà): dal 2026-07 i gv-* non stanno più in community/exercises.json, ma la
+  // filiera (fetch → merge → ricerca → paginazione → GIF con attribuzione) deve reggere
+  // comunque un catalogo che non entra in una pagina.
+  const catalogoGrande: CommunityExercise[] = Array.from({ length: 60 }, (_, i) => ({
+    id: `gv-${String(i + 1).padStart(4, '0')}`,
+    name: i === 0 ? '3/4 sit-up' : `Esercizio del catalogo ${i + 1}`,
+    description: 'Sdraiati sulla schiena con le ginocchia piegate.',
+    youtubeUrl: '',
+    // gifUrl UNICA per voce: le voci senza video si deduplicano proprio su questa
+    gifUrl: `https://raw.githubusercontent.com/example/dataset/abc/videos/${i + 1}.gif`,
+    attribution: '© Gym visual — https://gymvisual.com/',
+    muscleGroup: 'core',
+    faceBlurConfirmed: false,
+    createdAt: '2026-03-18T12:31:32.854798+00:00',
+  }))
 
-  function stubCatalogoReale() {
+  function stubCatalogoGrande() {
     vi.stubGlobal(
       'fetch',
       vi.fn(async (input: RequestInfo | URL) => {
         const url = String(input)
-        if (url.endsWith('/exercises.json')) return Response.json(catalogoReale)
+        if (url.endsWith('/exercises.json')) return Response.json(catalogoGrande)
         if (url.endsWith('/votes.json')) return Response.json({})
         throw new Error(`URL non previsto nel test: ${url}`)
       }),
@@ -202,14 +211,14 @@ describe('il catalogo Gym visual dentro la community (M16)', () => {
   }
 
   it('si carica intero, ma in pagina va una pagina alla volta', async () => {
-    stubCatalogoReale()
+    stubCatalogoGrande()
     render(<App />)
 
-    // La prima pagina: 24 card, non 1.300 — il DOM non reggerebbe
+    // La prima pagina: 24 card, non tutte — con un catalogo grande il DOM non reggerebbe
     await waitFor(() =>
       expect(document.querySelectorAll('[data-cy=exercise-item]')).toHaveLength(24),
     )
-    expect(screen.getByText(`24 di ${catalogoReale.length} esercizi`)).toBeInTheDocument()
+    expect(screen.getByText(`24 di ${catalogoGrande.length} esercizi`)).toBeInTheDocument()
 
     const user = userEvent.setup()
     await user.click(screen.getByRole('button', { name: 'Mostra altri' }))
@@ -217,7 +226,7 @@ describe('il catalogo Gym visual dentro la community (M16)', () => {
   })
 
   it('la ricerca per nome restringe il catalogo, e la card ha GIF e attribuzione', async () => {
-    stubCatalogoReale()
+    stubCatalogoGrande()
     const user = userEvent.setup()
     render(<App />)
     await waitFor(() =>
