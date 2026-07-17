@@ -15,7 +15,8 @@ function fireBeforeInstallPrompt() {
 
 beforeEach(() => {
   localStorage.clear()
-  window.history.replaceState(null, '', '/')
+  // Da M18 il pannello d'installazione vive in Impostazioni (nell'hero): i test partono da lì
+  window.history.replaceState(null, '', '/?vista=impostazioni')
 })
 
 describe('installazione della PWA', () => {

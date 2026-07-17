@@ -65,10 +65,11 @@ risponde, l'esercizio resta comunque salvato da te.
 2. Peso e ripetizioni arrivano **precompilati dal tuo storico**: se l'ultima volta hai chiuso
    tutte le serie ad almeno 8 ripetizioni l'app propone **+2,5 kg**, altrimenti ripropone
    lo stesso carico da consolidare.
-3. Regola con i pulsanti rapidi (−/+2,5 kg, −/+1 rip) e premi **Aggiungi serie**.
+3. Scegli i valori dallo spinner e premi **Aggiungi serie**.
    Le serie di oggi compaiono come etichette rimovibili.
-4. In **Storico** trovi le sessioni per giorno e il **grafico dell'andamento** per esercizio,
-   con filtro 30/90 giorni. Il menu **Metrica** decide cosa misura il grafico:
+4. I **grafici dell'andamento** stanno dentro ogni card del carosello, e i menu
+   **Metrica** e **Periodo** (sotto il carosello) valgono per tutti gli esercizi del giorno:
+   - **Peso e ripetizioni** (default) — le due serie insieme, kg a sinistra e reps a destra;
    - **Peso massimo** — il carico più alto del giorno;
    - **Ripetizioni totali** — quante ripetizioni hai fatto in tutto quel giorno;
    - **Ripetizioni massime** — la serie più lunga;

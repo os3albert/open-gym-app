@@ -7,7 +7,6 @@ import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter'
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
-import ShowChartIcon from '@mui/icons-material/ShowChart'
 import type { AppView } from '../hooks/useView'
 import { useT } from '../i18n/context'
 import type { TextKey } from '../i18n'
@@ -17,7 +16,6 @@ const TABS: Array<{ view: AppView; label: TextKey; icon: React.ReactNode }> = [
   { view: 'community', label: 'nav.community', icon: <ExploreOutlinedIcon /> },
   { view: 'schede', label: 'nav.plans', icon: <CalendarMonthOutlinedIcon /> },
   { view: 'allenamento', label: 'nav.workout', icon: <FitnessCenterIcon /> },
-  { view: 'storico', label: 'nav.history', icon: <ShowChartIcon /> },
   { view: 'impostazioni', label: 'nav.settings', icon: <SettingsOutlinedIcon /> },
 ]
 
@@ -42,7 +40,9 @@ export function TabNav({ view, onChange }: Props) {
         zIndex: (t) => t.zIndex.appBar,
         display: 'flex',
         justifyContent: 'center',
-        px: 1.5,
+        // In landscape il notch mangia i lati: mai sotto la zona sicura (12px il minimo)
+        pl: 'max(12px, env(safe-area-inset-left))',
+        pr: 'max(12px, env(safe-area-inset-right))',
         pt: 1,
         // La barra "galleggia": sotto resta il margine di sicurezza dei telefoni con notch
         pb: 'calc(12px + env(safe-area-inset-bottom))',

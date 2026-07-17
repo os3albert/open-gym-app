@@ -24,12 +24,9 @@ import { CollapsingFab } from './components/CollapsingFab'
 import { ExerciseForm } from './components/ExerciseForm'
 import { ExerciseList } from './components/ExerciseList'
 import { FilterBar } from './components/FilterBar'
-import { HistoryView } from './components/HistoryView'
 import { HomeView } from './components/HomeView'
-import { InstallPanel } from './components/InstallPanel'
 import { Logo } from './components/Logo'
 import { PlansView } from './components/PlansView'
-import { PrivacyPanel } from './components/PrivacyPanel'
 import { SettingsView } from './components/SettingsView'
 import { TabNav } from './components/TabNav'
 import { TodayWorkout } from './components/TodayWorkout'
@@ -62,41 +59,6 @@ function SyncMuiColorScheme({ resolved }: { resolved: 'light' | 'dark' }) {
     if (mode !== resolved) setMode(resolved)
   }, [mode, resolved, setMode])
   return null
-}
-
-/** Riquadro di sintesi in cima: tre numeri sullo stato dei dati locali. */
-function HeroStats({ items }: { items: Array<{ label: string; value: number }> }) {
-  return (
-    <Stack direction="row" spacing={1} sx={{ mt: 2.5 }}>
-      {items.map((item) => (
-        <Box
-          key={item.label}
-          sx={{
-            flex: 1,
-            minWidth: 0,
-            px: 1.5,
-            py: 1.25,
-            borderRadius: '14px',
-            bgcolor: 'background.default',
-            border: 1,
-            borderColor: 'divider',
-          }}
-        >
-          <Typography variant="h3" component="p" sx={{ lineHeight: 1.1 }}>
-            {item.value}
-          </Typography>
-          <Typography
-            variant="overline"
-            component="p"
-            color="text.secondary"
-            sx={{ whiteSpace: 'nowrap', fontSize: '0.625rem' }}
-          >
-            {item.label}
-          </Typography>
-        </Box>
-      ))}
-    </Stack>
-  )
 }
 
 /** La frase di un esito della community: l'hook dà un codice, la lingua la sceglie qui. */
@@ -231,6 +193,12 @@ export default function App() {
             backdropFilter: 'blur(12px)',
             borderBottom: 1,
             borderColor: 'divider',
+            // Safe area iPhone (M18): con la status bar translucida il contenuto finirebbe
+            // sotto l'orologio/notch. Il viewport ha già viewport-fit=cover (index.html),
+            // qui si spinge il Toolbar sotto la zona sicura; i lati coprono il landscape.
+            pt: 'env(safe-area-inset-top)',
+            pl: 'env(safe-area-inset-left)',
+            pr: 'env(safe-area-inset-right)',
           }}
         >
           <Toolbar sx={{ gap: 2 }}>
@@ -243,37 +211,19 @@ export default function App() {
         <Container
           component="main"
           maxWidth="md"
-          sx={{ py: 3, pb: 16, display: 'flex', flexDirection: 'column', gap: 3 }}
+          sx={{
+            py: 3,
+            pb: 16,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 3,
+            // In landscape il notch mangia i lati: il padding del Container non scende mai
+            // sotto la zona sicura (i 16/24px di suo restano il minimo sui telefoni normali)
+            pl: 'max(16px, env(safe-area-inset-left))',
+            pr: 'max(16px, env(safe-area-inset-right))',
+          }}
         >
           <UpdateBanner />
-          <Box
-            component="section"
-            aria-label={t('hero.label')}
-            sx={{
-              p: { xs: 2.5, sm: 3 },
-              borderRadius: '24px',
-              border: 1,
-              borderColor: 'divider',
-              // Alone dell'accento dietro al testo: dà profondità senza sporcare la leggibilità
-              background:
-                'radial-gradient(120% 140% at 0% 0%, rgba(var(--mui-palette-primary-mainChannel) / 0.16) 0%, rgba(var(--mui-palette-primary-mainChannel) / 0) 55%), var(--mui-palette-background-paper)',
-            }}
-          >
-            <Typography variant="overline" color="primary" component="p">
-              {t('hero.tagline')}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, maxWidth: '46ch' }}>
-              {t('hero.description')}
-            </Typography>
-            <HeroStats
-              items={[
-                { label: t('hero.proposals'), value: allExercises.length },
-                { label: t('hero.votesCast'), value: votedIds.size },
-                { label: t('hero.sessions'), value: data.activity.length },
-              ]}
-            />
-            <InstallPanel />
-          </Box>
           {corruptedAtStartup && (
             <Alert severity="warning" role="alert" data-cy="corrupted-banner">
               {t('app.corrupted')}
@@ -390,7 +340,6 @@ export default function App() {
                 }
               />
             )}
-            {view === 'storico' && <HistoryView data={data} />}
             {/* Proposta e modifica passano dallo STESSO modale: un solo form, due modi di aprirlo */}
             <Dialog
               open={formOpen}
@@ -425,22 +374,26 @@ export default function App() {
                 onExport={exportJson}
                 onReplace={importJson}
                 onMerge={mergeJson}
+                stats={{
+                  proposals: allExercises.length,
+                  votesCast: votedIds.size,
+                  sessions: data.activity.length,
+                }}
+                analytics={{
+                  available: analytics.available,
+                  enabled: analytics.enabled,
+                  doNotTrack: analytics.doNotTrack,
+                  onChange: analytics.setAnalyticsEnabled,
+                }}
               />
             )}
           </Box>
-          {analytics.available && (
-            <PrivacyPanel
-              enabled={analytics.enabled}
-              doNotTrack={analytics.doNotTrack}
-              onChange={analytics.setAnalyticsEnabled}
-            />
-          )}
         </Container>
         {view === 'community' && (
           <Box
             sx={{
               position: 'fixed',
-              right: 16,
+              right: 'max(16px, env(safe-area-inset-right))',
               // Sopra la TabNav flottante (62px + il suo margine e il notch dei telefoni)
               bottom: 'calc(88px + env(safe-area-inset-bottom))',
               zIndex: (t) => t.zIndex.appBar - 1,
@@ -466,7 +419,7 @@ export default function App() {
             spacing={1}
             sx={{
               position: 'fixed',
-              right: 16,
+              right: 'max(16px, env(safe-area-inset-right))',
               bottom: 'calc(88px + env(safe-area-inset-bottom))',
               zIndex: (t) => t.zIndex.appBar - 1,
               alignItems: 'center',

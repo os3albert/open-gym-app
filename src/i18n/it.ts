@@ -89,7 +89,6 @@ export const it = {
   'nav.community': 'Community',
   'nav.plans': 'Schede',
   'nav.workout': 'Allenamento',
-  'nav.history': 'Storico',
   'nav.settings': 'Impostazioni',
 
   // Installazione e aggiornamento
@@ -228,6 +227,8 @@ export const it = {
   'today.status': 'Stato',
   'today.addSet': '+ Aggiungi serie',
   'today.stats': 'Statistiche',
+  // Il default dei grafici del carosello (M18): le due serie insieme
+  'today.bothMetrics': 'Peso e ripetizioni',
   // Bozze e conferma nello storico (M17)
   'today.confirmHistory': (p: { count: number }) =>
     p.count === 1 ? 'Conferma 1 serie nello storico' : `Conferma ${p.count} serie nello storico`,
@@ -252,10 +253,7 @@ export const it = {
   'today.skip': 'Salta',
 
   // Storico
-  'history.title': 'Storico allenamenti',
-  'history.empty': 'Nessuna sessione registrata: inizia dalla scheda «Allenamento».',
-  'history.trendTitle': 'Andamento del carico',
-  'history.pickExercise': "Scegli un esercizio per vedere l'andamento del peso nel tempo.",
+  // Metriche e periodi dei grafici: nati nello Storico, da M18 vivono sotto il carosello
   'history.metric': 'Metrica',
   'history.period': 'Periodo',
   'history.all': 'Tutto lo storico',

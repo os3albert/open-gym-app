@@ -11,7 +11,8 @@ const umamiScript = () => document.getElementById('umami-analytics')
 
 beforeEach(() => {
   localStorage.clear()
-  window.history.replaceState(null, '', '/')
+  // Da M18 il pannello «Statistiche d'uso» vive in Impostazioni: i test partono da lì
+  window.history.replaceState(null, '', '/?vista=impostazioni')
   umamiScript()?.remove()
 })
 
