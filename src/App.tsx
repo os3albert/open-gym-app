@@ -26,10 +26,8 @@ import { ExerciseList } from './components/ExerciseList'
 import { FilterBar } from './components/FilterBar'
 import { HistoryView } from './components/HistoryView'
 import { HomeView } from './components/HomeView'
-import { InstallPanel } from './components/InstallPanel'
 import { Logo } from './components/Logo'
 import { PlansView } from './components/PlansView'
-import { PrivacyPanel } from './components/PrivacyPanel'
 import { SettingsView } from './components/SettingsView'
 import { TabNav } from './components/TabNav'
 import { TodayWorkout } from './components/TodayWorkout'
@@ -62,41 +60,6 @@ function SyncMuiColorScheme({ resolved }: { resolved: 'light' | 'dark' }) {
     if (mode !== resolved) setMode(resolved)
   }, [mode, resolved, setMode])
   return null
-}
-
-/** Riquadro di sintesi in cima: tre numeri sullo stato dei dati locali. */
-function HeroStats({ items }: { items: Array<{ label: string; value: number }> }) {
-  return (
-    <Stack direction="row" spacing={1} sx={{ mt: 2.5 }}>
-      {items.map((item) => (
-        <Box
-          key={item.label}
-          sx={{
-            flex: 1,
-            minWidth: 0,
-            px: 1.5,
-            py: 1.25,
-            borderRadius: '14px',
-            bgcolor: 'background.default',
-            border: 1,
-            borderColor: 'divider',
-          }}
-        >
-          <Typography variant="h3" component="p" sx={{ lineHeight: 1.1 }}>
-            {item.value}
-          </Typography>
-          <Typography
-            variant="overline"
-            component="p"
-            color="text.secondary"
-            sx={{ whiteSpace: 'nowrap', fontSize: '0.625rem' }}
-          >
-            {item.label}
-          </Typography>
-        </Box>
-      ))}
-    </Stack>
-  )
 }
 
 /** La frase di un esito della community: l'hook dà un codice, la lingua la sceglie qui. */
@@ -246,34 +209,6 @@ export default function App() {
           sx={{ py: 3, pb: 16, display: 'flex', flexDirection: 'column', gap: 3 }}
         >
           <UpdateBanner />
-          <Box
-            component="section"
-            aria-label={t('hero.label')}
-            sx={{
-              p: { xs: 2.5, sm: 3 },
-              borderRadius: '24px',
-              border: 1,
-              borderColor: 'divider',
-              // Alone dell'accento dietro al testo: dà profondità senza sporcare la leggibilità
-              background:
-                'radial-gradient(120% 140% at 0% 0%, rgba(var(--mui-palette-primary-mainChannel) / 0.16) 0%, rgba(var(--mui-palette-primary-mainChannel) / 0) 55%), var(--mui-palette-background-paper)',
-            }}
-          >
-            <Typography variant="overline" color="primary" component="p">
-              {t('hero.tagline')}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, maxWidth: '46ch' }}>
-              {t('hero.description')}
-            </Typography>
-            <HeroStats
-              items={[
-                { label: t('hero.proposals'), value: allExercises.length },
-                { label: t('hero.votesCast'), value: votedIds.size },
-                { label: t('hero.sessions'), value: data.activity.length },
-              ]}
-            />
-            <InstallPanel />
-          </Box>
           {corruptedAtStartup && (
             <Alert severity="warning" role="alert" data-cy="corrupted-banner">
               {t('app.corrupted')}
@@ -425,16 +360,20 @@ export default function App() {
                 onExport={exportJson}
                 onReplace={importJson}
                 onMerge={mergeJson}
+                stats={{
+                  proposals: allExercises.length,
+                  votesCast: votedIds.size,
+                  sessions: data.activity.length,
+                }}
+                analytics={{
+                  available: analytics.available,
+                  enabled: analytics.enabled,
+                  doNotTrack: analytics.doNotTrack,
+                  onChange: analytics.setAnalyticsEnabled,
+                }}
               />
             )}
           </Box>
-          {analytics.available && (
-            <PrivacyPanel
-              enabled={analytics.enabled}
-              doNotTrack={analytics.doNotTrack}
-              onChange={analytics.setAnalyticsEnabled}
-            />
-          )}
         </Container>
         {view === 'community' && (
           <Box

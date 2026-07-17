@@ -86,6 +86,22 @@ describe('proposta di un esercizio', () => {
     ).not.toBeInTheDocument()
   })
 
+  it('la presentazione («Open source · Nessuna registrazione») vive SOLO in Impostazioni (M18)', async () => {
+    const user = userEvent.setup()
+    window.history.replaceState(null, '', '/')
+    render(<App />)
+
+    // Né sulla Home né sulla Community
+    expect(screen.queryByText('Open source · Nessuna registrazione')).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Community' }))
+    expect(screen.queryByText('Open source · Nessuna registrazione')).not.toBeInTheDocument()
+
+    // In Impostazioni sì, coi tre contatori
+    await user.click(screen.getByRole('button', { name: 'Impostazioni' }))
+    expect(screen.getByText('Open source · Nessuna registrazione')).toBeInTheDocument()
+    expect(screen.getByText('Proposte')).toBeInTheDocument()
+  })
+
   it('il FAB apre il form in un modale, e a salvataggio riuscito si richiude (M12)', async () => {
     const user = userEvent.setup()
     render(<App />)
