@@ -44,8 +44,9 @@ export function TabNav({ view, onChange }: Props) {
         pl: 'max(12px, env(safe-area-inset-left))',
         pr: 'max(12px, env(safe-area-inset-right))',
         pt: 1,
-        // La barra "galleggia": sotto resta il margine di sicurezza dei telefoni con notch
-        pb: 'calc(12px + env(safe-area-inset-bottom))',
+        // Niente safe-area sotto (scelta esplicita): la pillola sta a 12px dal bordo su
+        // qualunque telefono, iPhone compreso — l'indicatore home le scorre sotto
+        pb: '12px',
         pointerEvents: 'none',
         // Sfumatura verso lo sfondo: il contenuto che scorre sotto la pillola svanisce.
         // Colori dai *Channel: con le CSS variables theme.palette.* resterebbe chiaro.

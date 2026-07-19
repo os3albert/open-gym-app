@@ -28,9 +28,28 @@ export const en: Dictionary = {
   'errors.TOO_LONG': 'The text you entered is too long',
   'errors.COMMUNITY_UNREACHABLE': 'Community unreachable: try again later',
   'errors.INVALID_DATA': 'Invalid data',
+  'errors.DUPLICATE_PLAN': 'A plan with this name is already in the community',
+  'errors.UNKNOWN_PLAN': 'Plan not in the community catalogue',
+  'errors.INVALID_PLAN': 'The proposed plan is not valid',
 
   'community.proposalSent': 'Proposal sent to the community!',
   'community.localOnly': (p) => `Saved on this device only: ${p.reason}`,
+
+  'community.tabsLabel': 'Community sections',
+  'community.tabExercises': 'Exercises',
+  'community.tabPlans': 'Plans',
+  'community.plansTitle': 'Community plans',
+  'community.plansEmpty': 'No plans proposed yet: propose yours!',
+  'community.planSummary': (p) => `${p.days} days · ${p.exercises} exercises`,
+  'community.planProposalSent': 'Plan sent to the community!',
+  'community.proposePlan': 'Propose plan',
+  'community.proposePlanTitle': 'Propose a plan to the community',
+  'community.proposePlanHint':
+    'The chosen plan is published in the community catalogue with its exercises.',
+  'community.noPlansToPropose': 'You have no plans to propose yet: create one in the Plans view.',
+  'community.planToPropose': 'Plan to propose',
+  'community.sendProposal': 'Send proposal',
+  'community.planImported': 'Plan added to yours and activated!',
 
   'hero.label': 'Introduction',
   'hero.tagline': 'Open source · No sign-up',

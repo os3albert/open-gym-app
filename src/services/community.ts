@@ -1,6 +1,12 @@
 import { normalizeMuscleGroup } from '../domain/muscleGroups'
 import type { Exercise } from '../domain/types'
-import type { CommunityExercise, CommunityVotes, ProposalInput } from './communityData'
+import type {
+  CommunityExercise,
+  CommunityPlan,
+  CommunityVotes,
+  PlanProposalInput,
+  ProposalInput,
+} from './communityData'
 import { voteCounts } from './communityData'
 import { parseYouTubeVideoId } from './youtube'
 
@@ -90,6 +96,46 @@ export async function sendCommunityVote(
   fetcher: typeof fetch = fetch,
 ): Promise<number | null> {
   const payload = (await post('/votes', { exerciseId, action }, fetcher)) as {
+    votes?: number
+  } | null
+  return typeof payload?.votes === 'number' ? payload.votes : null
+}
+
+export interface CommunityPlansSnapshot {
+  plans: CommunityPlan[]
+  /** Solo i conteggi, come per gli esercizi: gli hash dei votanti restano nel repo. */
+  counts: Record<string, number>
+}
+
+/** Le schede proposte e i loro voti: stessi file grezzi del repo, mai il worker. */
+export async function fetchCommunityPlans(
+  fetcher: typeof fetch = fetch,
+): Promise<CommunityPlansSnapshot> {
+  const [plansRes, votesRes] = await Promise.all([
+    fetcher(`${RAW_BASE}/plans.json`, { cache: 'no-cache' }),
+    fetcher(`${RAW_BASE}/plan-votes.json`, { cache: 'no-cache' }),
+  ])
+  if (!plansRes.ok || !votesRes.ok) throw new Error(COMMUNITY_UNREACHABLE_ERROR)
+  return {
+    plans: (await plansRes.json()) as CommunityPlan[],
+    counts: voteCounts((await votesRes.json()) as CommunityVotes),
+  }
+}
+
+export function proposePlanToCommunity(
+  input: PlanProposalInput,
+  fetcher: typeof fetch = fetch,
+): Promise<unknown> {
+  return post('/plans', input, fetcher)
+}
+
+/** Voto su una scheda proposta: stesse regole del voto sugli esercizi (identità dal worker). */
+export async function sendCommunityPlanVote(
+  planId: string,
+  action: 'add' | 'remove',
+  fetcher: typeof fetch = fetch,
+): Promise<number | null> {
+  const payload = (await post('/plan-votes', { planId, action }, fetcher)) as {
     votes?: number
   } | null
   return typeof payload?.votes === 'number' ? payload.votes : null

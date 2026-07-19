@@ -1,0 +1,694 @@
+[
+  {
+    "id": "seed-dimagrimento",
+    "name": "Perdere peso — Full body 3 giorni",
+    "days": [
+      {
+        "name": "Lunedì",
+        "entries": [
+          {
+            "exercise": {
+              "name": "jump squat",
+              "description": "Stai con i piedi alla larghezza delle spalle. Abbassa il corpo in una posizione tozza piegando le ginocchia e spingendo indietro i fianchi. Salta in modo esplosivo da terra, estendendo i fianchi, le ginocchia e le caviglie. Mentre sei a mezz'aria, porta rapidamente le braccia in avanti per…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0514-LIlE5Tn.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "glutes",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 15
+          },
+          {
+            "exercise": {
+              "name": "push-up",
+              "description": "Inizia in una posizione di plancia alta con le mani leggermente più larghe della larghezza delle spalle e i piedi uniti. Coinvolgi il core e abbassa il corpo verso terra piegando i gomiti, mantenendo il corpo in linea retta. Fai una pausa per un momento quando il petto è appena sopra il suolo,…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0662-I4hDWkc.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "chest",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 10
+          },
+          {
+            "exercise": {
+              "name": "mountain climber",
+              "description": "Inizia in una posizione di plancia alta con le mani direttamente sotto le spalle e il corpo in linea retta. Coinvolgi il core e porta il ginocchio destro verso il petto, quindi cambia rapidamente e porta il ginocchio sinistro verso il petto. Continua ad alternare le gambe con un movimento di corsa,…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0630-RJgzwny.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "fullBody",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 20
+          },
+          {
+            "exercise": {
+              "name": "russian twist",
+              "description": "Sedersi a terra con le ginocchia piegate e i piedi appoggiati sul pavimento. Appoggiati leggermente all'indietro mantenendo la schiena dritta e il core impegnato. Tieni le mani unite davanti al petto o tieni un peso se lo desideri. Solleva i piedi da terra, in equilibrio sulle ossa del sedere.…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0687-XVDdcoj.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "core",
+              "difficulty": "easy",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 20
+          }
+        ]
+      },
+      {
+        "name": "Mercoledì",
+        "entries": [
+          {
+            "exercise": {
+              "name": "burpee",
+              "description": "Inizia in posizione eretta, con i piedi alla larghezza delle spalle. Abbassa il corpo in posizione accovacciata piegando le ginocchia e appoggiando le mani sul pavimento davanti a te. Rimetti i piedi in posizione di piegamenti. Fai una flessione, mantenendo il corpo in linea retta. Rimetti i piedi…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/1160-dK9394r.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "fullBody",
+              "difficulty": "hard",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 10
+          },
+          {
+            "exercise": {
+              "name": "walking lunge",
+              "description": "Stai con i piedi alla larghezza delle spalle. Fai un passo avanti con la gamba destra, abbassando il corpo in una posizione di affondo. Mantieni il busto in posizione verticale e il ginocchio anteriore allineato con la caviglia. Spingi con il piede destro e porta il piede sinistro in avanti,…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/1460-IZVHb27.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "glutes",
+              "difficulty": "easy",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 12
+          },
+          {
+            "exercise": {
+              "name": "inchworm",
+              "description": "Inizia in posizione eretta con i piedi alla larghezza dei fianchi. Piegati in avanti all'altezza della vita e metti le mani a terra davanti a te. Cammina con le mani in avanti fino a raggiungere una posizione di plancia alta, con il corpo in linea retta dalla testa ai piedi. Fai una pausa per un…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/1471-ZgsNQ6d.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "core",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 8
+          },
+          {
+            "exercise": {
+              "name": "flutter kicks",
+              "description": "Sdraiati sulla schiena con le gambe distese e le mani lungo i fianchi. Coinvolgi il tuo core e solleva le gambe da terra di circa 6 pollici. Tenendo le gambe dritte, alterna il sollevamento di una gamba leggermente più in alto dell'altra. Continua questo movimento svolazzante per il numero di…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0459-UVo2Qs2.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "glutes",
+              "difficulty": "easy",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 20
+          }
+        ]
+      },
+      {
+        "name": "Venerdì",
+        "entries": [
+          {
+            "exercise": {
+              "name": "jump rope",
+              "description": "Tieni le maniglie della corda per saltare con le mani, i palmi rivolti verso l'interno. Stai in piedi con i piedi alla larghezza delle spalle e le ginocchia leggermente piegate. Fai oscillare la corda sopra la testa e saltaci sopra mentre si avvicina ai tuoi piedi. Atterra dolcemente sulle punte…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/2612-e1e76I2.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "fullBody",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 50
+          },
+          {
+            "exercise": {
+              "name": "skater hops",
+              "description": "Stai con i piedi alla larghezza delle spalle. Piega leggermente le ginocchia e salta a destra, atterrando sul piede destro. Mentre atterri, porta la gamba sinistra dietro quella destra e tocca il terreno con la punta del piede sinistro. Salta immediatamente a sinistra, atterrando con il piede…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/3361-zfNHMN9.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "fullBody",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 20
+          },
+          {
+            "exercise": {
+              "name": "bear crawl",
+              "description": "Inizia a quattro zampe con le mani direttamente sotto le spalle e le ginocchia sotto i fianchi. Alza leggermente le ginocchia da terra, mantenendo la schiena piatta e il core attivo. Muovi in avanti contemporaneamente la mano destra e il piede sinistro, seguiti dalla mano sinistra e dal piede…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/3360-0Yz8WdV.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "fullBody",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 10
+          },
+          {
+            "exercise": {
+              "name": "crunch (hands overhead)",
+              "description": "Sdraiati sulla schiena con le ginocchia piegate e i piedi piatti a terra. Allunga le braccia dritte sopra la testa. Attivando gli addominali, solleva la parte superiore del corpo da terra, piegandola in avanti verso le ginocchia. Fermati un attimo in cima, poi abbassa lentamente la parte superiore…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0267-kjJ3VoQ.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "core",
+              "difficulty": "easy",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 15
+          }
+        ]
+      }
+    ],
+    "createdAt": "2026-07-19T00:00:00.000Z"
+  },
+  {
+    "id": "seed-definizione",
+    "name": "Definizione — 4 giorni con manubri",
+    "days": [
+      {
+        "name": "Lunedì",
+        "entries": [
+          {
+            "exercise": {
+              "name": "dumbbell bench press",
+              "description": "Sdraiati disteso su una panca con i piedi piatti a terra e la schiena premuta contro la panca. Tieni un manubrio in ogni mano, con i palmi rivolti in avanti e le braccia estese sopra il petto. Abbassa lentamente i manubri ai lati del petto, mantenendo i gomiti a 90 gradi. Fermati un attimo, poi…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0289-SpYC0Kp.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "chest",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 12
+          },
+          {
+            "exercise": {
+              "name": "dumbbell seated shoulder press",
+              "description": "Siediti su una panchina con un manubrio in ogni mano, appoggiato sulle cosce. Alza i manubri all'altezza delle spalle, palmi rivolti in avanti. Premi i manubri verso l'alto finché le braccia non sono completamente estese sopra la testa. Fermati un attimo in cima, poi abbassa lentamente i manubri…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0405-znQUdHY.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "shoulders",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 12
+          },
+          {
+            "exercise": {
+              "name": "dumbbell lateral raise",
+              "description": "Stai in piedi con i piedi alla larghezza delle spalle e tieni un manubrio in ogni mano, palmi rivolti verso il corpo. Tieni la schiena dritta e attiva il core. Alza le braccia ai lati finché non sono parallele al pavimento, mantenendo una leggera piega dei gomiti. Fermati un attimo in cima, poi…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0334-DsgkuIt.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "shoulders",
+              "difficulty": "easy",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 15
+          },
+          {
+            "exercise": {
+              "name": "triceps dip",
+              "description": "Sedersi sul bordo di una panca o di una sedia con le mani che afferrano il bordo e le dita rivolte in avanti. Fai scivolare il sedere fuori dalla panca, sostenendo il peso con le mani. Piega i gomiti e abbassa il corpo verso terra, mantenendo la schiena aderente alla panca. Fai una pausa per un…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0814-X6C6i5Y.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "arms",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 12
+          }
+        ]
+      },
+      {
+        "name": "Martedì",
+        "entries": [
+          {
+            "exercise": {
+              "name": "dumbbell goblet squat",
+              "description": "Stai con i piedi a larghezza delle spalle, tenendo un manubrio verticalmente contro il petto con entrambe le mani. Mantenendo il petto sollevato e il core attivo, abbassa il corpo in posizione squat spingendo indietro i fianchi e piegando le ginocchia. Continua ad abbassare finché le cosce non sono…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/1760-yn8yg1r.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "legs",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 15
+          },
+          {
+            "exercise": {
+              "name": "dumbbell lunge",
+              "description": "Stai con i piedi a larghezza delle spalle, tenendo un manubrio in ciascuna mano. Fai un passo avanti con il piede destro, abbassando il corpo in posizione di affondamento. Tieni la schiena dritta e il petto sollevato mentre abbassi il corpo. Spingi attraverso il tallone destro per tornare alla…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0336-RRWFUcw.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "glutes",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 12
+          },
+          {
+            "exercise": {
+              "name": "dumbbell romanian deadlift",
+              "description": "Stai con i piedi a larghezza delle spalle, tenendo un manubrio in ogni mano con una presa sopra la testa. Tenendo la schiena dritta e il core attivo, incurvati ai fianchi e abbassa i manubri verso terra, permettendo alle ginocchia di piegarsi leggermente. Abbassa i manubri finché non senti uno…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/1459-rR0LJzx.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "glutes",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 12
+          },
+          {
+            "exercise": {
+              "name": "glute bridge march",
+              "description": "Sdraiati sulla schiena con le ginocchia piegate e i piedi appoggiati a terra. Coinvolgi i glutei e solleva i fianchi da terra, formando una linea retta dalle ginocchia alle spalle. Tenendo i fianchi sollevati, solleva un piede da terra e avvicina il ginocchio al petto. Riporta il piede a terra e…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/3561-GibBPPg.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "glutes",
+              "difficulty": "easy",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 15
+          }
+        ]
+      },
+      {
+        "name": "Giovedì",
+        "entries": [
+          {
+            "exercise": {
+              "name": "dumbbell bent over row",
+              "description": "Stai con i piedi a larghezza delle spalle, le ginocchia leggermente piegate, e tieni un manubrio in ciascuna mano con i palmi rivolti verso il corpo. Piegati in avanti sui fianchi, mantenendo la schiena dritta e il core attivo. Lascia che le braccia pendano dritte verso il pavimento, con i gomiti…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0293-BJ0Hz5L.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "back",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 12
+          },
+          {
+            "exercise": {
+              "name": "pull-up",
+              "description": "Appendi a una barra per trazioni con i palmi delle mani rivolti lontano da te e le braccia completamente distese. Coinvolgi il tuo core e stringi insieme le scapole. Tira il corpo verso la sbarra piegando i gomiti e portando il petto verso la sbarra. Fai una pausa nella parte superiore del…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0652-lBDjFxJ.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "back",
+              "difficulty": "hard",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 8
+          },
+          {
+            "exercise": {
+              "name": "dumbbell biceps curl",
+              "description": "Stai dritto con un manubrio in ogni mano, palmi rivolti in avanti e braccia completamente estese. Mantenendo ferme le braccia superiori, espira e arriccia i pesi mentre contrahi i bicipiti. Continua ad alzare i pesi finché i bicipiti non sono completamente contratti e i manubri non sono all'altezza…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0294-NbVPDMW.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "arms",
+              "difficulty": "easy",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 12
+          },
+          {
+            "exercise": {
+              "name": "dumbbell fly",
+              "description": "Sdraiati disteso su una panchina con un manubrio in ogni mano, i palmi uno verso l'altro. Allunga le braccia dritte sopra il petto, con una leggera piega dei gomiti. Mantenendo una leggera piega dei gomiti, abbassa le braccia ai lati in un ampio arco finché non senti uno stiramento al petto.…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0308-yz9nUhF.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "chest",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 15
+          }
+        ]
+      },
+      {
+        "name": "Venerdì",
+        "entries": [
+          {
+            "exercise": {
+              "name": "mountain climber",
+              "description": "Inizia in una posizione di plancia alta con le mani direttamente sotto le spalle e il corpo in linea retta. Coinvolgi il core e porta il ginocchio destro verso il petto, quindi cambia rapidamente e porta il ginocchio sinistro verso il petto. Continua ad alternare le gambe con un movimento di corsa,…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0630-RJgzwny.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "fullBody",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 20
+          },
+          {
+            "exercise": {
+              "name": "russian twist",
+              "description": "Sedersi a terra con le ginocchia piegate e i piedi appoggiati sul pavimento. Appoggiati leggermente all'indietro mantenendo la schiena dritta e il core impegnato. Tieni le mani unite davanti al petto o tieni un peso se lo desideri. Solleva i piedi da terra, in equilibrio sulle ossa del sedere.…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0687-XVDdcoj.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "core",
+              "difficulty": "easy",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 20
+          },
+          {
+            "exercise": {
+              "name": "reverse crunch",
+              "description": "Sdraiati sulla schiena con le braccia distese lungo i fianchi. Piega le ginocchia e solleva i piedi da terra, portando le cosce perpendicolari al pavimento. Contrai gli addominali e solleva i fianchi dal pavimento, portando le ginocchia verso il petto. Fai una pausa per un momento in alto, quindi…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0872-nCU1Ekp.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "core",
+              "difficulty": "easy",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 15
+          },
+          {
+            "exercise": {
+              "name": "front plank with twist",
+              "description": "Inizia in una posizione di plancia alta con le mani direttamente sotto le spalle e il corpo in linea retta dalla testa ai piedi. Coinvolgi il core e i glutei per mantenere una posizione stabile. Ruota il busto verso destra, sollevando il braccio destro ed estendendolo verso il soffitto. Mantieni i…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0464-CosupLu.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "core",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 10
+          }
+        ]
+      }
+    ],
+    "createdAt": "2026-07-19T00:00:00.000Z"
+  },
+  {
+    "id": "seed-massa",
+    "name": "Massa — 4 giorni fondamentali",
+    "days": [
+      {
+        "name": "Lunedì",
+        "entries": [
+          {
+            "exercise": {
+              "name": "barbell bench press",
+              "description": "Sdraiati su una panca con i piedi appoggiati a terra e la schiena premuta contro la panca. Afferrare il bilanciere con una presa prona leggermente più larga della larghezza delle spalle. Solleva il bilanciere dal rack e tienilo direttamente sopra il petto con le braccia completamente distese.…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0025-EIeI8Vf.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "chest",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 4,
+            "reps": 8
+          },
+          {
+            "exercise": {
+              "name": "barbell seated overhead press",
+              "description": "Siediti su una panchina con la schiena dritta e i piedi piatti a terra. Tieni il bilanciere con una presa sopra la mano, leggermente più larga della larghezza delle spalle. Solleva il bilanciere dal portapacchi e portalo all'altezza delle spalle, con i gomiti piegati e i palmi rivolti in avanti.…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0091-kTbSH9h.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "shoulders",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 4,
+            "reps": 8
+          },
+          {
+            "exercise": {
+              "name": "dumbbell bench press",
+              "description": "Sdraiati disteso su una panca con i piedi piatti a terra e la schiena premuta contro la panca. Tieni un manubrio in ogni mano, con i palmi rivolti in avanti e le braccia estese sopra il petto. Abbassa lentamente i manubri ai lati del petto, mantenendo i gomiti a 90 gradi. Fermati un attimo, poi…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0289-SpYC0Kp.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "chest",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 10
+          },
+          {
+            "exercise": {
+              "name": "dumbbell fly",
+              "description": "Sdraiati disteso su una panchina con un manubrio in ogni mano, i palmi uno verso l'altro. Allunga le braccia dritte sopra il petto, con una leggera piega dei gomiti. Mantenendo una leggera piega dei gomiti, abbassa le braccia ai lati in un ampio arco finché non senti uno stiramento al petto.…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0308-yz9nUhF.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "chest",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 10
+          }
+        ]
+      },
+      {
+        "name": "Martedì",
+        "entries": [
+          {
+            "exercise": {
+              "name": "barbell full squat",
+              "description": "Stai con i piedi alla larghezza delle spalle, le dita leggermente rivolte verso l'esterno. Tieni il bilanciere sulla parte superiore della schiena, appoggiandolo sulle trappole o sui deltoidi posteriori. Coinvolgi il tuo core e mantieni il petto sollevato mentre inizi ad abbassare il corpo. Piega…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0043-qXTaZnJ.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "glutes",
+              "difficulty": "hard",
+              "faceBlurConfirmed": false
+            },
+            "sets": 4,
+            "reps": 8
+          },
+          {
+            "exercise": {
+              "name": "barbell lunge",
+              "description": "Inizia stando in piedi con i piedi alla larghezza delle spalle e un bilanciere appoggiato sulla parte superiore della schiena. Fai un passo avanti con il piede destro, mantenendo il busto eretto. Abbassa il corpo piegando il ginocchio destro finché la coscia non è parallela al suolo. Spingi…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0054-t8iSghb.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "glutes",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 10
+          },
+          {
+            "exercise": {
+              "name": "dumbbell romanian deadlift",
+              "description": "Stai con i piedi a larghezza delle spalle, tenendo un manubrio in ogni mano con una presa sopra la testa. Tenendo la schiena dritta e il core attivo, incurvati ai fianchi e abbassa i manubri verso terra, permettendo alle ginocchia di piegarsi leggermente. Abbassa i manubri finché non senti uno…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/1459-rR0LJzx.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "glutes",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 10
+          },
+          {
+            "exercise": {
+              "name": "barbell floor calf raise",
+              "description": "Posiziona un bilanciere sul pavimento di fronte a te. Stai con le punte dei piedi sul bordo del bilanciere, con i talloni pendenti. Se necessario, aggrapparsi a un oggetto stabile per mantenere l'equilibrio. Alza i talloni il più in alto possibile, usando i polpacci per sollevare il corpo. Fai una…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/1370-2IHEa2T.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "calves",
+              "difficulty": "easy",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 15
+          }
+        ]
+      },
+      {
+        "name": "Giovedì",
+        "entries": [
+          {
+            "exercise": {
+              "name": "barbell deadlift",
+              "description": "Stai con i piedi alla larghezza delle spalle e il bilanciere a terra davanti a te. Piega le ginocchia e fai perno sui fianchi per abbassare il busto e afferrare il bilanciere con una presa prona, con le mani leggermente più larghe della larghezza delle spalle. Tieni la schiena dritta e il petto…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0032-ila4NZS.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "glutes",
+              "difficulty": "hard",
+              "faceBlurConfirmed": false
+            },
+            "sets": 4,
+            "reps": 6
+          },
+          {
+            "exercise": {
+              "name": "barbell bent over row",
+              "description": "Stai in piedi con i piedi alla larghezza delle spalle e le ginocchia leggermente piegate. Piegati in avanti sui fianchi mantenendo la schiena dritta e il petto in alto. Afferrare il bilanciere con una presa prona, con le mani leggermente più larghe della larghezza delle spalle. Tirare il bilanciere…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0027-eZyBC3j.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "back",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 4,
+            "reps": 8
+          },
+          {
+            "exercise": {
+              "name": "pull-up",
+              "description": "Appendi a una barra per trazioni con i palmi delle mani rivolti lontano da te e le braccia completamente distese. Coinvolgi il tuo core e stringi insieme le scapole. Tira il corpo verso la sbarra piegando i gomiti e portando il petto verso la sbarra. Fai una pausa nella parte superiore del…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0652-lBDjFxJ.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "back",
+              "difficulty": "hard",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 8
+          },
+          {
+            "exercise": {
+              "name": "dumbbell biceps curl",
+              "description": "Stai dritto con un manubrio in ogni mano, palmi rivolti in avanti e braccia completamente estese. Mantenendo ferme le braccia superiori, espira e arriccia i pesi mentre contrahi i bicipiti. Continua ad alzare i pesi finché i bicipiti non sono completamente contratti e i manubri non sono all'altezza…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0294-NbVPDMW.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "arms",
+              "difficulty": "easy",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 10
+          }
+        ]
+      },
+      {
+        "name": "Venerdì",
+        "entries": [
+          {
+            "exercise": {
+              "name": "dumbbell seated shoulder press",
+              "description": "Siediti su una panchina con un manubrio in ogni mano, appoggiato sulle cosce. Alza i manubri all'altezza delle spalle, palmi rivolti in avanti. Premi i manubri verso l'alto finché le braccia non sono completamente estese sopra la testa. Fermati un attimo in cima, poi abbassa lentamente i manubri…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0405-znQUdHY.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "shoulders",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 4,
+            "reps": 8
+          },
+          {
+            "exercise": {
+              "name": "dumbbell lateral raise",
+              "description": "Stai in piedi con i piedi alla larghezza delle spalle e tieni un manubrio in ogni mano, palmi rivolti verso il corpo. Tieni la schiena dritta e attiva il core. Alza le braccia ai lati finché non sono parallele al pavimento, mantenendo una leggera piega dei gomiti. Fermati un attimo in cima, poi…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0334-DsgkuIt.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "shoulders",
+              "difficulty": "easy",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 12
+          },
+          {
+            "exercise": {
+              "name": "triceps dip",
+              "description": "Sedersi sul bordo di una panca o di una sedia con le mani che afferrano il bordo e le dita rivolte in avanti. Fai scivolare il sedere fuori dalla panca, sostenendo il peso con le mani. Piega i gomiti e abbassa il corpo verso terra, mantenendo la schiena aderente alla panca. Fai una pausa per un…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0814-X6C6i5Y.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "arms",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 10
+          },
+          {
+            "exercise": {
+              "name": "barbell curl",
+              "description": "Stai dritto con i piedi alla larghezza delle spalle e tieni un bilanciere con una presa subdola, con i palmi rivolti in avanti. Tieni i gomiti vicini al busto ed espira mentre pieghi i pesi mentre contrai i bicipiti. Continua a sollevare la barra finché i bicipiti non sono completamente contratti e…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0031-25GPyDY.gif",
+              "attribution": "© Gym visual — https://gymvisual.com/",
+              "muscleGroup": "arms",
+              "difficulty": "easy",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 10
+          }
+        ]
+      }
+    ],
+    "createdAt": "2026-07-19T00:00:00.000Z"
+  }
+]

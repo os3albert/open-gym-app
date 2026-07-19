@@ -13,6 +13,8 @@ import IconButton from '@mui/material/IconButton'
 import Container from '@mui/material/Container'
 import CssBaseline from '@mui/material/CssBaseline'
 import Stack from '@mui/material/Stack'
+import Tab from '@mui/material/Tab'
+import Tabs from '@mui/material/Tabs'
 import { ThemeProvider, useColorScheme } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
@@ -21,8 +23,10 @@ import { makeTranslate, translateError, type Translate } from './i18n'
 import { I18nProvider } from './i18n/provider'
 import { useLanguage } from './hooks/useLanguage'
 import { CollapsingFab } from './components/CollapsingFab'
+import { CommunityPlanList } from './components/CommunityPlanList'
 import { ExerciseForm } from './components/ExerciseForm'
 import { ExerciseList } from './components/ExerciseList'
+import { ProposePlanDialog } from './components/ProposePlanDialog'
 import { FilterBar } from './components/FilterBar'
 import { HomeView } from './components/HomeView'
 import { Logo } from './components/Logo'
@@ -38,13 +42,16 @@ import type { Exercise, WorkoutSet } from './domain/types'
 import { useAnalytics } from './hooks/useAnalytics'
 import { useAppData } from './hooks/useAppData'
 import { useCommunity, type CommunityMessage } from './hooks/useCommunity'
+import { useCommunityPlans } from './hooks/useCommunityPlans'
+import { useCommunityTab, type CommunityTab } from './hooks/useCommunityTab'
 import { useFilters } from './hooks/useFilters'
 import { useTheme } from './hooks/useTheme'
 import { useView } from './hooks/useView'
 import { useWorkoutDay } from './hooks/useWorkoutDay'
 import { useWorkoutTimer } from './hooks/useWorkoutTimer'
 import { mergeForDisplay } from './services/community'
-import { shareCodeFromHash } from './services/share'
+import type { CommunityPlan } from './services/communityData'
+import { SHARE_VERSION, shareCodeFromHash, toSharedPlan } from './services/share'
 import { todayIso } from './utils/date'
 import { formatDuration } from './utils/duration'
 
@@ -64,6 +71,13 @@ function SyncMuiColorScheme({ resolved }: { resolved: 'light' | 'dark' }) {
 /** La frase di un esito della community: l'hook dà un codice, la lingua la sceglie qui. */
 function communityMessageText(t: Translate, message: CommunityMessage): string {
   if (message.kind === 'proposalSent') return t('community.proposalSent')
+  const reason = translateError(t, message.reason)
+  return message.kind === 'localOnly' ? t('community.localOnly', { reason }) : reason
+}
+
+/** Come sopra, ma per le schede proposte: cambia solo la frase del successo. */
+function planMessageText(t: Translate, message: CommunityMessage): string {
+  if (message.kind === 'proposalSent') return t('community.planProposalSent')
   const reason = translateError(t, message.reason)
   return message.kind === 'localOnly' ? t('community.localOnly', { reason }) : reason
 }
@@ -101,6 +115,7 @@ export default function App() {
     removePlanEntry,
     movePlanEntry,
     importShared,
+    importSharedPlanAndActivate,
     importJson,
     mergeJson,
     exportJson,
@@ -118,6 +133,9 @@ export default function App() {
   // funzione ai discendenti tramite I18nProvider
   const t = useMemo(() => makeTranslate(language), [language])
   const community = useCommunity()
+  const communityPlans = useCommunityPlans()
+  // La sotto-sezione della Community (esercizi | schede proposte) vive in ?sezione=
+  const [communityTab, setCommunityTab] = useCommunityTab()
   const analytics = useAnalytics(view)
   // Sotto Vitest non si scorre: il FAB resta esteso, e i test non devono saperne nulla
   const scrolled = useScrollTrigger({ disableHysteresis: true, threshold: 40 })
@@ -127,6 +145,10 @@ export default function App() {
   const [statureError, setStatureError] = useState<string | null>(null)
   // Il form di proposta è chiuso all'atterraggio: la lista della community viene prima
   const [formOpen, setFormOpen] = useState(false)
+  // Il modale «Proponi scheda» (sezione schede della community), chiuso all'atterraggio
+  const [planProposalOpen, setPlanProposalOpen] = useState(false)
+  // «Prova questa scheda» riuscito: l'alert di conferma nella sezione schede
+  const [planImported, setPlanImported] = useState(false)
 
   /** Registra la serie di oggi e, se il timer è avviato, fa partire la pausa da sola. */
   function recordSetForToday(exerciseId: string, set: WorkoutSet) {
@@ -169,6 +191,19 @@ export default function App() {
     } catch (error) {
       setStatureError(error instanceof Error ? error.message : 'INVALID_STATURE')
     }
+  }
+
+  /**
+   * «Prova questa scheda» dalla community: stesso motore della condivisione (esercizi
+   * incorporati, dedup sul media), e la scheda importata diventa subito quella attiva.
+   */
+  function handleTryCommunityPlan(plan: CommunityPlan) {
+    importSharedPlanAndActivate({
+      version: SHARE_VERSION,
+      kind: 'plan',
+      plan: { name: plan.name, days: plan.days },
+    })
+    setPlanImported(true)
   }
 
   const allExercises = mergeForDisplay(data.exercises, community.exercises, community.counts)
@@ -243,49 +278,105 @@ export default function App() {
             {view === 'community' && (
               <section>
                 <Typography variant="h2" sx={{ mb: 2 }}>
-                  {t('app.communityExercises')}
+                  {communityTab === 'schede'
+                    ? t('community.plansTitle')
+                    : t('app.communityExercises')}
                 </Typography>
-                {community.message && (
-                  <Alert
-                    severity="info"
-                    role="status"
-                    data-cy="community-message"
-                    onClose={community.dismissMessage}
-                    sx={{ mb: 2 }}
-                  >
-                    {communityMessageText(t, community.message)}
-                  </Alert>
+                {/* Le due sezioni della community: gli esercizi restano l'atterraggio
+                    (contratto dei test su ?vista=community), le schede in ?sezione=schede */}
+                <Tabs
+                  value={communityTab}
+                  onChange={(_event, next: CommunityTab) => setCommunityTab(next)}
+                  aria-label={t('community.tabsLabel')}
+                  sx={{ mb: 2 }}
+                >
+                  <Tab
+                    value="esercizi"
+                    label={t('community.tabExercises')}
+                    data-cy="community-tab-esercizi"
+                  />
+                  <Tab
+                    value="schede"
+                    label={t('community.tabPlans')}
+                    data-cy="community-tab-schede"
+                  />
+                </Tabs>
+                {communityTab === 'schede' && (
+                  <Stack spacing={2} sx={{ alignItems: 'stretch' }}>
+                    {communityPlans.message && (
+                      <Alert
+                        severity="info"
+                        role="status"
+                        data-cy="community-plans-message"
+                        onClose={communityPlans.dismissMessage}
+                      >
+                        {planMessageText(t, communityPlans.message)}
+                      </Alert>
+                    )}
+                    {planImported && (
+                      <Alert
+                        severity="success"
+                        role="status"
+                        data-cy="plan-imported-message"
+                        onClose={() => setPlanImported(false)}
+                      >
+                        {t('community.planImported')}
+                      </Alert>
+                    )}
+                    <CommunityPlanList
+                      plans={communityPlans.plans}
+                      counts={communityPlans.counts}
+                      votedIds={communityPlans.votedIds}
+                      onToggleVote={(id) => void communityPlans.toggleVote(id)}
+                      onTryPlan={handleTryCommunityPlan}
+                    />
+                  </Stack>
                 )}
-                <FilterBar
-                  filters={filters}
-                  onFiltersChange={setFilters}
-                  muscleGroups={muscleGroups(allExercises)}
-                  statureCm={data.profile.statureCm}
-                  onSaveStature={handleSaveStature}
-                  statureError={statureError && translateError(t, statureError)}
-                  requiresStature={suitabilityRequiresStature(filters, data)}
-                />
-                <ExerciseList
-                  // Al cambio dei filtri la lista rimonta: la paginazione riparte dalla prima
-                  // pagina senza effetti né reset manuali
-                  key={JSON.stringify(filters)}
-                  exercises={visibleExercises}
-                  totalCount={allExercises.length}
-                  votedIds={votedIds}
-                  plans={data.plans}
-                  activePlanId={data.activePlanId}
-                  // Il voto di un esercizio della community passa dal worker, quello locale dal dominio
-                  onToggleVote={(id) =>
-                    communityIds.has(id) ? void community.toggleVote(id) : vote(id)
-                  }
-                  onEdit={(exercise) => {
-                    setFormError(null)
-                    setEditing(exercise)
-                    setFormOpen(true)
-                  }}
-                  onDelete={removeExercise}
-                  onAddToPlan={addExerciseToPlan}
-                />
+                {communityTab === 'esercizi' && (
+                  <>
+                    {community.message && (
+                      <Alert
+                        severity="info"
+                        role="status"
+                        data-cy="community-message"
+                        onClose={community.dismissMessage}
+                        sx={{ mb: 2 }}
+                      >
+                        {communityMessageText(t, community.message)}
+                      </Alert>
+                    )}
+                    <FilterBar
+                      filters={filters}
+                      onFiltersChange={setFilters}
+                      muscleGroups={muscleGroups(allExercises)}
+                      statureCm={data.profile.statureCm}
+                      onSaveStature={handleSaveStature}
+                      statureError={statureError && translateError(t, statureError)}
+                      requiresStature={suitabilityRequiresStature(filters, data)}
+                    />
+                    <ExerciseList
+                      // Al cambio dei filtri la lista rimonta: la paginazione riparte dalla prima
+                      // pagina senza effetti né reset manuali
+                      key={JSON.stringify(filters)}
+                      exercises={visibleExercises}
+                      totalCount={allExercises.length}
+                      votedIds={votedIds}
+                      plans={data.plans}
+                      activePlanId={data.activePlanId}
+                      // Il voto di un esercizio della community passa dal worker, quello locale dal dominio
+                      onToggleVote={(id) =>
+                        communityIds.has(id) ? void community.toggleVote(id) : vote(id)
+                      }
+                      onEdit={(exercise) => {
+                        setFormError(null)
+                        setEditing(exercise)
+                        setFormOpen(true)
+                      }}
+                      onDelete={removeExercise}
+                      onAddToPlan={addExerciseToPlan}
+                    />
+                  </>
+                )}
               </section>
             )}
             {view === 'schede' && (
@@ -365,6 +456,14 @@ export default function App() {
                 error={formError && translateError(t, formError)}
               />
             </Dialog>
+            {/* «Proponi scheda»: la scelta di una scheda locale da pubblicare nel catalogo.
+                L'esito (successo o errore del worker) arriva come messaggio nella sezione. */}
+            <ProposePlanDialog
+              open={planProposalOpen}
+              plans={data.plans}
+              onClose={() => setPlanProposalOpen(false)}
+              onSubmit={(planId) => void communityPlans.propose(toSharedPlan(data, planId))}
+            />
             {view === 'impostazioni' && (
               <SettingsView
                 language={language}
@@ -394,23 +493,35 @@ export default function App() {
             sx={{
               position: 'fixed',
               right: 'max(16px, env(safe-area-inset-right))',
-              // Sopra la TabNav flottante (62px + il suo margine e il notch dei telefoni)
-              bottom: 'calc(88px + env(safe-area-inset-bottom))',
+              // Sopra la TabNav flottante (62px + margini); la TabNav non segue più la
+              // safe-area sotto (scelta esplicita), quindi nemmeno i Fab
+              bottom: '88px',
               zIndex: (t) => t.zIndex.appBar - 1,
             }}
           >
             {/* Esteso all'atterraggio (la scritta serve a farsi capire), sola «+» appena si
                 scorre: a quel punto l'icona basta, e la lista si riprende lo spazio.
                 Non «Proponi esercizio»: è il nome del submit del form, le query per ruolo
-                collidono. */}
-            <CollapsingFab
-              icon={<AddIcon />}
-              label={t('app.newProposal')}
-              collapsed={scrolled}
-              onClick={() => setFormOpen(true)}
-              dataCy="propose-toggle"
-              ariaExpanded={formOpen}
-            />
+                collidono. Nella sezione schede il gesto diventa «Proponi scheda». */}
+            {communityTab === 'esercizi' ? (
+              <CollapsingFab
+                icon={<AddIcon />}
+                label={t('app.newProposal')}
+                collapsed={scrolled}
+                onClick={() => setFormOpen(true)}
+                dataCy="propose-toggle"
+                ariaExpanded={formOpen}
+              />
+            ) : (
+              <CollapsingFab
+                icon={<AddIcon />}
+                label={t('community.proposePlan')}
+                collapsed={scrolled}
+                onClick={() => setPlanProposalOpen(true)}
+                dataCy="propose-plan-toggle"
+                ariaExpanded={planProposalOpen}
+              />
+            )}
           </Box>
         )}
         {view === 'allenamento' && (
@@ -420,7 +531,8 @@ export default function App() {
             sx={{
               position: 'fixed',
               right: 'max(16px, env(safe-area-inset-right))',
-              bottom: 'calc(88px + env(safe-area-inset-bottom))',
+              // La TabNav non segue più la safe-area sotto: nemmeno i Fab sopra di lei
+              bottom: '88px',
               zIndex: (t) => t.zIndex.appBar - 1,
               alignItems: 'center',
             }}

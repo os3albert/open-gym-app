@@ -114,6 +114,16 @@ export function useAppData() {
       commit(result.data)
       return result.planId
     },
+    /**
+     * «Prova questa scheda» dalla community: importa E attiva in UN solo commit.
+     * Due chiamate consecutive (importShared + activatePlan) partirebbero dallo stesso
+     * `data` stantio e la seconda cancellerebbe la scheda appena importata.
+     */
+    importSharedPlanAndActivate: (payload: SharePayload): string | undefined => {
+      const result = applySharedPayload(data, payload)
+      commit({ ...result.data, activePlanId: result.planId ?? result.data.activePlanId })
+      return result.planId
+    },
     /** Ripristino completo: i dati dell'app diventano quelli del backup. */
     importJson: (json: string) => commit(importFromJson(json)),
     /** Unione: il backup si aggiunge ai dati presenti senza duplicati. */

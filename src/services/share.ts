@@ -76,8 +76,11 @@ export function encodeExerciseShare(exercise: Exercise): string {
   return encode({ version: SHARE_VERSION, kind: 'exercise', exercise: toSharedExercise(exercise) })
 }
 
-/** Genera il codice di condivisione di una scheda completa, con gli esercizi incorporati. */
-export function encodePlanShare(data: AppData, planId: string): string {
+/**
+ * Una scheda locale in forma portabile, con gli esercizi incorporati: è il payload della
+ * condivisione E di una proposta alla community (che riusa la stessa forma).
+ */
+export function toSharedPlan(data: AppData, planId: string): SharedPlan {
   const plan = data.plans.find((p) => p.id === planId)
   if (!plan) throw new Error(PLAN_NOT_FOUND_ERROR)
   const days: SharedPlanDay[] = plan.days.map((day) => ({
@@ -89,7 +92,12 @@ export function encodePlanShare(data: AppData, planId: string): string {
       return [{ exercise: toSharedExercise(exercise), sets: entry.sets, reps: entry.reps }]
     }),
   }))
-  return encode({ version: SHARE_VERSION, kind: 'plan', plan: { name: plan.name, days } })
+  return { name: plan.name, days }
+}
+
+/** Genera il codice di condivisione di una scheda completa, con gli esercizi incorporati. */
+export function encodePlanShare(data: AppData, planId: string): string {
+  return encode({ version: SHARE_VERSION, kind: 'plan', plan: toSharedPlan(data, planId) })
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

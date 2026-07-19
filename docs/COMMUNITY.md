@@ -1,18 +1,24 @@
 # Community su GitHub: come funziona e come si configura
 
-Gli esercizi proposti dagli utenti e i loro voti vivono **in questo repository**, in due file:
+Gli esercizi e le schede proposti dagli utenti, con i loro voti, vivono **in questo
+repository**, in quattro file:
 
 - `community/exercises.json` — il catalogo degli esercizi proposti;
 - `community/votes.json` — per ogni esercizio, gli hash dei dispositivi che l'hanno votato
-  (il conteggio dei voti è la lunghezza della lista: un voto per dispositivo, ritirabile).
+  (il conteggio dei voti è la lunghezza della lista: un voto per dispositivo, ritirabile);
+- `community/plans.json` — le schede di allenamento proposte, con gli esercizi **incorporati**
+  (stessa forma portabile della condivisione: «Prova questa scheda» le importa con il dedup
+  sul media);
+- `community/plan-votes.json` — i voti alle schede, con le stesse regole degli esercizi.
 
 ## Il flusso
 
 1. **Lettura** — l'app scarica i due file da `raw.githubusercontent.com` e mostra gli esercizi
    della community insieme a quelli locali. Non passa dal worker: se il worker è spento o non
    configurato, il catalogo resta comunque consultabile.
-2. **Scrittura** — quando proponi un esercizio o lo voti, l'app chiama un piccolo
-   **Cloudflare Worker** (cartella `worker/`), che valida la richiesta e **committa** il file
+2. **Scrittura** — quando proponi un esercizio o una scheda, o li voti, l'app chiama un piccolo
+   **Cloudflare Worker** (cartella `worker/`, endpoint `POST /exercises`, `/votes`, `/plans`,
+   `/plan-votes`), che valida la richiesta e **committa** il file
    aggiornato nel repo con un token GitHub. È l'unico backend del progetto: i tuoi dati personali
    (schede, allenamenti, storico) restano solo sul tuo dispositivo, in localStorage.
 

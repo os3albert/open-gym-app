@@ -16,8 +16,11 @@
  */
 import {
   toggleCommunityVote,
+  togglePlanVote,
+  validatePlanProposal,
   validateProposal,
   type CommunityExercise,
+  type CommunityPlan,
   type CommunityVotes,
 } from '../../src/services/communityData'
 import { readJsonFile, updateJsonFile, type RepoConfig } from './github'
@@ -37,7 +40,11 @@ export interface Env {
 
 const EXERCISES_PATH = 'community/exercises.json'
 const VOTES_PATH = 'community/votes.json'
+const PLANS_PATH = 'community/plans.json'
+const PLAN_VOTES_PATH = 'community/plan-votes.json'
 const MAX_BODY_BYTES = 4096
+/** Una scheda proposta INCORPORA gli esercizi (descrizioni e gifUrl compresi): 4 KB non bastano. */
+const MAX_PLAN_BODY_BYTES = 65536
 const RATE_LIMIT_PER_HOUR = 20
 
 function allowedOrigins(env: Env): string[] {
@@ -72,11 +79,11 @@ function repoConfig(env: Env): RepoConfig {
 }
 
 /** Legge il corpo con un tetto di dimensione: un JSON enorme non deve nemmeno essere parsato. */
-async function readBody(request: Request): Promise<unknown> {
+async function readBody(request: Request, maxBytes: number = MAX_BODY_BYTES): Promise<unknown> {
   const declared = Number(request.headers.get('Content-Length') ?? '0')
-  if (declared > MAX_BODY_BYTES) throw new Error('Richiesta troppo grande')
+  if (declared > maxBytes) throw new Error('Richiesta troppo grande')
   const text = await request.text()
-  if (text.length > MAX_BODY_BYTES) throw new Error('Richiesta troppo grande')
+  if (text.length > maxBytes) throw new Error('Richiesta troppo grande')
   try {
     return JSON.parse(text)
   } catch {
@@ -152,6 +159,59 @@ async function handleVote(
   return json({ exerciseId, votes: count }, 200, cors)
 }
 
+async function handlePlanProposal(
+  request: Request,
+  env: Env,
+  cors: HeadersInit,
+): Promise<Response> {
+  const input = (await readBody(request, MAX_PLAN_BODY_BYTES)) as Parameters<
+    typeof validatePlanProposal
+  >[0]
+  let created: CommunityPlan | null = null
+
+  await updateJsonFile<CommunityPlan[]>(repoConfig(env), PLANS_PATH, (catalog) => {
+    // Come per gli esercizi: la validazione sta DENTRO l'update, così il dedup sul nome
+    // vede il catalogo aggiornato anche al retry sullo SHA
+    created = validatePlanProposal(input, catalog)
+    return {
+      next: [...catalog, created],
+      message: `community: nuova scheda «${created.name}»`,
+    }
+  })
+
+  return json({ plan: created }, 201, cors)
+}
+
+async function handlePlanVote(
+  request: Request,
+  env: Env,
+  cors: HeadersInit,
+  hash: string,
+): Promise<Response> {
+  const { planId, action } = (await readBody(request)) as {
+    planId?: string
+    action?: 'add' | 'remove'
+  }
+  if (typeof planId !== 'string' || (action !== 'add' && action !== 'remove')) {
+    return json({ error: 'Richiesta di voto non valida' }, 400, cors)
+  }
+
+  const config = repoConfig(env)
+  const catalog = await readJsonFile<CommunityPlan[]>(config, PLANS_PATH)
+  let count = 0
+
+  await updateJsonFile<CommunityVotes>(config, PLAN_VOTES_PATH, (votes) => {
+    const next = togglePlanVote(votes, planId, hash, action, catalog)
+    count = next[planId].length
+    return {
+      next,
+      message: `community: ${action === 'add' ? 'voto' : 'voto rimosso'} sulla scheda ${planId}`,
+    }
+  })
+
+  return json({ planId, votes: count }, 200, cors)
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const origin = request.headers.get('Origin')
@@ -173,6 +233,8 @@ export default {
     try {
       if (pathname === '/exercises') return await handleProposal(request, env, cors)
       if (pathname === '/votes') return await handleVote(request, env, cors, hash)
+      if (pathname === '/plans') return await handlePlanProposal(request, env, cors)
+      if (pathname === '/plan-votes') return await handlePlanVote(request, env, cors, hash)
       return json({ error: 'Endpoint non trovato' }, 404, cors)
     } catch (error) {
       // I messaggi di validazione sono contratto: arrivano all'utente così come sono

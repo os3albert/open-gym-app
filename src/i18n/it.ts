@@ -31,10 +31,32 @@ export const it = {
   'errors.TOO_LONG': 'Il testo inserito è troppo lungo',
   'errors.COMMUNITY_UNREACHABLE': 'Community non raggiungibile: riprova più tardi',
   'errors.INVALID_DATA': 'Dati non validi',
+  'errors.DUPLICATE_PLAN': 'Una scheda con questo nome è già nella community',
+  'errors.UNKNOWN_PLAN': 'Scheda non presente nel catalogo della community',
+  'errors.INVALID_PLAN': 'La scheda proposta non è valida',
 
   // Esiti delle operazioni sulla community
   'community.proposalSent': 'Proposta inviata alla community!',
   'community.localOnly': (p: { reason: string }) => `Salvato solo sul dispositivo: ${p.reason}`,
+
+  // Sezioni della community (esercizi + schede proposte)
+  'community.tabsLabel': 'Sezioni della community',
+  'community.tabExercises': 'Esercizi',
+  'community.tabPlans': 'Schede',
+  'community.plansTitle': 'Schede della community',
+  'community.plansEmpty': 'Nessuna scheda proposta finora: proponi la tua!',
+  'community.planSummary': (p: { days: number; exercises: number }) =>
+    `${p.days} giorni · ${p.exercises} esercizi`,
+  'community.planProposalSent': 'Scheda inviata alla community!',
+  // Non «Proponi una scheda»: sarebbe il nome accessibile del titolo del modale
+  'community.proposePlan': 'Proponi scheda',
+  'community.proposePlanTitle': 'Proponi una scheda alla community',
+  'community.proposePlanHint':
+    'La scheda scelta viene pubblicata nel catalogo della community con i suoi esercizi.',
+  'community.noPlansToPropose': 'Non hai ancora schede da proporre: creane una nella vista Schede.',
+  'community.planToPropose': 'Scheda da proporre',
+  'community.sendProposal': 'Invia proposta',
+  'community.planImported': 'Scheda aggiunta alle tue e attivata!',
 
   // Shell dell'app
   'hero.label': 'Presentazione',
