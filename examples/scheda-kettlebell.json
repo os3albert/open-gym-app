@@ -1,0 +1,237 @@
+{
+  "version": 1,
+  "kind": "plan",
+  "plan": {
+    "name": "Massa con Kettlebell — 4 giorni",
+    "days": [
+      {
+        "name": "Lunedì",
+        "entries": [
+          {
+            "exercise": {
+              "name": "kettlebell one arm floor press",
+              "description": "Sdraiati sulla schiena sul pavimento con le ginocchia piegate e i piedi appoggiati a terra. Tieni il kettlebell in una mano con il palmo rivolto verso i piedi e il braccio teso verso il soffitto. Abbassa lentamente il kettlebell verso il petto piegando il gomito, mantenendo la parte superiore del…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/1298-rg59QCH.gif",
+              "muscleGroup": "chest",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 4,
+            "reps": 8
+          },
+          {
+            "exercise": {
+              "name": "kettlebell two arm military press",
+              "description": "Stare con i piedi alla larghezza delle spalle, tenendo un kettlebell in ciascuna mano all'altezza delle spalle con i palmi rivolti in avanti. Coinvolgi il core e premi i kettlebell sopra la testa, estendendo completamente le braccia. Fermati per un momento in alto, quindi abbassa lentamente i…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0553-blBXysN.gif",
+              "muscleGroup": "shoulders",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 4,
+            "reps": 8
+          },
+          {
+            "exercise": {
+              "name": "kettlebell alternating press on floor",
+              "description": "Inizia sdraiandoti sulla schiena sul pavimento con le ginocchia piegate e i piedi appoggiati a terra. Tieni un kettlebell in ciascuna mano, con i palmi rivolti verso i piedi e le braccia tese verso il soffitto. Abbassa un kettlebell verso la spalla mantenendo l'altro kettlebell esteso verso l'alto.…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0519-7w6i0vE.gif",
+              "muscleGroup": "chest",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 10
+          },
+          {
+            "exercise": {
+              "name": "kettlebell seesaw press",
+              "description": "Stare con i piedi alla larghezza delle spalle, tenendo un kettlebell in ciascuna mano all'altezza delle spalle. Premi un kettlebell sopra la testa mantenendo l'altro kettlebell all'altezza delle spalle. Abbassare il kettlebell premuto all'altezza delle spalle mentre si preme contemporaneamente…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0547-UDm6cGl.gif",
+              "muscleGroup": "shoulders",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 10
+          }
+        ]
+      },
+      {
+        "name": "Martedì",
+        "entries": [
+          {
+            "exercise": {
+              "name": "kettlebell goblet squat",
+              "description": "Stai con i piedi alla larghezza delle spalle, tenendo un kettlebell vicino al petto con entrambe le mani. Mantenendo il petto in alto e il core impegnato, abbassa il corpo in una posizione tozza piegando le ginocchia e i fianchi. Continua ad abbassare finché le cosce non sono parallele al suolo o…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0534-ZA8b5hc.gif",
+              "muscleGroup": "glutes",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 4,
+            "reps": 10
+          },
+          {
+            "exercise": {
+              "name": "kettlebell front squat",
+              "description": "Stai con i piedi alla larghezza delle spalle, le dita leggermente rivolte verso l'esterno. Tieni il kettlebell con entrambe le mani davanti al petto, vicino al corpo. Coinvolgi il tuo core e mantieni il petto sollevato mentre abbassi i fianchi verso il basso e all'indietro, come se fossi seduto su…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0533-DB0n8AG.gif",
+              "muscleGroup": "glutes",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 4,
+            "reps": 8
+          },
+          {
+            "exercise": {
+              "name": "kettlebell lunge pass through",
+              "description": "Stai con i piedi alla larghezza delle spalle, tenendo un kettlebell davanti al petto con entrambe le mani. Fai un passo avanti con il piede destro, abbassando il corpo in una posizione di affondo. Mentre ti affondi in avanti, passa il kettlebell sotto la coscia destra e trasferiscilo nella mano…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0536-WKMQzCD.gif",
+              "muscleGroup": "glutes",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 10
+          },
+          {
+            "exercise": {
+              "name": "kettlebell swing",
+              "description": "Stare con i piedi alla larghezza delle spalle, le dita dei piedi leggermente rivolte verso l'esterno. Tieni il kettlebell con entrambe le mani davanti al corpo, con le braccia tese. Piega leggermente le ginocchia e fai perno sui fianchi, spingendo indietro i glutei. Fai oscillare il kettlebell tra…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0549-UHJlbu3.gif",
+              "muscleGroup": "glutes",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 4,
+            "reps": 15
+          }
+        ]
+      },
+      {
+        "name": "Giovedì",
+        "entries": [
+          {
+            "exercise": {
+              "name": "kettlebell two arm row",
+              "description": "Stare con i piedi alla larghezza delle spalle, le ginocchia leggermente piegate e tenere un kettlebell in ciascuna mano con i palmi rivolti verso il corpo. Piegati in avanti sui fianchi, mantenendo la schiena dritta e il core impegnato. Tira i kettlebell verso il petto, stringendo insieme le…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/1345-wf24o8S.gif",
+              "muscleGroup": "back",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 4,
+            "reps": 10
+          },
+          {
+            "exercise": {
+              "name": "kettlebell one arm row",
+              "description": "Stare con i piedi alla larghezza delle spalle, tenendo un kettlebell in una mano con una presa prona. Piega leggermente le ginocchia e fai perno in avanti sui fianchi, mantenendo la schiena dritta e il core impegnato. Tirare il kettlebell verso il petto, mantenendo il gomito vicino al corpo e…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0541-g9AsZ8P.gif",
+              "muscleGroup": "back",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 10
+          },
+          {
+            "exercise": {
+              "name": "kettlebell sumo high pull",
+              "description": "Stare con i piedi più larghi della larghezza delle spalle, con le dita rivolte verso l'esterno. Tieni un kettlebell con entrambe le mani davanti al corpo, le braccia tese verso il basso. Piega le ginocchia e abbassa i fianchi in una posizione tozza, mantenendo la schiena dritta. Guida attraverso i…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0548-8ARQ9Hw.gif",
+              "muscleGroup": "back",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 12
+          },
+          {
+            "exercise": {
+              "name": "kettlebell alternating hang clean",
+              "description": "Stai con i piedi alla larghezza delle spalle, tenendo un kettlebell in ciascuna mano con una presa prona. Piega leggermente le ginocchia e fai perno in avanti sui fianchi, mantenendo la schiena dritta e il petto in alto. Lascia che i kettlebell pendano davanti al tuo corpo con le braccia…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0518-I4tibZG.gif",
+              "muscleGroup": "arms",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 10
+          }
+        ]
+      },
+      {
+        "name": "Venerdì",
+        "entries": [
+          {
+            "exercise": {
+              "name": "kettlebell thruster",
+              "description": "Inizia stando in piedi con i piedi alla larghezza delle spalle, tenendo un kettlebell davanti al petto con entrambe le mani, i palmi uno di fronte all'altro. Abbassati in una posizione tozza piegando le ginocchia e spingendo indietro i fianchi, mantenendo il petto sollevato e la schiena dritta.…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0550-yWxMvB5.gif",
+              "muscleGroup": "shoulders",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 4,
+            "reps": 8
+          },
+          {
+            "exercise": {
+              "name": "kettlebell windmill",
+              "description": "Stai con i piedi alla larghezza delle spalle, tenendo un kettlebell nella mano destra sopra la testa. Ruota il piede sinistro verso l'esterno di circa 45 gradi e tieni il piede destro rivolto in avanti. Piega il busto verso sinistra, mantenendo il braccio destro esteso sopra la testa e gli occhi…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0554-9Tkqa9O.gif",
+              "muscleGroup": "core",
+              "difficulty": "hard",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 8
+          },
+          {
+            "exercise": {
+              "name": "kettlebell figure 8",
+              "description": "Stai con i piedi alla larghezza delle spalle, tenendo un kettlebell in una mano. Piega leggermente le ginocchia e fai perno in avanti sui fianchi, mantenendo la schiena dritta. Passa il kettlebell tra le gambe, cambiando mano quando raggiunge la parte posteriore delle gambe. Mentre il kettlebell si…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0532-L4ay0PW.gif",
+              "muscleGroup": "core",
+              "difficulty": "medium",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 12
+          },
+          {
+            "exercise": {
+              "name": "kettlebell turkish get up (squat style)",
+              "description": "Inizia sdraiandoti sulla schiena con le gambe distese e il kettlebell tenuto nella mano destra, il braccio completamente esteso sopra la spalla. Piega il ginocchio destro e appoggia il piede destro a terra, mantenendo la gamba sinistra estesa. Premendo con il piede destro, solleva i fianchi da…",
+              "youtubeUrl": "",
+              "gifUrl": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/0551-Ha7SZ3y.gif",
+              "muscleGroup": "glutes",
+              "difficulty": "hard",
+              "faceBlurConfirmed": false
+            },
+            "sets": 3,
+            "reps": 5
+          }
+        ]
+      }
+    ]
+  }
+}
