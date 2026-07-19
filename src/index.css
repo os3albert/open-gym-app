@@ -32,6 +32,16 @@
   --chart-reps: #7c3aed;
 }
 
+/*
+ * Niente rubber-band del documento (PWA iOS): sulle viste più corte del viewport
+ * l'over-scroll poteva incastrare il canvas spostato, con la TabNav fissa sollevata
+ * e una striscia bianca sotto. Dal root scroller vale da iOS 16.
+ */
+html,
+body {
+  overscroll-behavior-y: none;
+}
+
 img {
   max-width: 100%;
 }

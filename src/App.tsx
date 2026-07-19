@@ -140,6 +140,18 @@ export default function App() {
   // Sotto Vitest non si scorre: il FAB resta esteso, e i test non devono saperne nulla
   const scrolled = useScrollTrigger({ disableHysteresis: true, threshold: 40 })
   const timer = useWorkoutTimer()
+  // Al cambio vista si riparte dall'inizio. Non è solo UX: nella PWA iOS, passando da una
+  // vista lunga scrollata a una più corta del viewport, WebKit non riaggancia lo scroll del
+  // documento e trascina in alto l'intero canvas — TabNav fissa compresa — lasciando una
+  // striscia bianca sotto. La guardia: jsdom non implementa scrollTo (come scrollIntoView).
+  useEffect(() => {
+    try {
+      window.scrollTo(0, 0)
+    } catch {
+      // jsdom: niente scroll da azzerare
+    }
+  }, [view])
+
   const [editing, setEditing] = useState<Exercise | null>(null)
   const [formError, setFormError] = useState<string | null>(null)
   const [statureError, setStatureError] = useState<string | null>(null)
